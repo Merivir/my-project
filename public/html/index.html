@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор роли</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Добро пожаловать</h1>
+    <p>Пожалуйста, выберите, как продолжить:</p>
+    <button id="guestButton">Продолжить как гость</button>
+    <button id="adminButton">Продолжить как администратор</button>
+
+    <script>
+        document.getElementById('guestButton').addEventListener('click', () => {
+            window.location.href = '/html/guest.html'; // Обновлённый путь
+        });
+    
+        document.getElementById('adminButton').addEventListener('click', () => {
+            window.location.href = '/html/admin-login.html'; // Обновлённый путь
+        });
+    </script>    
+</body>
+</html>
