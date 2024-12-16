@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Подключение маршрутов
 app.use('/guest', guestRoutes);
@@ -20,7 +20,7 @@ app.use('/schedule', scheduleRoutes);
 
 // Маршрут для корневого пути "/"
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/html/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
 
 // Запуск сервера
