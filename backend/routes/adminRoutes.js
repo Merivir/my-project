@@ -29,82 +29,75 @@ router.get('/protected-route', verifyToken, (req, res) => {
     res.json({ message: 'Welcome to the protected route!', user: req.user });
 });
 
-// Регистрация администратора
+const bcrypt = require('bcrypt');
+
 router.post('/register', async (req, res) => {
     const { name, login, email, password } = req.body;
 
-    // Проверка на заполненность полей
     if (!name || !login || !email || !password) {
-        return res.status(400).json({ message: 'All fields are required!' });
+        return res.status(400).json({ message: 'All fields are required' });
     }
 
     try {
         const pool = await poolPromise;
 
-        // Проверяем, есть ли уже такой логин
-        const existingLogin = await pool.request()
+        // Проверка существующего логина
+        const existingUser = await pool.request()
             .input('login', sql.NVarChar, login)
             .query('SELECT * FROM admins WHERE login = @login');
 
-        if (existingLogin.recordset.length > 0) {
+        if (existingUser.recordset.length > 0) {
             return res.status(400).json({ message: 'Login is already in use' });
         }
 
-        // Проверяем, есть ли уже такой email
-        const existingEmail = await pool.request()
-            .input('email', sql.NVarChar, email)
-            .query('SELECT * FROM admins WHERE email = @email');
+        // Хэшируем пароль
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        if (existingEmail.recordset.length > 0) {
-            return res.status(400).json({ message: 'Email is already in use' });
-        }
-
-        // Сохраняем нового администратора
-        const result = await pool.request()
+        // Сохраняем администратора
+        await pool.request()
             .input('name', sql.NVarChar, name)
             .input('login', sql.NVarChar, login)
             .input('email', sql.NVarChar, email)
-            .input('password', sql.NVarChar, password)
+            .input('password', sql.NVarChar, hashedPassword)
             .query(`INSERT INTO admins (name, login, email, password)
-                    OUTPUT INSERTED.* VALUES (@name, @login, @email, @password)`);
+                    VALUES (@name, @login, @email, @password)`);
 
-        res.status(201).json({ 
-            message: 'Admin registered successfully!', 
-            admin: result.recordset[0] 
-        });
+        res.status(201).json({ message: 'Admin registered successfully!' });
     } catch (err) {
-        console.error('Database error:', err.message);
-        res.status(500).json({ error: 'Failed to register admin: ' + err.message });
+        console.error('Registration error:', err.message);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
 
-
-// Авторизация администратора
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { login, password } = req.body;
 
     try {
         const pool = await poolPromise;
         const result = await pool.request()
-            .input('username', sql.NVarChar, username)
-            .input('password', sql.NVarChar, password)
-            .query(`SELECT * FROM admins WHERE name = @username AND password = @password`);
+            .input('login', sql.NVarChar, login)
+            .query('SELECT * FROM admins WHERE login = @login');
 
-        if (result.recordset.length > 0) {
-            const admin = result.recordset[0];
-            const token = jwt.sign({ id: admin.id, name: admin.name }, SECRET_KEY, { expiresIn: '1h' });
-            res.json({ message: 'Login successful', token });
-        } else {
-            res.status(401).json({ message: 'Invalid username or password' });
+        if (result.recordset.length === 0) {
+            return res.status(401).json({ message: 'Invalid username or password' });
         }
+
+        const admin = result.recordset[0];
+
+        // Проверка пароля с использованием bcrypt
+        const passwordMatch = await bcrypt.compare(password, admin.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid username or password' });
+        }
+
+        res.json({ message: 'Login successful' });
     } catch (err) {
         console.error('Login error:', err.message);
-        res.status(500).json({ message: 'Server error: ' + err.message });
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
-module.exports = router;
 
 
 router.get('/list', async (req, res) => {
@@ -116,3 +109,5 @@ router.get('/list', async (req, res) => {
         res.status(500).json({ message: 'Error fetching admins: ' + err.message });
     }
 });
+
+module.exports = router;
