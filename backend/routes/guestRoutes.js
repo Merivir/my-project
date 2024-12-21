@@ -5,4 +5,9 @@ router.get('/', (req, res) => {
     res.json({ message: 'Welcome, Guest!' });
 });
 
-module.exports = router; // Обязательно экспортируем router
+// Новый маршрут для информации о гостях
+router.get('/info', (req, res) => {
+    res.json({ message: 'This is the guest info endpoint!' });
+});
+
+module.exports = router;

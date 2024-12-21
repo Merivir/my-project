@@ -1,21 +1,25 @@
 const sql = require('mssql');
 
 const config = {
-    server: 'localhost',       // Имя твоего сервера
-    database: 'schedule',      // Название базы данных
-    user: 'admin',             // Имя пользователя SQL Server
-    password: 'mypassword',    // Пароль пользователя
-    port: 1433,                // Порт для подключения
+    server: 'localhost',       // Имя вашего сервера
+    database: 'schedule',      // Имя базы данных
+    user: 'admin',             // Имя пользователя
+    password: 'mypassword',    // Пароль
+    port: 1433,
     options: {
-        encrypt: false,              // Отключить SSL
-        trustServerCertificate: true // Доверять сертификату
-    }
+        encrypt: false,
+        trustServerCertificate: true,
+    },
 };
 
-sql.connect(config)
-    .then(() => {
+const poolPromise = sql.connect(config)
+    .then(pool => {
         console.log('Connected to MSSQL Database');
+        return pool;
     })
     .catch(err => {
-        console.error('Database Connection Failed:', err);
+        console.error('Database Connection Failed:', err.message);
+        throw err;
     });
+
+module.exports = { sql, poolPromise };

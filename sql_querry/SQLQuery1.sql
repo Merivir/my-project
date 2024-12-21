@@ -15,3 +15,5 @@ CREATE TABLE schedule (
     time NVARCHAR(50) NOT NULL,
     day NVARCHAR(50) NOT NULL
 );
+
+EXEC sp_rename 'Schedule', 'Schedule_Old';

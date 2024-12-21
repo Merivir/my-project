@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание расписания</title>
+</head>
+<body>
+    <h1>Создание расписания</h1>
+    <form onsubmit="createSchedule(event)">
+        <input type="number" id="group_id" placeholder="ID группы" required />
+        <input type="text" id="subject" placeholder="Предмет" required />
+        <input type="number" id="teacher_id" placeholder="ID преподавателя" required />
+        <input type="number" id="room_id" placeholder="ID аудитории" required />
+        <input type="number" id="time_slot_id" placeholder="ID времени" required />
+        <button type="submit">Создать</button>
+    </form>
+    <p id="responseMessage"></p>
+
+    <script>
+        async function createSchedule(event) {
+            event.preventDefault();
+
+            const group_id = document.getElementById('group_id').value;
+            const subject = document.getElementById('subject').value;
+            const teacher_id = document.getElementById('teacher_id').value;
+            const room_id = document.getElementById('room_id').value;
+            const time_slot_id = document.getElementById('time_slot_id').value;
+
+            try {
+                const response = await fetch('/api/schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ group_id, subject, teacher_id, room_id, time_slot_id })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('responseMessage').innerText = 'Расписание успешно создано!';
+                } else {
+                    document.getElementById('responseMessage').innerText = result.message;
+                }
+            } catch (err) {
+                document.getElementById('responseMessage').innerText = 'Ошибка сервера';
+            }
+        }
+    </script>
+</body>
+</html>

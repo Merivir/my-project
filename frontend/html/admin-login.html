@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Вход для администратора</h1>
-    <form>
+    <form id="adminForm" onsubmit="submitAdminForm(event)">
         <label for="username">Имя пользователя:</label>
         <input type="text" id="username" name="username" required><br><br>
         
@@ -15,6 +15,41 @@
         
         <button type="submit">Войти</button>
     </form>
+    <p id="errorMessage" style="color: red;"></p>
     <a href="/">Назад</a>
+
+    <script>
+        // Функция для отправки данных на сервер
+        async function submitAdminForm(event) {
+            event.preventDefault(); // Останавливаем стандартную отправку формы
+
+            // Получаем значения полей
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Отправка POST-запроса на сервер
+                const response = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json(); // Ответ сервера
+
+                // Успешный вход
+                if (response.ok) {
+                    alert('Добро пожаловать, администратор!');
+                    window.location.href = '/admin-dashboard'; // Перенаправление
+                } else {
+                    // Ошибка авторизации
+                    document.getElementById('errorMessage').innerText = data.message;
+                }
+            } catch (err) {
+                // Ошибка сервера
+                document.getElementById('errorMessage').innerText = 'Ошибка сервера: ' + err.message;
+            }
+        }
+    </script>
 </body>
 </html>
