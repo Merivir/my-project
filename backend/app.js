@@ -43,13 +43,16 @@ app.get('/admin-login', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/admin-login.html'));
 });
 
-
 app.get('/guest', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/guest.html'));
 });
 
 app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/admin-dashboard.html'));
+});
+
+app.get('/admin-register', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/admin-register.html'));
 });
 
 // Подключение маршрутов

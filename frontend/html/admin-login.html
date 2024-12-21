@@ -17,38 +17,37 @@
     </form>
     <p id="errorMessage" style="color: red;"></p>
     <a href="/">Назад</a>
+    <br><br>
+    <button onclick="redirectToRegister()">Регистрация</button>
 
     <script>
-        // Функция для отправки данных на сервер
         async function submitAdminForm(event) {
-            event.preventDefault(); // Останавливаем стандартную отправку формы
-
-            // Получаем значения полей
+            event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
             try {
-                // Отправка POST-запроса на сервер
                 const response = await fetch('/admin/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
 
-                const data = await response.json(); // Ответ сервера
+                const data = await response.json();
 
-                // Успешный вход
                 if (response.ok) {
                     alert('Добро пожаловать, администратор!');
-                    window.location.href = '/admin-dashboard'; // Перенаправление
+                    window.location.href = '/admin-dashboard';
                 } else {
-                    // Ошибка авторизации
                     document.getElementById('errorMessage').innerText = data.message;
                 }
             } catch (err) {
-                // Ошибка сервера
                 document.getElementById('errorMessage').innerText = 'Ошибка сервера: ' + err.message;
             }
+        }
+
+        function redirectToRegister() {
+            window.location.href = '/admin-register';
         }
     </script>
 </body>
