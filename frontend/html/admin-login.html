@@ -6,48 +6,43 @@
 </head>
 <body>
     <h1>Вход для администратора</h1>
-    <form id="adminForm" onsubmit="submitAdminForm(event)">
-        <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" name="username" required><br><br>
+    <form id="adminLoginForm" onsubmit="submitAdminLoginForm(event)">
+        <label for="login">Логин:</label>
+        <input type="text" id="login" name="login" required><br><br>
         
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" required><br><br>
         
         <button type="submit">Войти</button>
     </form>
-    <p id="errorMessage" style="color: red;"></p>
-    <a href="/">Назад</a>
-    <br><br>
-    <button onclick="redirectToRegister()">Регистрация</button>
+    <p id="loginErrorMessage" style="color: red;"></p>
+    <p>Если у вас ещё нет аккаунта, вы можете <a href="/admin-register">зарегистрироваться</a>.</p>
 
     <script>
-        async function submitAdminForm(event) {
+        async function submitAdminLoginForm(event) {
             event.preventDefault();
-            const username = document.getElementById('username').value;
+            
+            const login = document.getElementById('login').value;
             const password = document.getElementById('password').value;
 
             try {
                 const response = await fetch('/admin/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ login, password })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Добро пожаловать, администратор!');
+                    alert('Добро пожаловать!');
                     window.location.href = '/admin-dashboard';
                 } else {
-                    document.getElementById('errorMessage').innerText = data.message;
+                    document.getElementById('loginErrorMessage').innerText = data.message;
                 }
             } catch (err) {
-                document.getElementById('errorMessage').innerText = 'Ошибка сервера: ' + err.message;
+                document.getElementById('loginErrorMessage').innerText = 'Ошибка сервера';
             }
-        }
-
-        function redirectToRegister() {
-            window.location.href = '/admin-register';
         }
     </script>
 </body>

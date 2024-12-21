@@ -6,9 +6,12 @@
 </head>
 <body>
     <h1>Регистрация администратора</h1>
-    <form id="registerForm" onsubmit="submitRegisterForm(event)">
+    <form id="adminRegisterForm" onsubmit="submitAdminRegisterForm(event)">
         <label for="name">Имя:</label>
         <input type="text" id="name" name="name" required><br><br>
+        
+        <label for="login">Логин:</label>
+        <input type="text" id="login" name="login" required><br><br>
         
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br><br>
@@ -18,14 +21,15 @@
         
         <button type="submit">Зарегистрироваться</button>
     </form>
-    <p id="responseMessage" style="color: green;"></p>
-    <a href="/admin-login">Назад</a>
+    <p id="registerErrorMessage" style="color: red;"></p>
+    <p>Уже есть аккаунт? <a href="/admin-login">Войдите здесь</a>.</p>
 
     <script>
-        async function submitRegisterForm(event) {
+        async function submitAdminRegisterForm(event) {
             event.preventDefault();
-
+            
             const name = document.getElementById('name').value;
+            const login = document.getElementById('login').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -33,18 +37,19 @@
                 const response = await fetch('/admin/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
+                    body: JSON.stringify({ name, login, email, password })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    document.getElementById('responseMessage').innerText = 'Регистрация успешна!';
+                    alert('Регистрация успешна! Теперь вы можете войти.');
+                    window.location.href = '/admin-login';
                 } else {
-                    document.getElementById('responseMessage').innerText = data.message;
+                    document.getElementById('registerErrorMessage').innerText = data.message;
                 }
             } catch (err) {
-                document.getElementById('responseMessage').innerText = 'Ошибка сервера: ' + err.message;
+                document.getElementById('registerErrorMessage').innerText = 'Ошибка сервера';
             }
         }
     </script>

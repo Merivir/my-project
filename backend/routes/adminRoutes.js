@@ -31,38 +31,54 @@ router.get('/protected-route', verifyToken, (req, res) => {
 
 // Регистрация администратора
 router.post('/register', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, login, email, password } = req.body;
 
-    if (!name || !email || !password) {
+    // Проверка на заполненность полей
+    if (!name || !login || !email || !password) {
         return res.status(400).json({ message: 'All fields are required!' });
     }
 
     try {
         const pool = await poolPromise;
-        const existingUser = await pool.request()
+
+        // Проверяем, есть ли уже такой логин
+        const existingLogin = await pool.request()
+            .input('login', sql.NVarChar, login)
+            .query('SELECT * FROM admins WHERE login = @login');
+
+        if (existingLogin.recordset.length > 0) {
+            return res.status(400).json({ message: 'Login is already in use' });
+        }
+
+        // Проверяем, есть ли уже такой email
+        const existingEmail = await pool.request()
             .input('email', sql.NVarChar, email)
             .query('SELECT * FROM admins WHERE email = @email');
 
-        if (existingUser.recordset.length > 0) {
+        if (existingEmail.recordset.length > 0) {
             return res.status(400).json({ message: 'Email is already in use' });
         }
 
+        // Сохраняем нового администратора
         const result = await pool.request()
             .input('name', sql.NVarChar, name)
+            .input('login', sql.NVarChar, login)
             .input('email', sql.NVarChar, email)
             .input('password', sql.NVarChar, password)
-            .query(`INSERT INTO admins (name, email, password)
-                    OUTPUT INSERTED.* VALUES (@name, @email, @password)`);
+            .query(`INSERT INTO admins (name, login, email, password)
+                    OUTPUT INSERTED.* VALUES (@name, @login, @email, @password)`);
 
-        res.status(201).json({
-            message: 'Admin registered successfully!',
-            admin: result.recordset[0]
+        res.status(201).json({ 
+            message: 'Admin registered successfully!', 
+            admin: result.recordset[0] 
         });
     } catch (err) {
         console.error('Database error:', err.message);
         res.status(500).json({ error: 'Failed to register admin: ' + err.message });
     }
 });
+
+
 
 // Авторизация администратора
 router.post('/login', async (req, res) => {
