@@ -8,12 +8,12 @@
 <body>
     <h1>Создание расписания</h1>
     <form onsubmit="createSchedule(event)">
-        <input type="number" id="group_id" placeholder="ID группы" required />
-        <input type="text" id="subject" placeholder="Предмет" required />
-        <input type="number" id="teacher_id" placeholder="ID преподавателя" required />
-        <input type="number" id="room_id" placeholder="ID аудитории" required />
-        <input type="number" id="time_slot_id" placeholder="ID времени" required />
-        <button type="submit">Создать</button>
+        <input type="number" id="group_id" placeholder="Խմբի ID" required />
+        <input type="text" id="subject" placeholder="Առարկա" required />
+        <input type="number" id="teacher_id" placeholder="Դասախոսի ID" required />
+        <input type="number" id="room_id" placeholder="Լսարան ID" required />
+        <input type="number" id="time_slot_id" placeholder="Ժամի ID" required />
+        <button type="submit">Ստեղծել</button>
     </form>
     <p id="responseMessage"></p>
 
@@ -37,12 +37,12 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    document.getElementById('responseMessage').innerText = 'Расписание успешно создано!';
+                    document.getElementById('responseMessage').innerText = 'Դասացուցակը բարեհաջող ստեղծվել է!';
                 } else {
                     document.getElementById('responseMessage').innerText = result.message;
                 }
             } catch (err) {
-                document.getElementById('responseMessage').innerText = 'Ошибка сервера';
+                document.getElementById('responseMessage').innerText = 'Սերվերի խնդիր';
             }
         }
     </script>

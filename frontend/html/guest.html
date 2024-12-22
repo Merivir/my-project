@@ -6,8 +6,8 @@
     <title>Гостевой доступ</title>
 </head>
 <body>
-    <h1>Добро пожаловать, гость!</h1>
-    <p>Здесь вы можете просматривать расписание.</p>
+    <h1>Բարի գալուստ հյուր!</h1>
+    <p>Այստեղ կարող եք ծանոթանալ դասացուցակի հետ.</p>
     <table border="1" id="scheduleTable">
         <thead>
             <tr>
@@ -40,7 +40,7 @@
                     tableBody.insertAdjacentHTML('beforeend', row);
                 });
             } catch (err) {
-                console.error('Error loading schedule:', err);
+                console.error('Դասացուցակը բեռնելու սխալ', err);
             }
         }
 

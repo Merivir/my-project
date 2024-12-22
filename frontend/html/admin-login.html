@@ -35,13 +35,13 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Добро пожаловать!');
+                    alert('Բարի գալուստ!');
                     window.location.href = '/admin-dashboard';
                 } else {
                     document.getElementById('loginErrorMessage').innerText = data.message;
                 }
             } catch (err) {
-                document.getElementById('loginErrorMessage').innerText = 'Ошибка сервера';
+                document.getElementById('loginErrorMessage').innerText = 'Սերվերի խնդիր';
             }
         }
     </script>

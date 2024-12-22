@@ -19,10 +19,10 @@
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" required><br><br>
         
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit">Գրանցվել</button>
     </form>
     <p id="registerErrorMessage" style="color: red;"></p>
-    <p>Уже есть аккаунт? <a href="/admin-login">Войдите здесь</a>.</p>
+    <p>Ունե՞ք էջ? <a href="/admin-login">Մուտք այստեղ</a>.</p>
 
     <script>
         async function submitAdminRegisterForm(event) {
@@ -43,13 +43,13 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    alert('Регистрация успешна! Теперь вы можете войти.');
+                    alert('Գրանցումը բարեհաջող ավարտվեց, կարող եք մուտք գործել');
                     window.location.href = '/admin-login';
                 } else {
                     document.getElementById('registerErrorMessage').innerText = data.message;
                 }
             } catch (err) {
-                document.getElementById('registerErrorMessage').innerText = 'Ошибка сервера';
+                document.getElementById('registerErrorMessage').innerText = 'Սերվերի խնդիր';
             }
         }
     </script>
