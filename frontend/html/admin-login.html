@@ -2,21 +2,21 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Вход для администратора</title>
+    <title>Մուտք ադմինիստրատորի համար</title>
 </head>
 <body>
-    <h1>Вход для администратора</h1>
+    <h1>Մուտք ադմինիստրատորի համար</h1>
     <form id="adminLoginForm" onsubmit="submitAdminLoginForm(event)">
-        <label for="login">Логин:</label>
+        <label for="login">Մուտքանուն:</label>
         <input type="text" id="login" name="login" required><br><br>
         
-        <label for="password">Пароль:</label>
+        <label for="password">Գաղտնաբառ:</label>
         <input type="password" id="password" name="password" required><br><br>
         
-        <button type="submit">Войти</button>
+        <button type="submit">Մուտք գործել</button>
     </form>
     <p id="loginErrorMessage" style="color: red;"></p>
-    <p>Если у вас ещё нет аккаунта, вы можете <a href="/admin-register">зарегистрироваться</a>.</p>
+    <p>Եթե դեռ ակաունտ չունեք, ապա կարող եք գրանցվել<a href="/admin-register">Գրանցվել</a>.</p>
 
     <script>
         async function submitAdminLoginForm(event) {

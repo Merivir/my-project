@@ -8,7 +8,7 @@ document.getElementById('adminLogin').addEventListener('submit', async (e) => {
         const data = await response.json();
         loadAdminPanel(data);
     } else {
-        alert('Ошибка загрузки данных!');
+        alert('Տվյալների բեռման սխալ!');
     }
 });
 

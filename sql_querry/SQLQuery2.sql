@@ -30,8 +30,9 @@ CREATE TABLE TimeSlots (
 CREATE TABLE Schedule (
     id INT PRIMARY KEY IDENTITY,
     group_id INT FOREIGN KEY REFERENCES Groups(id),
-    subject NVARCHAR(50),
+    subject_id INT FOREIGN KEY REFERENCES Subjects(id),
     teacher_id INT FOREIGN KEY REFERENCES Teachers(id),
     room_id INT FOREIGN KEY REFERENCES Rooms(id),
-    time_slot_id INT FOREIGN KEY REFERENCES TimeSlots(id)
+    time_slot_id INT FOREIGN KEY REFERENCES TimeSlots(id),
+    day_of_week TINYINT NOT NULL
 );
