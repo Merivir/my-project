@@ -14,12 +14,13 @@
                 <th>Օր</th>
                 <th>Շաբաթ</th>
                 <th>Ժամ</th>
-                <th>Դասարան</th>
+                <th>Լսարան</th>
                 <th>Առարկա</th>
                 <th>Դասախոս</th>
                 <th>Խումբ</th>
                 <th>Տիպ</th>
                 <th>Ֆորմատ</th>
+                <th>Հղումներ</th>
                 <th>Նշումներ</th>
             </tr>
         </thead>
@@ -28,36 +29,40 @@
     
     <script>
         async function loadSchedule() {
-            try {
-                const response = await fetch('/schedule');
-                const schedule = await response.json();
-    
-                const tableBody = document.getElementById('scheduleBody');
-                tableBody.innerHTML = ''; // Clear previous rows
-    
-                schedule.forEach(entry => {
-                    const details = entry.details ? JSON.parse(entry.details) : {};
-                    const row = `
-                        <tr>
-                            <td>${entry.day_name}</td>
-                            <td>${entry.week_type}</td>
-                            <td>${entry.time_slot}</td>
-                            <td>${entry.room_number}</td>
-                            <td>${entry.subject_name}</td>
-                            <td>${entry.teacher_name}</td>
-                            <td>${entry.group_name}</td>
-                            <td>${entry.type_name}</td>
-                            <td>${details.format || ''}</td>
-                            <td>${details.notes || ''}</td>
-                        </tr>`;
-                    tableBody.insertAdjacentHTML('beforeend', row);
-                });
-            } catch (err) {
-                console.error('Error loading schedule:', err);
-            }
+    try {
+        const response = await fetch('/schedule');
+        const schedule = await response.json();
+
+        const tableBody = document.getElementById('scheduleBody');
+        tableBody.innerHTML = ''; // Очистить перед добавлением
+
+        schedule.forEach(entry => {
+            // Распарсить details
+            const details = entry.details ? JSON.parse(entry.details) : {};
+
+            const row = `
+                <tr>
+                    <td>${entry.day_name}</td>
+                    <td>${entry.week_type}</td>
+                    <td>${entry.time_slot}</td>
+                    <td>${entry.room_number}</td>
+                    <td>${entry.subject_name}</td>
+                    <td>${entry.teacher_name}</td>
+                    <td>${entry.group_name}</td>
+                    <td>${entry.type_name}</td>
+                    <td>${details.format || 'N/A'}</td>
+                    <td>${details.zoom_link ? `<a href="${details.zoom_link}" target="_blank">Հղում</a>` : 'N/A'}</td>
+                    <td>${details.notes || 'N/A'}</td>
+                </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+    } catch (err) {
+        console.error('Ошибка загрузки расписания:', err);
+    }
         }
-    
-        loadSchedule();
+
+loadSchedule();
+
     </script>
     
 </body>
