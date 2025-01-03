@@ -1,4 +1,4 @@
-const express = require('express'); // Подключаем express только один раз
+const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const sql = require('mssql');
@@ -16,8 +16,7 @@ const config = {
     },
 };
 
-const app = express(); // Инициализация приложения
-
+const app = express();
 
 // Middleware
 app.use(bodyParser.json());
@@ -39,7 +38,7 @@ const guestRoutes = require('./routes/guestRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const scheduleRoutes = require('./routes/scheduleRoutes');
 
-
+// Обработчики HTML-страниц
 app.get('/guest', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/guest.html'));
 });
@@ -56,13 +55,12 @@ app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/admin-dashboard.html'));
 });
 
-
 // Подключение маршрутов
 app.use('/guest', guestRoutes);
 app.use('/admin', adminRoutes);
 app.use('/schedule', scheduleRoutes);
 
-// Пример API для работы с расписанием
+// API для расписания
 app.get('/api/schedule', async (req, res) => {
     const { day_id, week_id, group_id } = req.query;
     let query = 'SELECT * FROM Schedule WHERE 1=1';
@@ -73,21 +71,15 @@ app.get('/api/schedule', async (req, res) => {
 
     try {
         const result = await req.dbPool.request().query(query);
-        const schedules = result.recordset.map(schedule => {
-            return {
-                ...schedule,
-                details: schedule.details ? JSON.parse(schedule.details) : null
-            };
-        });
+        const schedules = result.recordset.map(schedule => ({
+            ...schedule,
+            details: schedule.details ? JSON.parse(schedule.details) : null,
+        }));
         res.json(schedules);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
-
-
-
-
 
 app.post('/api/schedule', async (req, res) => {
     const { day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, group_id, type_id, details } = req.body;
@@ -101,10 +93,12 @@ app.post('/api/schedule', async (req, res) => {
             .input('subject_id', sql.Int, subject_id)
             .input('teacher_id', sql.Int, teacher_id)
             .input('group_id', sql.Int, group_id)
-            .input('type_id', sql.Int, type_id) // Use type_id instead of type
+            .input('type_id', sql.Int, type_id)
             .input('details', sql.NVarChar, JSON.stringify(details || {}))
-            .query(`INSERT INTO Schedule (day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, group_id, type_id, details)
-                    VALUES (@day_id, @week_id, @time_slot_id, @room_id, @subject_id, @teacher_id, @group_id, @type_id, @details)`);
+            .query(`
+                INSERT INTO Schedule (day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, group_id, type_id, details)
+                VALUES (@day_id, @week_id, @time_slot_id, @room_id, @subject_id, @teacher_id, @group_id, @type_id, @details)
+            `);
 
         res.status(201).json({ message: 'Schedule entry created successfully!' });
     } catch (err) {
@@ -112,13 +106,30 @@ app.post('/api/schedule', async (req, res) => {
     }
 });
 
+// API для фильтров
+app.get('/api/schedule/filters', async (req, res) => {
+    try {
+        const filters = {};
 
+        filters.days = await req.dbPool.request().query('SELECT id, name FROM Days').then(result => result.recordset);
+        filters.timeSlots = await req.dbPool.request().query('SELECT id, slot AS name FROM TimeSlots').then(result => result.recordset);
+        filters.rooms = await req.dbPool.request().query('SELECT id, room_number AS name FROM Rooms').then(result => result.recordset);
+        filters.subjects = await req.dbPool.request().query('SELECT id, name FROM Subjects').then(result => result.recordset);
+        filters.teachers = await req.dbPool.request().query('SELECT id, name FROM Teachers').then(result => result.recordset);
+        filters.groups = await req.dbPool.request().query('SELECT id, name FROM Groups').then(result => result.recordset);
+        filters.types = await req.dbPool.request().query('SELECT id, name FROM Type').then(result => result.recordset);
+
+        res.json(filters);
+    } catch (err) {
+        console.error('Ошибка получения фильтров:', err.message);
+        res.status(500).send('Ошибка получения фильтров');
+    }
+});
 
 // Маршрут для корневого пути "/"
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
-
 
 // Запуск сервера
 const PORT = 3000;

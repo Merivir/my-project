@@ -4,6 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Հյուր</title>
+    <style>
+        #filterModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        #filterModal h3 {
+            margin-top: 0;
+        }
+
+        #filterModal label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #filterModal button {
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+        }
+
+        #filterBtn {
+            margin: 20px 0;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #filterBtn:hover {
+            background: #45a049;
+        }
+    </style>
 </head>
 <body>
     <h1>Բարի գալուստ հյուր!</h1>
@@ -26,44 +86,170 @@
         </thead>
         <tbody id="scheduleBody"></tbody>
     </table>
-    
+
+    <button id="filterBtn">Ֆիլտրել</button>
+
+    <!-- Модальное окно -->
+    <div id="filterModal">
+        <h3>Ֆիլտրացիա</h3>
+        <label>Օր:
+            <select id="dayFilter">
+                <option value="">Բոլորը</option>
+            </select>
+        </label>
+        <label>Ժամ:
+            <select id="timeSlotFilter">
+                <option value="">Բոլորը</option>
+            </select>
+        </label>
+        <label>Լսարան:
+            <select id="roomFilter">
+                <option value="">Բոլորը</option>
+            </select>
+        </label>
+        <label>Առարկա:
+            <select id="subjectFilter">
+                <option value="">Բոլորը</option>
+            </select>
+        </label>
+        <label>Դասախոս:
+            <select id="teacherFilter">
+                <option value="">Բոլորը</option>
+            </select>
+        </label>
+        <label>Խումբ:
+            <select id="groupFilter">
+                <option value="">Բոլորը</option>
+            </select>
+        </label>
+        <label>Տիպ:
+            <select id="typeFilter">
+                <option value="">Բոլորը</option>
+            </select>
+        </label>
+        <br><br>
+        <button id="applyFilterBtn">Կիրառել ֆիլտրը</button>
+        <button id="closeFilterBtn">Փակել</button>
+    </div>
+
     <script>
-        async function loadSchedule() {
+        async function loadFilters() {
     try {
-        const response = await fetch('/schedule');
-        const schedule = await response.json();
+        const response = await fetch('/schedule/filters');
+        if (!response.ok) throw new Error('Ошибка загрузки фильтров');
+        
+        const filters = await response.json();
 
-        const tableBody = document.getElementById('scheduleBody');
-        tableBody.innerHTML = ''; // Очистить перед добавлением
+        const fillSelect = (selectId, options) => {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">Բոլորը</option>'; // Сбросить текущие опции
+            options.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option.id;
+                opt.textContent = option.name;
+                select.appendChild(opt);
+            });
+        };
 
-        schedule.forEach(entry => {
-            // Распарсить details
-            const details = entry.details ? JSON.parse(entry.details) : {};
-
-            const row = `
-                <tr>
-                    <td>${entry.day_name}</td>
-                    <td>${entry.week_type}</td>
-                    <td>${entry.time_slot}</td>
-                    <td>${entry.room_number}</td>
-                    <td>${entry.subject_name}</td>
-                    <td>${entry.teacher_name}</td>
-                    <td>${entry.group_name}</td>
-                    <td>${entry.type_name}</td>
-                    <td>${details.format || 'N/A'}</td>
-                    <td>${details.zoom_link ? `<a href="${details.zoom_link}" target="_blank">Հղում</a>` : 'N/A'}</td>
-                    <td>${details.notes || 'N/A'}</td>
-                </tr>`;
-            tableBody.insertAdjacentHTML('beforeend', row);
-        });
+        fillSelect('dayFilter', filters.days);
+        fillSelect('timeSlotFilter', filters.timeSlots);
+        fillSelect('roomFilter', filters.rooms);
+        fillSelect('subjectFilter', filters.subjects);
+        fillSelect('teacherFilter', filters.teachers);
+        fillSelect('groupFilter', filters.groups);
+        fillSelect('typeFilter', filters.types);
     } catch (err) {
-        console.error('Ошибка загрузки расписания:', err);
+        console.error('Ошибка загрузки фильтров:', err);
     }
+}
+
+
+        async function loadSchedule() {
+            try {
+                const response = await fetch('/schedule');
+                const schedule = await response.json();
+
+                const tableBody = document.getElementById('scheduleBody');
+                tableBody.innerHTML = ''; // Очистить таблицу перед добавлением данных
+
+                schedule.forEach(entry => {
+                    const details = entry.details ? JSON.parse(entry.details) : {};
+                    const row = `
+                        <tr>
+                            <td>${entry.day_name}</td>
+                            <td>${entry.week_type}</td>
+                            <td>${entry.time_slot}</td>
+                            <td>${entry.room_number}</td>
+                            <td>${entry.subject_name}</td>
+                            <td>${entry.teacher_name}</td>
+                            <td>${entry.group_name}</td>
+                            <td>${entry.type_name}</td>
+                            <td>${details.format || 'N/A'}</td>
+                            <td>${details.zoom_link ? `<a href="${details.zoom_link}" target="_blank">Հղում</a>` : 'N/A'}</td>
+                            <td>${details.notes || 'N/A'}</td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            } catch (err) {
+                console.error('Ошибка загрузки расписания:', err);
+            }
         }
 
-loadSchedule();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFilters(); // Загрузить фильтры при открытии страницы
+            loadSchedule(); // Загрузить расписание
+        });
+ 
+        document.getElementById('filterBtn').addEventListener('click', () => {
+            document.getElementById('filterModal').style.display = 'block';
+        });
 
+        document.getElementById('closeFilterBtn').addEventListener('click', () => {
+            document.getElementById('filterModal').style.display = 'none';
+        });
+
+        document.getElementById('applyFilterBtn').addEventListener('click', async () => {
+            const params = new URLSearchParams();
+            ['dayFilter', 'timeSlotFilter', 'roomFilter', 'subjectFilter', 'teacherFilter', 'groupFilter', 'typeFilter']
+                .forEach(filterId => {
+                    const value = document.getElementById(filterId).value;
+                    if (value) params.append(filterId.replace('Filter', '_id'), value);
+                });
+
+            try {
+                const response = await fetch(`/schedule?${params.toString()}`);
+                const filteredSchedule = await response.json();
+
+                const tableBody = document.getElementById('scheduleBody');
+                tableBody.innerHTML = ''; // Очистить таблицу перед добавлением новых данных
+
+                filteredSchedule.forEach(entry => {
+                    const details = entry.details ? JSON.parse(entry.details) : {};
+                    const row = `
+                        <tr>
+                            <td>${entry.day_name}</td>
+                            <td>${entry.week_type}</td>
+                            <td>${entry.time_slot}</td>
+                            <td>${entry.room_number}</td>
+                            <td>${entry.subject_name}</td>
+                            <td>${entry.teacher_name}</td>
+                            <td>${entry.group_name}</td>
+                            <td>${entry.type_name}</td>
+                            <td>${details.format || 'N/A'}</td>
+                            <td>${details.zoom_link ? `<a href="${details.zoom_link}" target="_blank">Հղում</a>` : 'N/A'}</td>
+                            <td>${details.notes || 'N/A'}</td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+
+                document.getElementById('filterModal').style.display = 'none'; // Закрыть модальное окно
+            } catch (err) {
+                console.error('Ошибка применения фильтра:', err);
+            }
+        });
+
+        loadFilters();
+        loadSchedule();
     </script>
-    
 </body>
 </html>
