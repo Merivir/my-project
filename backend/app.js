@@ -64,31 +64,55 @@ app.use('/schedule', scheduleRoutes);
 
 // Пример API для работы с расписанием
 app.get('/api/schedule', async (req, res) => {
+    const { day_id, week_id, group_id } = req.query;
+    let query = 'SELECT * FROM Schedule WHERE 1=1';
+
+    if (day_id) query += ` AND day_id = ${day_id}`;
+    if (week_id) query += ` AND week_id = ${week_id}`;
+    if (group_id) query += ` AND group_id = ${group_id}`;
+
     try {
-        const result = await req.dbPool.request().query("SELECT * FROM Schedule");
-        res.json(result.recordset);
+        const result = await req.dbPool.request().query(query);
+        const schedules = result.recordset.map(schedule => {
+            return {
+                ...schedule,
+                details: schedule.details ? JSON.parse(schedule.details) : null
+            };
+        });
+        res.json(schedules);
     } catch (err) {
-        res.status(500).send('Failed to fetch schedules: ' + err.message);
+        res.status(500).json({ error: err.message });
     }
 });
+
+
+
 
 
 app.post('/api/schedule', async (req, res) => {
-    const { group_id, subject, teacher_id, room_id, time_slot_id } = req.body;
+    const { day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, group_id, type_id, details } = req.body;
+
     try {
         await req.dbPool.request()
-            .input('group_id', sql.Int, group_id)
-            .input('subject', sql.NVarChar, subject)
-            .input('teacher_id', sql.Int, teacher_id)
-            .input('room_id', sql.Int, room_id)
+            .input('day_id', sql.Int, day_id)
+            .input('week_id', sql.Int, week_id)
             .input('time_slot_id', sql.Int, time_slot_id)
-            .query(`INSERT INTO Schedule (group_id, subject, teacher_id, room_id, time_slot_id)
-                    VALUES (@group_id, @subject, @teacher_id, @room_id, @time_slot_id)`);
-        res.send({ message: "Schedule entry created successfully!" });
+            .input('room_id', sql.Int, room_id)
+            .input('subject_id', sql.Int, subject_id)
+            .input('teacher_id', sql.Int, teacher_id)
+            .input('group_id', sql.Int, group_id)
+            .input('type_id', sql.Int, type_id) // Use type_id instead of type
+            .input('details', sql.NVarChar, JSON.stringify(details || {}))
+            .query(`INSERT INTO Schedule (day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, group_id, type_id, details)
+                    VALUES (@day_id, @week_id, @time_slot_id, @room_id, @subject_id, @teacher_id, @group_id, @type_id, @details)`);
+
+        res.status(201).json({ message: 'Schedule entry created successfully!' });
     } catch (err) {
-        res.status(500).send('Failed to create schedule: ' + err.message);
+        res.status(500).json({ error: err.message });
     }
 });
+
+
 
 // Маршрут для корневого пути "/"
 app.get('/', (req, res) => {

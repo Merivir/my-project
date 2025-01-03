@@ -1,2 +1,0 @@
-ALTER TABLE Schedule
-ADD day_of_week TINYINT NOT NULL;
