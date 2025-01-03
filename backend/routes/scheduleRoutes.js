@@ -3,22 +3,36 @@ const { sql, poolPromise } = require('../models/db');
 const router = express.Router();
 
 // Получить всё расписание
-router.get('/schedule/filter', async (req, res) => {
-    const { day_id, week_id, type } = req.query;
-
-    let query = `SELECT * FROM Schedule WHERE 1=1`;
-
-    if (day_id) query += ` AND day_id = ${day_id}`;
-    if (week_id) query += ` AND week_id = ${week_id}`;
-    if (type) query += ` AND type = '${type}'`;
-
+router.get('/', async (req, res) => {
     try {
-        const result = await req.dbPool.request().query(query);
+        const result = await req.dbPool.request().query(`
+            SELECT 
+                d.name AS day_name,
+                w.type AS week_type,
+                ts.slot AS time_slot,
+                r.room_number,
+                sub.name AS subject_name,
+                t.name AS teacher_name,
+                g.name AS group_name,
+                ty.name AS type_name,
+                s.details
+            FROM Schedule s
+            JOIN Days d ON s.day_id = d.id
+            JOIN Weeks w ON s.week_id = w.id
+            JOIN TimeSlots ts ON s.time_slot_id = ts.id
+            JOIN Rooms r ON s.room_id = r.id
+            JOIN Subjects sub ON s.subject_id = sub.id
+            JOIN Teachers t ON s.teacher_id = t.id
+            JOIN Groups g ON s.group_id = g.id
+            JOIN Type ty ON s.type_id = ty.id
+            ORDER BY d.id, ts.id
+        `);
         res.json(result.recordset);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 

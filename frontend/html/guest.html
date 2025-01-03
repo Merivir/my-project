@@ -8,43 +8,57 @@
 <body>
     <h1>Բարի գալուստ հյուր!</h1>
     <p>Այստեղ կարող եք ծանոթանալ դասացուցակի հետ.</p>
-    <table border="1" id="scheduleTable">
+    <table border="1">
         <thead>
             <tr>
-                <th>Խումբ</th>
+                <th>Օր</th>
+                <th>Շաբաթ</th>
+                <th>Ժամ</th>
+                <th>Դասարան</th>
                 <th>Առարկա</th>
                 <th>Դասախոս</th>
-                <th>Լսարան</th>
-                <th>Ժամ</th>
+                <th>Խումբ</th>
+                <th>Տիպ</th>
+                <th>Ֆորմատ</th>
+                <th>Նշումներ</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="scheduleBody"></tbody>
     </table>
-
+    
     <script>
         async function loadSchedule() {
             try {
-                const response = await fetch('/api/schedule');
+                const response = await fetch('/schedule');
                 const schedule = await response.json();
-
-                const tableBody = document.querySelector('#scheduleTable tbody');
+    
+                const tableBody = document.getElementById('scheduleBody');
+                tableBody.innerHTML = ''; // Clear previous rows
+    
                 schedule.forEach(entry => {
+                    const details = entry.details ? JSON.parse(entry.details) : {};
                     const row = `
                         <tr>
-                            <td>${entry.group_id}</td>
-                            <td>${entry.subject}</td>
-                            <td>${entry.teacher_id}</td>
-                            <td>${entry.room_id}</td>
-                            <td>${entry.time_slot_id}</td>
+                            <td>${entry.day_name}</td>
+                            <td>${entry.week_type}</td>
+                            <td>${entry.time_slot}</td>
+                            <td>${entry.room_number}</td>
+                            <td>${entry.subject_name}</td>
+                            <td>${entry.teacher_name}</td>
+                            <td>${entry.group_name}</td>
+                            <td>${entry.type_name}</td>
+                            <td>${details.format || ''}</td>
+                            <td>${details.notes || ''}</td>
                         </tr>`;
                     tableBody.insertAdjacentHTML('beforeend', row);
                 });
             } catch (err) {
-                console.error('Դասացուցակը բեռնելու սխալ', err);
+                console.error('Error loading schedule:', err);
             }
         }
-
+    
         loadSchedule();
     </script>
+    
 </body>
 </html>
