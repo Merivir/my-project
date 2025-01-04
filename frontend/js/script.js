@@ -1,17 +1,39 @@
 document.addEventListener('DOMContentLoaded', () => {
-    loadFilters(); // Загрузить фильтры при открытии страницы
-    loadSchedule(); // Загрузить расписание
+    loadFilters();
+    loadSchedule();
+
+    document.getElementById('filterBtn').addEventListener('click', () => {
+        document.getElementById('filterModal').style.display = 'block';
+    });
+
+    document.getElementById('closeFilterBtn').addEventListener('click', () => {
+        document.getElementById('filterModal').style.display = 'none';
+    });
+
+    document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
 });
 
-// Функция загрузки фильтров
+async function loadSchedule() {
+    try {
+        const response = await fetch('/schedule');
+        if (!response.ok) throw new Error('Ошибка загрузки расписания');
+        const schedule = await response.json();
+        console.log("Загруженное расписание:", schedule); // Отладочный вывод
+        updateScheduleTable(schedule);
+    } catch (err) {
+        console.error('Ошибка загрузки расписания:', err);
+    }
+}
+
+
 async function loadFilters() {
     try {
-        const response = await fetch('/schedule/filters');
+        const response = await fetch('/schedule/filters'); // Заменено с /api/schedule/filters
         const filters = await response.json();
 
         const fillSelect = (selectId, options) => {
             const select = document.getElementById(selectId);
-            select.innerHTML = '<option value="">Բոլորը</option>'; // Сбросить текущие опции
+            select.innerHTML = '<option value="">Բոլորը</option>';
             options.forEach(option => {
                 const opt = document.createElement('option');
                 opt.value = option.id;
@@ -32,34 +54,45 @@ async function loadFilters() {
     }
 }
 
-// Функция загрузки расписания
-async function loadSchedule() {
+
+async function applyFilters() {
+    const params = new URLSearchParams();
+
+    ['dayFilter', 'timeSlotFilter', 'roomFilter'].forEach(filterId => {
+        const value = document.getElementById(filterId).value;
+        if (value) params.append(filterId.replace('Filter', '_id'), value);
+    });
+
     try {
-        const response = await fetch('/schedule');
-        const schedule = await response.json();
-        updateScheduleTable(schedule);
+        const response = await fetch(`/schedule?${params.toString()}`); // Заменено с /api/schedule
+        if (!response.ok) throw new Error('Ошибка загрузки данных');
+        const filteredSchedule = await response.json();
+        updateScheduleTable(filteredSchedule);
+        document.getElementById('filterModal').style.display = 'none';
     } catch (err) {
-        console.error('Ошибка загрузки расписания:', err);
+        console.error('Ошибка применения фильтров:', err);
     }
 }
 
-// Функция обновления таблицы расписания
+
 function updateScheduleTable(schedule) {
     const tableBody = document.getElementById('scheduleBody');
-    tableBody.innerHTML = ''; // Очистить перед добавлением данных
+    tableBody.innerHTML = ''; // Очистить таблицу
 
     schedule.forEach(entry => {
+        // Парсим поле details, если оно существует
         const details = entry.details ? JSON.parse(entry.details) : {};
+
         const row = `
             <tr>
-                <td>${entry.day_name}</td>
-                <td>${entry.week_type}</td>
-                <td>${entry.time_slot}</td>
-                <td>${entry.room_number}</td>
-                <td>${entry.subject_name}</td>
-                <td>${entry.teacher_name}</td>
-                <td>${entry.group_name}</td>
-                <td>${entry.type_name}</td>
+                <td>${entry.day_name || 'N/A'}</td>
+                <td>${entry.week_type || 'N/A'}</td>
+                <td>${entry.time_slot || 'N/A'}</td>
+                <td>${entry.room_number || 'N/A'}</td>
+                <td>${entry.subject_name || 'N/A'}</td>
+                <td>${entry.teacher_name || 'N/A'}</td>
+                <td>${entry.group_name || 'N/A'}</td>
+                <td>${entry.type_name || 'N/A'}</td>
                 <td>${details.format || 'N/A'}</td>
                 <td>${details.zoom_link ? `<a href="${details.zoom_link}" target="_blank">Հղում</a>` : 'N/A'}</td>
                 <td>${details.notes || 'N/A'}</td>
@@ -67,34 +100,3 @@ function updateScheduleTable(schedule) {
         tableBody.insertAdjacentHTML('beforeend', row);
     });
 }
-
-// Обработчик для кнопки фильтрации
-document.getElementById('filterBtn').addEventListener('click', () => {
-    document.getElementById('filterModal').style.display = 'block';
-});
-
-// Обработчик для закрытия модального окна
-document.getElementById('closeFilterBtn').addEventListener('click', () => {
-    document.getElementById('filterModal').style.display = 'none';
-});
-
-// Применение фильтров
-async function applyFilters() {
-    const params = new URLSearchParams(
-        Array.from(document.querySelectorAll('select')).reduce((acc, select) => {
-            if (select.value) acc[select.id.replace('Filter', '_id')] = select.value;
-            return acc;
-        }, {})
-    );
-
-    try {
-        const response = await fetch(`/schedule?${params}`);
-        const filteredSchedule = await response.json();
-        updateScheduleTable(filteredSchedule);
-        document.getElementById('filterModal').style.display = 'none'; // Закрыть модальное окно
-    } catch (err) {
-        console.error('Ошибка применения фильтров:', err);
-    }
-}
-
-document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
