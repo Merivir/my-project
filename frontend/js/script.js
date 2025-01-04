@@ -43,12 +43,14 @@ async function loadFilters() {
         };
 
         fillSelect('dayFilter', filters.days);
+        fillSelect('weekFilter', filters.weeks);
         fillSelect('timeSlotFilter', filters.timeSlots);
         fillSelect('roomFilter', filters.rooms);
         fillSelect('subjectFilter', filters.subjects);
         fillSelect('teacherFilter', filters.teachers);
         fillSelect('groupFilter', filters.groups);
         fillSelect('typeFilter', filters.types);
+
     } catch (err) {
         console.error('Ошибка загрузки фильтров:', err);
     }
@@ -58,15 +60,18 @@ async function loadFilters() {
 async function applyFilters() {
     const params = new URLSearchParams();
 
-    ['dayFilter', 'timeSlotFilter', 'roomFilter'].forEach(filterId => {
+    ['dayFilter', 'weekFilter', 'timeSlotFilter', 'roomFilter', 'subjectFilter', 'teacherFilter', 'groupFilter', 'typeFilter'].forEach(filterId => {
         const value = document.getElementById(filterId).value;
         if (value) params.append(filterId.replace('Filter', '_id'), value);
     });
 
+    console.log('Параметры фильтров:', params.toString()); // Для отладки
+
     try {
-        const response = await fetch(`/schedule?${params.toString()}`); // Заменено с /api/schedule
+        const response = await fetch(`/schedule?${params.toString()}`);
         if (!response.ok) throw new Error('Ошибка загрузки данных');
         const filteredSchedule = await response.json();
+        console.log('Фильтрованные данные:', filteredSchedule); // Для отладки
         updateScheduleTable(filteredSchedule);
         document.getElementById('filterModal').style.display = 'none';
     } catch (err) {
@@ -75,14 +80,14 @@ async function applyFilters() {
 }
 
 
+
 function updateScheduleTable(schedule) {
     const tableBody = document.getElementById('scheduleBody');
     tableBody.innerHTML = ''; // Очистить таблицу
+    console.log('Данные для таблицы:', schedule); // Отладочный вывод
 
     schedule.forEach(entry => {
-        // Парсим поле details, если оно существует
         const details = entry.details ? JSON.parse(entry.details) : {};
-
         const row = `
             <tr>
                 <td>${entry.day_name || 'N/A'}</td>
