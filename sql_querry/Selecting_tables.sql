@@ -1,3 +1,4 @@
+use schedule
 select * from admins
 select * from Days
 select * from Groups

@@ -8,3 +8,7 @@
 -- Пример данных
 INSERT INTO Weeks (type, start_date, end_date) 
 VALUES ('Համարիչ', '2024-01-01', '2024-01-07'), ('Հայտարար', '2024-01-08', '2024-01-14');
+
+use schedule
+SELECT id, type AS name FROM Weeks
+SELECT id, name FROM Type

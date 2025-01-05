@@ -83,11 +83,15 @@ async function applyFilters() {
 
 function updateScheduleTable(schedule) {
     const tableBody = document.getElementById('scheduleBody');
+    console.log('Очистка таблицы перед добавлением новых данных');
     tableBody.innerHTML = ''; // Очистить таблицу
     console.log('Данные для таблицы:', schedule); // Отладочный вывод
 
     schedule.forEach(entry => {
-        const details = entry.details ? JSON.parse(entry.details) : {};
+        console.log('Элемент для добавления в таблицу:', entry); // Лог данных, которые идут в таблицу
+    
+        const details = entry.details ? JSON.parse(entry.details) : {}; // Парсинг details
+    
         const row = `
             <tr>
                 <td>${entry.day_name || 'N/A'}</td>
@@ -102,6 +106,9 @@ function updateScheduleTable(schedule) {
                 <td>${details.zoom_link ? `<a href="${details.zoom_link}" target="_blank">Հղում</a>` : 'N/A'}</td>
                 <td>${details.notes || 'N/A'}</td>
             </tr>`;
+        
+        console.log('Сгенерированная строка таблицы:', row); // Лог строки таблицы
         tableBody.insertAdjacentHTML('beforeend', row);
     });
+       
 }

@@ -14,3 +14,5 @@
 INSERT INTO Schedule (day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, group_id, type_id, details)
 VALUES (1, 1, 1, 1, 1, 1, 1, 1, '{"format": "online", "notes": "Bring a calculator"}');
 
+select * from schedule
+

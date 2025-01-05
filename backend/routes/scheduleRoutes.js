@@ -4,20 +4,19 @@ const router = express.Router();
 
 // Получить всё расписание
 router.get('/', async (req, res) => {
-    const { day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, group_id, type_id } = req.query;
+    const { day_id, week_id, timeSlot_id, room_id, subject_id, teacher_id, group_id, type_id } = req.query;
 
     let query = `
         SELECT 
-            s.id AS schedule_id,
-            d.name AS day_name,
-            w.type AS week_type,
-            ts.slot AS time_slot,
-            r.room_number,
-            sub.name AS subject_name,
-            t.name AS teacher_name,
-            g.name AS group_name,
-            ty.name AS type_name,
-            s.details
+            s.*, 
+            d.name AS day_name, 
+            w.type AS week_type, 
+            ts.slot AS time_slot, 
+            r.room_number, 
+            sub.name AS subject_name, 
+            t.name AS teacher_name, 
+            g.name AS group_name, 
+            ty.name AS type_name
         FROM Schedule s
         JOIN Days d ON s.day_id = d.id
         JOIN Weeks w ON s.week_id = w.id
@@ -32,7 +31,7 @@ router.get('/', async (req, res) => {
 
     if (day_id) query += ` AND s.day_id = ${day_id}`;
     if (week_id) query += ` AND s.week_id = ${week_id}`;
-    if (time_slot_id) query += ` AND s.time_slot_id = ${time_slot_id}`;
+    if (timeSlot_id) query += ` AND s.time_slot_id = ${timeSlot_id}`;
     if (room_id) query += ` AND s.room_id = ${room_id}`;
     if (subject_id) query += ` AND s.subject_id = ${subject_id}`;
     if (teacher_id) query += ` AND s.teacher_id = ${teacher_id}`;
@@ -43,8 +42,8 @@ router.get('/', async (req, res) => {
         const result = await req.dbPool.request().query(query);
         res.json(result.recordset);
     } catch (err) {
-        console.error('Ошибка выполнения запроса:', err.message);
-        res.status(500).send('Ошибка выполнения запроса');
+        console.error('Ошибка выполнения фильтров:', err.message);
+        res.status(500).json({ error: err.message });
     }
 });
 
