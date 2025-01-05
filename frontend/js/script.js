@@ -10,6 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('filterModal').style.display = 'none';
     });
 
+    document.getElementById('resetFilterBtn').addEventListener('click', () => {
+        // Сбрасываем все фильтры к дефолтному значению
+        ['dayFilter', 'weekFilter', 'timeSlotFilter', 'roomFilter', 'subjectFilter', 'teacherFilter', 'groupFilter', 'typeFilter'].forEach(filterId => {
+            const select = document.getElementById(filterId);
+            select.value = ''; // Устанавливаем пустое значение для сброса
+        });
+    
+        // Закрыть модальное окно
+        document.getElementById('filterModal').style.display = 'none';
+    
+        // Загрузить весь график без фильтров
+        loadSchedule();
+    });
+    
     document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
 });
 
