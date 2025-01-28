@@ -1,58 +1,63 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("📌 Script loaded: Waiting for clicks...");
+
     const popup = document.getElementById("classPopup");
-    const closeButton = document.querySelector(".close-popup");
 
-    // Դասացուցակի բջիջի սեղմման event (բացում է popup-ը)
-    document.getElementById("scheduleBody").addEventListener("click", function (event) {
-        if (event.target.classList.contains("schedule-cell")) {
-            console.log("✅ Cell clicked, opening popup...");
+    // 📌 **Փակելու ֆունկցիա**
+    function closePopup() {
+        if (!popup) return;
+        popup.classList.add("hidden");
+        popup.style.display = "none";
+        popup.style.visibility = "hidden";
+        popup.style.opacity = "0";
+        console.log("✔️ Popup is now closed!");
+    }
 
-            // Դադարեցնում ենք event-ի տարածումը, որպեսզի popup-ը չփակվի
-            event.stopPropagation();
+    // 📌 **Բացելու ֆունկցիա**
+    function openPopup(cell) {
+        console.log("📌 Opening popup with data:", cell.dataset);
+        document.getElementById('popupSubject').textContent = cell.dataset.subject || 'N/A';
+        document.getElementById('popupTeacher').textContent = cell.dataset.teacher || 'N/A';
+        document.getElementById('popupRoom').textContent = cell.dataset.room || 'N/A';
+        document.getElementById('popupGroup').textContent = cell.dataset.group || 'N/A';
 
-            openPopup();
-        }
+        const link = document.getElementById('popupLink');
+        link.href = cell.dataset.link || '#';
+        link.textContent = cell.dataset.link ? 'Zoom' : 'N/A';
+
+        popup.classList.remove("hidden");
+        popup.style.display = "block";
+        popup.style.visibility = "visible";
+        popup.style.opacity = "1";
+
+        console.log("🎉 Popup opened!");
+    }
+
+    // 📌 **Խաչը (X) սեղմելիս popup-ը փակելու event**
+    document.querySelectorAll(".close-popup").forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.stopImmediatePropagation(); // Կասեցնում ենք բոլոր event-ները
+            console.log("❌ Popup closed by clicking X button");
+            closePopup();
+        });
     });
 
-    // Դրսում սեղմելու event (փակում է popup-ը)
-    document.addEventListener("click", function (event) {
-        if (!popup.classList.contains("hidden") && !popup.contains(event.target)) {
+    // 📌 **Դուրս սեղմելիս popup-ը փակելու event**
+    document.addEventListener("mousedown", function (event) {
+        if (!popup.contains(event.target) && !event.target.classList.contains("schedule-cell")) {
             console.log("✅ Click detected outside popup, closing...");
             closePopup();
         }
     });
 
-    // **Խաչի սեղմման event (հիմա արդեն կաշխատի)**
-    closeButton.addEventListener("click", function (event) {
-        console.log("❌ Popup closed by clicking X button");
-        
-        event.stopPropagation(); // Կանխում ենք event-ի տարածումը
-        closePopup();
+    // 📌 **Դասացուցակի բջիջի վրա սեղմելիս popup-ը բացելու event**
+    document.getElementById("scheduleBody").addEventListener("click", function (event) {
+        if (event.target.classList.contains("schedule-cell")) {
+            console.log("✅ Cell clicked, opening popup...");
+            openPopup(event.target);
+        }
     });
-
-    function openPopup() {
-        popup.classList.remove("hidden");
-        popup.style.display = "block";
-        popup.style.visibility = "visible";
-
-        console.log("🎉 Popup opened!");
-
-        // **100ms հետո body-ին ավելացնում ենք class**, որ event-ը ճիշտ ընկալվի
-        setTimeout(() => {
-            document.body.classList.add("popup-open");
-        }, 100);
-    }
-
-    function closePopup() {
-        popup.classList.add("hidden");
-        popup.style.display = "none";
-        popup.style.visibility = "hidden";
-
-        console.log("✔️ Popup is now closed!");
-        document.body.classList.remove("popup-open");
-    }
 });
-
 
 
 // 📌 Ֆունկցիա՝ դասացուցակի բեռնում
