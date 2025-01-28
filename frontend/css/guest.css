@@ -1,46 +1,215 @@
-#filterModal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    background: white;
-    border: 1px solid #ccc;
+/* Հիմնական ոճերը */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+header {
+    background-color: #0A2540; /* Մուգ կապույտ */
+    color: white;
     padding: 20px;
-    z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 24px;
+}
+
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
     border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-#filterModal label {
-    display: block; /* Каждое поле фильтра будет занимать отдельную строку */
-    margin-bottom: 10px; /* Пространство между полями */
-}
-
-
+/* Աղյուսակի կարգավորումներ */
 table {
-    margin-top: 20px;
     width: 100%;
     border-collapse: collapse;
+    margin: 20px 0;
 }
 
 table th, table td {
-    padding: 10px;
-    text-align: left;
     border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16px;
 }
 
-#filterBtn {
-    margin: 20px 0;
-    padding: 10px 20px;
-    background: #4CAF50;
+table th {
+    background-color: #2C3E50;
     color: white;
-    border: none;
-    border-radius: 5px;
+}
+
+/* Դասերի տեսակների գույները */
+.lecture { background-color: #FFD700; }   /* 📖 Լեկցիա */
+.practice { background-color: #98FB98; }  /* 🛠️ Գործնական */
+.lab { background-color: #87CEFA; }       /* 🔬 Լաբորատոր */
+
+/* Հպման (hover) էֆեկտ */
+.schedule-cell {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.schedule-cell:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Popup-ի ձևավորում */
+.modal {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    text-align: left;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.close-popup {
+    float: right;
+    font-size: 20px;
     cursor: pointer;
 }
 
-#filterBtn:hover {
-    background: #45a049;
+/* Ֆիլտրի popup-ի ոճավորում */
+#filterModal {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+#filterModal.active {
+    display: block;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.modal-buttons button {
+    flex: 1;
+    margin: 5px;
+}
+/* Կուրսի ընտրության կոճակներ */
+.course-buttons {
+    display: flex;
+    justify-content: flex-start; /* Ձախից */
+    margin: 20px;
+    gap: 10px; /* Կոճակների միջև տարածություն */
+}
+
+.course-btn {
+    font-size: 14px;
+    background-color: #0A2540; 
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.course-btn:hover {
+    background-color: #082033; /* Ավելի մուգ երանգ */
+}
+
+/* Ֆիլտրի կոճակների ձևավորում */
+.filter-buttons {
+    display: flex;
+    justify-content: flex-end; /* Աջից */
+    margin: 20px;
+    gap: 10px;
+}
+
+.filter-buttons button {
+    font-size: 14px;
+    background-color: #10324e; /* Կապույտ թողնում ենք */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.filter-buttons button:hover {
+    background-color: #10324e;
+}
+
+/* Աղյուսակի ավելի գեղեցիկ դիրքավորում */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 40px auto; /* Վերևի և ներքևի ազատ տարածություն */
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    text-align: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    padding: 20px;
+}
+
+.close-popup {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+    color: red;
+}
+
+.modal {
+    display: none; /* Որպեսզի սկզբից չերևա */
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    text-align: left;
+}
+
+.hidden {
+    display: none;
 }
