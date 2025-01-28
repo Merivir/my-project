@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     console.log("📌 Script loaded: Waiting for clicks...");
+    loadSchedule();  
+    setInterval(loadSchedule, 10000); // 10 վայրկյանում մեկ նորից բերում ենք տվյալները
 
     const popup = document.getElementById("classPopup");
 
@@ -63,22 +65,96 @@ document.addEventListener("DOMContentLoaded", () => {
 // 📌 Ֆունկցիա՝ դասացուցակի բեռնում
 async function loadSchedule() {
     try {
-        console.log("🔍 Փնտրում ենք տվյալները...");
+        console.log("🔍 Fetching data from API...");
 
         const response = await fetch('/schedule'); // Կանչում ենք backend API-ն
         if (!response.ok) throw new Error('❌ Backend-ից սխալ պատասխան');
 
         const schedule = await response.json(); // JSON դարձնում ենք տվյալները
-        console.log("📌 Աղյուսակի տվյալները:", schedule); // Console-ում ցույց ենք տալիս տվյալները
+        console.log("📌 API-ից բերված տվյալները:", schedule); 
 
-        updateScheduleTable(schedule);
+        // Ֆորմատավորում ենք տվյալները, որ ճիշտ լինի
+        const formattedSchedule = normalizeScheduleData(schedule);
+        console.log("📌 Ֆորմատավորված տվյալները:", formattedSchedule);
+
+        updateScheduleTable(formattedSchedule);
     } catch (err) {
         console.error('❌ Տվյալների բեռնման սխալ:', err);
     }
 }
 
+// 📌 **Ֆորմատավորում ենք API-ից եկած տվյալները**
+function normalizeScheduleData(schedule) {
+    console.log("🔎 Normalizing data:", schedule);
+
+    return schedule.map(entry => {
+        console.log("🔍 Checking details field:", entry.details, "Type:", typeof entry.details);
+
+        let details = {};
+
+        if (typeof entry.details === "string") {
+            try {
+                details = JSON.parse(entry.details);
+                
+                // Եթե դեռ string է մնացել, կրկին JSON.parse ենք անում
+                if (typeof details === "string") {
+                    details = JSON.parse(details);
+                }
+            } catch (error) {
+                console.error("❌ JSON Parse Error (Invalid JSON String):", error, "Value:", entry.details);
+                details = {}; // Եթե JSON-ը կոռումպացված է, օգտագործում ենք դատարկ օբյեկտ
+            }
+        } else if (typeof entry.details === "object" && entry.details !== null) {
+            details = entry.details; // Արդեն Object է, թողնում ենք ինչպես կա
+        }
+
+        return {
+            day_name: getDayName(entry.day_id),
+            week_type: getWeekType(entry.week_id),
+            time_slot: getTimeSlot(entry.time_slot_id),
+            subject_name: entry.subject_name || "Առարկա չի նշված",
+            teacher_name: entry.teacher_name || "Դասախոս չի նշված",
+            room_number: entry.room_number || "Լսարան չկա",
+            group_name: entry.group_name || "Խումբ չկա",
+            details: details
+        };
+    });
+}
+
+// **Օգնական ֆունկցիաներ՝ `id`-ները փոխելու անուններով արժեքների**
+function getDayName(dayId) {
+    const days = {
+        1: "Երկուշաբթի",
+        2: "Երեքշաբթի",
+        3: "Չորեքշաբթի",
+        4: "Հինգշաբթի",
+        5: "Ուրբաթ"
+    };
+    return days[dayId] || "Անհայտ օր";
+}
+
+function getWeekType(weekId) {
+    const weeks = {
+        1: "Համարիչ",
+        2: "Հայտարար"
+    };
+    return weeks[weekId] || "Անհայտ շաբաթ";
+}
+
+function getTimeSlot(timeSlotId) {
+    const timeSlots = {
+        1: "09:30-10:50",
+        2: "11:00-12:20",
+        3: "12:50-14:10",
+        4: "14:20-15:40"
+    };
+    return timeSlots[timeSlotId] || "Անհայտ ժամ";
+}
+
+
+// 📌 **Աղյուսակը թարմացնելու ֆունկցիան**
 function updateScheduleTable(schedule) {
-    console.log("📌 Աղյուսակի մեջ ավելացվող տվյալները:", schedule);
+    console.log("📌 Updating table with new data:", schedule);
 
     const tableBody = document.getElementById('scheduleBody');
     tableBody.innerHTML = ''; // Մաքրում ենք աղյուսակը
@@ -86,7 +162,7 @@ function updateScheduleTable(schedule) {
     // Ֆիքսված ժամերը
     const timeSlots = ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"];
 
-    // Օրերի հարմարեցված ցուցակը ըստ սյունակների
+    // Օրերի ցուցակը ըստ սյունակների
     const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
 
     // Ստեղծում ենք նոր աղյուսակ
@@ -115,13 +191,9 @@ function updateScheduleTable(schedule) {
                 cell.dataset.teacher = classData.teacher_name;
                 cell.dataset.room = classData.room_number;
                 cell.dataset.group = classData.group_name;
-               
-                let details = {};
-                try {
-                    details = JSON.parse(classData.details); // Փորձում ենք JSON-ի string-ը վերածել object-ի
-                } catch (e) {
-                    console.error("❌ JSON Parse Error:", e);
-                }
+                
+                // ❌ **Հեռացնում ենք կրկնակի JSON.parse()**
+                let details = classData.details || {};
 
                 // Եթե json-ում `zoom_link` կամ `notes` չկա, ապա թող լինի լռելյայն արժեք
                 cell.dataset.link = details.zoom_link || "#";
@@ -136,7 +208,6 @@ function updateScheduleTable(schedule) {
 
     console.log("✅ Աղյուսակը թարմացվեց։");
 }
-
 
 
 
