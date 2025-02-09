@@ -1,4 +1,3 @@
-DROP TABLE dbo.Schedule_Old;
 DROP TABLE dbo.Schedule;
 DROP TABLE dbo.Groups;
 DROP TABLE dbo.Rooms;

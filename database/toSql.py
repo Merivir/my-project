@@ -11,7 +11,7 @@ conn = pyodbc.connect(f"DRIVER={{SQL Server}};SERVER={server};DATABASE={database
 cursor = conn.cursor()
 
 # JSON ֆայլի բացում
-json_file = r"C:\Users\Meri\my-project\class_schedule.json"
+json_file = "class_schedule.json"
 
 with open(json_file, "r", encoding="utf-8") as file:
     data = json.load(file)
