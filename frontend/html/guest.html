@@ -1,137 +1,71 @@
 <!DOCTYPE html>
 <html lang="hy">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ուսանողի Դասացուցակ</title>
-    <link rel="stylesheet" href="/css/guest.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ուսանողի Դասացուցակ</title>
+  <link rel="stylesheet" href="/css/guest.css">
+  <style>
+    /* Սկզբնական still, կարելի է հարմարեցնել */
+    .schedule-table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .schedule-table th, .schedule-table td {
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: center;
+      vertical-align: top;
+    }
+    .entry {
+      border: 1px solid #eee;
+      margin: 2px 0;
+      padding: 2px;
+      background: #f9f9f9;
+    }
+    .entry-logo {
+      font-size: 1.2em;
+      margin-right: 4px;
+    }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Ուսանողի Դասացուցակ</h1>
-    </header>
+  <header>
+    <h1>Ուսանողի Դասացուցակ</h1>
+  </header>
 
-    <div class="course-buttons">
-        <button class="course-btn" data-course="1">1-ին կուրս</button>
-        <button class="course-btn" data-course="2">2-րդ կուրս</button>
-        <button class="course-btn" data-course="3">3-րդ կուրս</button>
-        <button class="course-btn" data-course="4">4-րդ կուրս</button>
+  <!-- Կուրսի ընտրության կոճակներ -->
+  <div class="course-buttons">
+    <button class="course-btn" data-course="1">1-ին կուրս</button>
+    <button class="course-btn" data-course="2">2-րդ կուրս</button>
+    <button class="course-btn" data-course="3">3-րդ կուրս</button>
+    <button class="course-btn" data-course="4">4-րդ կուրս</button>
+  </div>
+
+  <!-- Շաբաթի տեսակի ընտրության կոճակներ -->
+  <div class="week-type-buttons">
+    <button id="numeratorBtn">🔢 Համարիչ</button>
+    <button id="denominatorBtn">📢 Հայտարար</button>
+    <button id="allWeeksBtn">Բոլորը</button>
+  </div>
+
+  <!-- Դասացուցակի տրվածքների պատուհան -->
+  <div id="scheduleContainer"></div>
+
+  <!-- Պոպափ պատուհան դասի մանրամասների ցուցադրման համար -->
+  <div id="classPopup" class="modal hidden">
+    <div class="modal-content">
+      <span class="close-popup">&times;</span>
+      <h3 id="popupSubject">Առարկա</h3>
+      <p><strong>Դասախոս:</strong> <span id="popupTeacher"></span></p>
+      <p><strong>Լսարան:</strong> <span id="popupRoom"></span></p>
+      <p><strong>Տիպ:</strong> <span id="popupType"></span></p>
+      <p><strong>Հղում:</strong> <a id="popupLink" href="#" target="_blank">Zoom</a></p>
     </div>
-    
-    <!-- Ֆիլտրերի համար "Համարիչ" և "Հայտարար" կոճակները -->
-    <div class="filter-buttons">
-        <button id="numeratorBtn">🔢 Համարիչ</button>
-        <button id="denominatorBtn">📢 Հայտարար</button>
-    </div>
-    
-    <main class="dashboard-container">
-        <div class="filter-container">
-            <button id="filterBtn">🔍 Ֆիլտրել</button>
-        </div>
-       
-        <!-- Ֆիլտրի popup պատուհան -->
-        <div id="filterModal" class="modal">
-            <div class="modal-content">
-                <span class="close-popup" id="closeFilterBtn">&times;</span>
-                <h3>📌 Ֆիլտրացիա</h3>
-                <label>Օր:
-                    <select id="dayFilter"></select>
-                </label>
-                <label>Շաբաթ:
-                    <select id="weekFilter"></select>
-                </label>
-                <label>Ժամ:
-                    <select id="timeSlotFilter"></select>
-                </label>
-                <label>Լսարան:
-                    <select id="roomFilter"></select>
-                </label>
-                <label>Առարկա:
-                    <select id="subjectFilter"></select>
-                </label>
-                <label>Դասախոս:
-                    <select id="teacherFilter"></select>
-                </label>
-                <label>Խումբ:
-                    <select id="groupFilter"></select>
-                </label>
-                <label>Տիպ:
-                    <select id="typeFilter"></select>
-                </label>
-                <div class="modal-buttons">
-                    <button id="applyFilterBtn">✅ Կիրառել</button>
-                    <button id="resetFilterBtn">🔄 Մաքրել</button>
-                    <button id="closeFilterBtn">❌ Փակել</button>
-                </div>
-            </div>
-        </div>
+  </div>
 
-
-
-        <!-- Աղյուսակ՝ օրերը վերևում, ժամերը ձախ -->
-        <table id="scheduleTable">
-            <thead>
-                <tr>
-                    <th>Ժամ</th>
-                    <th>Երկուշաբթի</th>
-                    <th>Երեքշաբթի</th>
-                    <th>Չորեքշաբթի</th>
-                    <th>Հինգշաբթի</th>
-                    <th>Ուրբաթ</th>
-                </tr>
-            </thead>
-            <tbody id="scheduleBody">
-                <tr>
-                    <td>09:30-10:50</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>11:00-12:20</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>12:50-14:10</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>14:20-15:40</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-        
-    </main>
-
-        <!-- Popup window -->
-        <div id="classPopup" class="modal hidden">
-            <div class="modal-content">
-                <span class="close-popup">&times;</span>
-                <h3 id="popupSubject">Առարկա</h3>
-                <p><strong>Դասախոս:</strong> <span id="popupTeacher"></span></p>
-                <p><strong>Լսարան:</strong> <span id="popupRoom"></span></p>
-                <p><strong>Խումբ:</strong> <span id="popupGroup"></span></p>
-                <p><strong>Հղում:</strong> <a id="popupLink" href="#" target="_blank">Zoom</a></p>
-            </div>
-        </div>
-        
-
-
-    <script src="/js/script.js"></script>
+  <script src="/js/script.js"></script>
 </body>
 </html>
