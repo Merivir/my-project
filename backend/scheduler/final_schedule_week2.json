@@ -1,0 +1,5264 @@
+{
+    "1-1": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Հայրապետյան Լ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Հայրապետյան Լ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Կարապետյան Ա.",
+                "Մխիթարյան Թ.",
+                "Սուքիասյան Լ.",
+                "Խաչատրյան Յ.",
+                "Աբելյան Ռ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338",
+                "2127ա",
+                "2127բ",
+                "2261"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Կարապետյան Ա.",
+                "Մխիթարյան Թ.",
+                "Սուքիասյան Լ.",
+                "Խաչատրյան Յ.",
+                "Աբելյան Ռ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338",
+                "2127ա",
+                "2127բ",
+                "2261"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Կարապետյան Ա.",
+                "Մխիթարյան Թ.",
+                "Սուքիասյան Լ.",
+                "Խաչատրյան Յ.",
+                "Աբելյան Ռ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338",
+                "2127ա",
+                "2127բ",
+                "2261"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Կարապետյան Ա.",
+                "Մխիթարյան Թ.",
+                "Սուքիասյան Լ.",
+                "Խաչատրյան Յ.",
+                "Աբելյան Ռ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338",
+                "2127ա",
+                "2127բ",
+                "2261"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Կարապետյան Ա.",
+                "Մխիթարյան Թ.",
+                "Սուքիասյան Լ.",
+                "Խաչատրյան Յ.",
+                "Աբելյան Ռ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338",
+                "2127ա",
+                "2127բ",
+                "2261"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Կարապետյան Ա.",
+                "Մխիթարյան Թ.",
+                "Սուքիասյան Լ.",
+                "Խաչատրյան Յ.",
+                "Աբելյան Ռ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338",
+                "2127ա",
+                "2127բ",
+                "2261"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Հայրապետյան Լ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Հայրապետյան Լ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Հայրապետյան Լ."
+            ],
+            "rooms": [
+                "9909բ"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Հայրապետյան Լ."
+            ],
+            "rooms": [
+                "9909բ"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Մելիք-Սարգսյան Ս."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Մելիք-Սարգսյան Ս."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Գրիգորյան Ց.",
+                "Հովհաննիսյան Ա.",
+                "Քէրուղլեան Կ.",
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2438",
+                "2434",
+                "2436",
+                "2440"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Գրիգորյան Ց.",
+                "Հովհաննիսյան Ա.",
+                "Քէրուղլեան Կ.",
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2438",
+                "2434",
+                "2436",
+                "2440"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Գրիգորյան Ց.",
+                "Հովհաննիսյան Ա.",
+                "Քէրուղլեան Կ.",
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2438",
+                "2434",
+                "2436",
+                "2440"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Գրիգորյան Ց.",
+                "Հովհաննիսյան Ա.",
+                "Քէրուղլեան Կ.",
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2438",
+                "2434",
+                "2436",
+                "2440"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Գրիգորյան Ց.",
+                "Հովհաննիսյան Ա.",
+                "Քէրուղլեան Կ.",
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2438",
+                "2434",
+                "2436",
+                "2440"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Գրիգորյան Ց.",
+                "Հովհաննիսյան Ա.",
+                "Քէրուղլեան Կ.",
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2438",
+                "2434",
+                "2436",
+                "2440"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Կարագուլյան Հ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Կարագուլյան Հ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12105"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12105"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Կարագուլյան Հ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Կարագուլյան Հ."
+            ],
+            "rooms": [
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Ավանյան Մ."
+            ],
+            "rooms": [
+                "12102"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Շմավոնյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Շմավոնյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Չիբուխչյան Ս."
+            ],
+            "rooms": [
+                "9502"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Չիբուխչյան Ս."
+            ],
+            "rooms": [
+                "9502"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ456",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Սարգսյան Մ.",
+                "Խաչատրյան Ց."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Սարգսյան Մ.",
+                "Խաչատրյան Ց."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Սարգսյան Մ.",
+                "Խաչատրյան Ց."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Սարգսյան Մ.",
+                "Խաչատրյան Ց."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Սարգսյան Մ.",
+                "Խաչատրյան Ց."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տուֆեկչյան Մ.",
+                "Սարգսյան Մ.",
+                "Խաչատրյան Ց."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա",
+                "2338"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ426",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2353"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2353"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2353"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2353"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2353"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Մ."
+            ],
+            "rooms": [
+                "2353"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ462",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353",
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ410",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Շմավոնյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Շմավոնյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թորոսյան Մ."
+            ],
+            "rooms": [
+                "9101"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թորոսյան Մ."
+            ],
+            "rooms": [
+                "9101"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Քիմիա",
+            "type": [
+                "Լաբ"
+            ],
+            "teachers": [
+                "Ավետյան Ռ."
+            ],
+            "rooms": [
+                "1313"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ432",
+            "subject": "Քիմիա",
+            "type": [
+                "Լաբ"
+            ],
+            "teachers": [
+                "Ավետյան Ռ."
+            ],
+            "rooms": [
+                "1313"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "9104"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Նիկողոսյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Նիկողոսյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թորոսյան Մ."
+            ],
+            "rooms": [
+                "9101"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թորոսյան Մ."
+            ],
+            "rooms": [
+                "9101"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ404",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Հունանյան Ա."
+            ],
+            "rooms": [
+                "5402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Սուքիասյան Գ."
+            ],
+            "rooms": [
+                "9907բ"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Սուքիասյան Գ."
+            ],
+            "rooms": [
+                "9907բ"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Աղայան Գ."
+            ],
+            "rooms": [
+                "9907ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Աղայան Գ."
+            ],
+            "rooms": [
+                "9907ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թարմինյան Ն."
+            ],
+            "rooms": [
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թարմինյան Ն."
+            ],
+            "rooms": [
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գունատեսություն",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Թարմինյան Մ."
+            ],
+            "rooms": [
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գունատեսություն",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Թարմինյան Մ."
+            ],
+            "rooms": [
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գունատեսություն",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Թարմինյան Մ."
+            ],
+            "rooms": [
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Գունատեսություն",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Թարմինյան Մ."
+            ],
+            "rooms": [
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Դիզայնի տեսություն և մեթոդներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Դեմիրխանյան Գ."
+            ],
+            "rooms": [
+                "9409"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Դիզայնի տեսություն և մեթոդներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Դեմիրխանյան Գ."
+            ],
+            "rooms": [
+                "9409"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ."
+            ],
+            "rooms": [
+                "9911"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ."
+            ],
+            "rooms": [
+                "9911"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Նիկողոսյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Նիկողոսյան Գ."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թարմինյան Ն."
+            ],
+            "rooms": [
+                "9412"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թարմինյան Ն."
+            ],
+            "rooms": [
+                "9412"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Հեռանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թոքմաջյան Լ."
+            ],
+            "rooms": [
+                "9410"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ459",
+            "subject": "Հեռանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թոքմաջյան Լ."
+            ],
+            "rooms": [
+                "9410"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Լ.",
+                "Աղայան Գ.",
+                "Հայրապետյան Մ.",
+                "Սուքիասյան Գ."
+            ],
+            "rooms": [
+                "9906",
+                "9907ա",
+                "9907բ",
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սարգսյան Լ.",
+                "Աղայան Գ.",
+                "Հայրապետյան Մ.",
+                "Սուքիասյան Գ."
+            ],
+            "rooms": [
+                "9906",
+                "9907ա",
+                "9907բ",
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ4",
+                "Գործ5"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ4",
+                "Գործ5"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ4",
+                "Գործ5"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ4",
+                "Գործ5"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Թոքմաջյան Հ.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Սոլոմոնյան Ա.",
+                "Թոքմաջյան Հ.",
+                "Գյուլմիսարյան Ե."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Դիզայնի տեսություն և մեթոդներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ժ.",
+                "Դեմիրխանյան Գ.",
+                "Մելիքսեթյան Մ."
+            ],
+            "rooms": [
+                "9405",
+                "9409",
+                "9411"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Դիզայնի տեսություն և մեթոդներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ժ.",
+                "Դեմիրխանյան Գ.",
+                "Մելիքսեթյան Մ."
+            ],
+            "rooms": [
+                "9405",
+                "9409",
+                "9411"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ժ.",
+                "Թարմինյան Ն.",
+                "Բաղդիյան Է."
+            ],
+            "rooms": [
+                "9410",
+                "9412"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ժ.",
+                "Թարմինյան Ն.",
+                "Բաղդիյան Է."
+            ],
+            "rooms": [
+                "9410",
+                "9412"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ժ.",
+                "Թարմինյան Ն.",
+                "Բաղդիյան Է."
+            ],
+            "rooms": [
+                "9410",
+                "9412"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ժ.",
+                "Թարմինյան Ն.",
+                "Բաղդիյան Է."
+            ],
+            "rooms": [
+                "9410",
+                "9412"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3",
+                "Գործ4"
+            ],
+            "teachers": [
+                "Բադադյան Մ.",
+                "Բարսեղյան Զ.",
+                "Մնացականյան Լ.",
+                "Ղաջոյան Հ."
+            ],
+            "rooms": [
+                "9905ա",
+                "9906",
+                "9907ա",
+                "9907բ"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3",
+                "Գործ4"
+            ],
+            "teachers": [
+                "Բադադյան Մ.",
+                "Բարսեղյան Զ.",
+                "Մնացականյան Լ.",
+                "Ղաջոյան Հ."
+            ],
+            "rooms": [
+                "9905ա",
+                "9906",
+                "9907ա",
+                "9907բ"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Հեռանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թոքմաջյան Լ.",
+                "Բաղդասարյան Ժ.",
+                "Մելիքսեթյան Մ."
+            ],
+            "rooms": [
+                "9410",
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Հեռանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Թոքմաջյան Լ.",
+                "Բաղդասարյան Ժ.",
+                "Մելիքսեթյան Մ."
+            ],
+            "rooms": [
+                "9410",
+                "9402"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գունատեսություն",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Թարմինյան Ն.",
+                "Թարմինյան Մ.",
+                "Օհանյան Ա."
+            ],
+            "rooms": [
+                "9402",
+                "9406"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ446",
+            "subject": "Գունատեսություն",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Թարմինյան Ն.",
+                "Թարմինյան Մ.",
+                "Օհանյան Ա."
+            ],
+            "rooms": [
+                "9402",
+                "9406"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Խաչատրյան Լ.",
+                "Արսենյան Լ.",
+                "Եղիազարյան Հ."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Խաչատրյան Լ.",
+                "Արսենյան Լ.",
+                "Եղիազարյան Հ."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Խաչատրյան Լ.",
+                "Արսենյան Լ.",
+                "Եղիազարյան Հ."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Գծանկար",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Խաչատրյան Լ.",
+                "Արսենյան Լ.",
+                "Եղիազարյան Հ."
+            ],
+            "rooms": [
+                "3305"
+            ],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Թարմինյան Մ.",
+                "Օհանյան Ա."
+            ],
+            "rooms": [
+                "9402",
+                "9412"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Թարմինյան Մ.",
+                "Օհանյան Ա."
+            ],
+            "rooms": [
+                "9402",
+                "9412"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Ֆիզիկան դիզայնում",
+            "type": [
+                "Գործ1",
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պետրոսյան Ք.",
+                "Ասրյան Տ."
+            ],
+            "rooms": [
+                "9602"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Ֆիզիկան դիզայնում",
+            "type": [
+                "Գործ1",
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պետրոսյան Ք.",
+                "Ասրյան Տ."
+            ],
+            "rooms": [
+                "9602"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Տեխնիկական գծագրություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տեր-Մարգարյան Ա.",
+                "Կանեցյան Հ."
+            ],
+            "rooms": [
+                "9602"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Տեխնիկական գծագրություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Տեր-Մարգարյան Ա.",
+                "Կանեցյան Հ."
+            ],
+            "rooms": [
+                "9602"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Թարմինյան Մ.",
+                "Օհանյան Ա."
+            ],
+            "rooms": [
+                "9412"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Կոմպյուտերային հիմունքներ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Թարմինյան Մ.",
+                "Օհանյան Ա."
+            ],
+            "rooms": [
+                "9412"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Ասատրյան Ս.",
+                "Հայրապետյան Մ.",
+                "Սուքիասյան Գ."
+            ],
+            "rooms": [
+                "9907ա",
+                "9907բ",
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Ասատրյան Ս.",
+                "Հայրապետյան Մ.",
+                "Սուքիասյան Գ."
+            ],
+            "rooms": [
+                "9907ա",
+                "9907բ",
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Գծագրական երկրաչափություն",
+            "type": [
+                "Գործ1",
+                "Գործ2"
+            ],
+            "teachers": [
+                "Թումանյան Կ.",
+                "Տեր-Մարգարյան Ա."
+            ],
+            "rooms": [],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Գծագրական երկրաչափություն",
+            "type": [
+                "Գործ1",
+                "Գործ2"
+            ],
+            "teachers": [
+                "Թումանյան Կ.",
+                "Տեր-Մարգարյան Ա."
+            ],
+            "rooms": [],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Ղազարյան Հ.",
+                "Բաղդասարյան Ս.",
+                "Մնացականյան Լ."
+            ],
+            "rooms": [
+                "9905ա",
+                "9908",
+                "9911"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "Մ445",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Ղազարյան Հ.",
+                "Բաղդասարյան Ս.",
+                "Մնացականյան Լ."
+            ],
+            "rooms": [
+                "9905ա",
+                "9908",
+                "9911"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ447",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ս.",
+                "Գասպարյան Ն.",
+                "Կիրակոսյան Ն."
+            ],
+            "rooms": [
+                "9911",
+                "9908",
+                "9904"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ447",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Բաղդասարյան Ս.",
+                "Գասպարյան Ն.",
+                "Կիրակոսյան Ն."
+            ],
+            "rooms": [
+                "9911",
+                "9908",
+                "9904"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ447",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Մադոյան Ս."
+            ],
+            "rooms": [
+                "9110"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ447",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Մադոյան Ս."
+            ],
+            "rooms": [
+                "9110"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ447",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Մադոյան Ս."
+            ],
+            "rooms": [
+                "9310"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ447",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Մադոյան Ս."
+            ],
+            "rooms": [
+                "9310"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-1",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-1",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-1",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-1",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-1",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9210"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-1",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9210"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3",
+                "Գործ4"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ.",
+                "Նիկողոսյան Գ.",
+                "Բարսեղյան Զ.",
+                "Վարդանյան Ա."
+            ],
+            "rooms": [
+                "9905ա",
+                "9908",
+                "9909բ",
+                "9911"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3",
+                "Գործ4"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ.",
+                "Նիկողոսյան Գ.",
+                "Բարսեղյան Զ.",
+                "Վարդանյան Ա."
+            ],
+            "rooms": [
+                "9905ա",
+                "9908",
+                "9909բ",
+                "9911"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ407-2",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ3"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ470",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ.",
+                "Բադադյան Մ.",
+                "Սիմոնյան Ա."
+            ],
+            "rooms": [
+                "9908",
+                "9909բ",
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ470",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ1",
+                "Գործ2",
+                "Գործ3"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ.",
+                "Բադադյան Մ.",
+                "Սիմոնյան Ա."
+            ],
+            "rooms": [
+                "9908",
+                "9909բ",
+                "9910"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ470",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9210"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ470",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ1"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9210"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ470",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԻՏ470",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ2"
+            ],
+            "teachers": [
+                "Պապյան Ս."
+            ],
+            "rooms": [
+                "9205"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Երանոսյան Ա."
+            ],
+            "rooms": [
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Երանոսյան Ա."
+            ],
+            "rooms": [
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ."
+            ],
+            "rooms": [
+                "9908"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ."
+            ],
+            "rooms": [
+                "9908"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սրապիոնյան Ջ."
+            ],
+            "rooms": [
+                "2344"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սրապիոնյան Ջ."
+            ],
+            "rooms": [
+                "2344"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ405",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ411",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ղաջոյան Հ."
+            ],
+            "rooms": [
+                "9913"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ411",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ղաջոյան Հ."
+            ],
+            "rooms": [
+                "9913"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ411",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ411",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ411",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Մարտիրոսյան Ս."
+            ],
+            "rooms": [
+                "9907ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ411",
+            "subject": "Ռուսաց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Մարտիրոսյան Ս."
+            ],
+            "rooms": [
+                "9907ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Երանոսյան Ա."
+            ],
+            "rooms": [
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Օտար լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Երանոսյան Ա."
+            ],
+            "rooms": [
+                "9909ա"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ."
+            ],
+            "rooms": [
+                "9908"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Պետրոսյան Հ."
+            ],
+            "rooms": [
+                "9908"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սրապիոնյան Ջ."
+            ],
+            "rooms": [
+                "2344"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սրապիոնյան Ջ."
+            ],
+            "rooms": [
+                "2344"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ավոյան Ռ."
+            ],
+            "rooms": [
+                "2259"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Մասնագիտական Ներածություն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ավոյան Ռ."
+            ],
+            "rooms": [
+                "2259"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ406",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Խորացված անգլերեն",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Ադամյան Մ."
+            ],
+            "rooms": [
+                "2353ա"
+            ],
+            "weekly_frequency": 3,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2344"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Բալաքյան Հ."
+            ],
+            "rooms": [
+                "2344"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սրապիոնյան Ջ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "ԱԵ և ԳՀ",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Սրապիոնյան Ջ."
+            ],
+            "rooms": [
+                "2346"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Եղիազարյան Ս."
+            ],
+            "rooms": [
+                "9904"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ԷԷ434",
+            "subject": "Հայոց լեզու",
+            "type": [
+                "Գործ"
+            ],
+            "teachers": [
+                "Եղիազարյան Ս."
+            ],
+            "rooms": [
+                "9904"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                1
+            ]
+        }
+    ],
+    "1-2": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ա և ԳՀ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Խոսրովյան Հ."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                2
+            ]
+        }
+    ],
+    "1-3": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ա և ԳՀ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Խոսրովյան Հ."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                1,
+                3
+            ]
+        }
+    ],
+    "1-4": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": "",
+            "rooms": "",
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                1,
+                4
+            ]
+        }
+    ],
+    "2-1": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": "",
+            "rooms": "",
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                2,
+                1
+            ]
+        }
+    ],
+    "2-2": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": "",
+            "rooms": "",
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                2,
+                2
+            ]
+        }
+    ],
+    "2-3": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": "",
+            "rooms": "",
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                2,
+                3
+            ]
+        }
+    ],
+    "2-4": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Խուդոյան Տ."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                2,
+                4
+            ]
+        }
+    ],
+    "3-1": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Մաթեմատիկական Անալիզ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Խուդոյան Տ."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                3,
+                1
+            ]
+        }
+    ],
+    "3-2": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ֆիզիկա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Խաչատրյան Ա."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                3,
+                2
+            ]
+        }
+    ],
+    "3-3": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "Ֆիզիկա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Խաչատրյան Ա."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                3,
+                3
+            ]
+        }
+    ],
+    "3-4": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Սահակյան Ն."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                3,
+                4
+            ]
+        }
+    ],
+    "4-1": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Սահակյան Ն."
+            ],
+            "rooms": [
+                "12208"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                4,
+                1
+            ]
+        }
+    ],
+    "4-2": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Լաբ1"
+            ],
+            "teachers": [
+                "Մելիքյան Ս."
+            ],
+            "rooms": [
+                "5117"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                4,
+                2
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Լաբ1"
+            ],
+            "teachers": [
+                "Մելիքյան Ս."
+            ],
+            "rooms": [
+                "5117"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                4,
+                2
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Լաբ2"
+            ],
+            "teachers": [
+                "Սաղաթելյան Ի."
+            ],
+            "rooms": [
+                "5119"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                4,
+                2
+            ]
+        },
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ440",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Լաբ2"
+            ],
+            "teachers": [
+                "Սաղաթելյան Ի."
+            ],
+            "rooms": [
+                "5119"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                4,
+                2
+            ]
+        }
+    ],
+    "4-3": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [],
+            "rooms": [],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                4,
+                3
+            ]
+        }
+    ],
+    "4-4": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [],
+            "rooms": [],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                4,
+                4
+            ]
+        }
+    ],
+    "5-1": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [],
+            "rooms": [],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                5,
+                1
+            ]
+        }
+    ],
+    "5-2": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "Ֆիզկուլտուրա",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [],
+            "rooms": [],
+            "weekly_frequency": 2,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                5,
+                2
+            ]
+        }
+    ],
+    "5-3": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Սահակյան Ն."
+            ],
+            "rooms": [
+                "2241"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 1,
+            "assigned_slot": [
+                5,
+                3
+            ]
+        }
+    ],
+    "5-4": [
+        {
+            "level": "Առաջին",
+            "course": "ՄԹ448",
+            "subject": "ԱԼ և Ծ",
+            "type": [
+                "Դաս"
+            ],
+            "teachers": [
+                "Սահակյան Ն."
+            ],
+            "rooms": [
+                "2241"
+            ],
+            "weekly_frequency": 1,
+            "biweekly_frequency": 2,
+            "week_type": 2,
+            "assigned_slot": [
+                5,
+                4
+            ]
+        }
+    ]
+}

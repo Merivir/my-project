@@ -6,13 +6,14 @@
   <title>Ուսանողի Դասացուցակ</title>
   <link rel="stylesheet" href="/css/guest.css">
   <style>
-    /* Սկզբնական still, կարելի է հարմարեցնել */
-    .schedule-table {
+    /* Հարմարեցնել աղյուսակի still-ը՝ անհրաժեշտության դեպքում */
+    table.schedule-table {
       border-collapse: collapse;
       width: 100%;
       margin-bottom: 20px;
     }
-    .schedule-table th, .schedule-table td {
+    table.schedule-table th,
+    table.schedule-table td {
       border: 1px solid #ccc;
       padding: 5px;
       text-align: center;
@@ -28,7 +29,6 @@
       font-size: 1.2em;
       margin-right: 4px;
     }
-    .hidden { display: none; }
   </style>
 </head>
 <body>
@@ -44,17 +44,15 @@
     <button class="course-btn" data-course="4">4-րդ կուրս</button>
   </div>
 
-  <!-- Շաբաթի տեսակի ընտրության կոճակներ -->
-  <div class="week-type-buttons">
-    <button id="numeratorBtn">🔢 Համարիչ</button>
-    <button id="denominatorBtn">📢 Հայտարար</button>
-    <button id="allWeeksBtn">Բոլորը</button>
+  <!-- Դասացուցակի դինամիկ կառուցման համար բաժին -->
+  <div id="scheduleContainer">
+    <h2>Համարիչ</h2>
+    <div id="scheduleNumerator"></div>
+    <h2>Հայտարար</h2>
+    <div id="scheduleDenominator"></div>
   </div>
 
-  <!-- Դասացուցակի տրվածքների պատուհան -->
-  <div id="scheduleContainer"></div>
-
-  <!-- Պոպափ պատուհան դասի մանրամասների ցուցադրման համար -->
+  <!-- Պոպափ պատուհան -->
   <div id="classPopup" class="modal hidden">
     <div class="modal-content">
       <span class="close-popup">&times;</span>

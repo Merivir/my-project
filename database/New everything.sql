@@ -104,9 +104,9 @@ SELECT name FROM sys.tables;
 
 SELECT * FROM Types;
 
-
 SELECT 
     s.id,
+    c.code AS course_code,  -- Ավելացնում ենք կուրսի կոդը
     d.name AS day_name,
     w.type AS week_type,
     ts.slot AS time_slot,
@@ -121,5 +121,9 @@ JOIN Weeks w ON s.week_id = w.id
 JOIN TimeSlots ts ON s.time_slot_id = ts.id
 JOIN Rooms r ON s.room_id = r.id
 JOIN Subjects sub ON s.subject_id = sub.id
+JOIN Courses c ON sub.course_id = c.id   -- Հետևենք Courses աղյուսակի միջոցով, քանի որ Subjects–ում course_id-ն պահվում է
 JOIN Teachers t ON s.teacher_id = t.id
-JOIN Types ty ON s.type_id = ty.id;
+JOIN Types ty ON s.type_id = ty.id
+ORDER BY 
+    d.id, ts.id;
+
