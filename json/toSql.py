@@ -1,75 +1,75 @@
 import json
 import pyodbc
 
-# MSSQL կապի տվյալները (փոխիր ըստ քո բազայի)
+# 🔹 MSSQL կապի տվյալները
 server = "localhost"
 database = "schedule"
 username = "admin"
 password = "mypassword"
 
-conn = pyodbc.connect(f"DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}")
+conn = pyodbc.connect(
+    f"DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
+)
 cursor = conn.cursor()
 
-# JSON ֆայլի բացում
+# 🔹 JSON ֆայլի բացում
 json_file = "class_schedule.json"
-
 with open(json_file, "r", encoding="utf-8") as file:
     data = json.load(file)
 
+# 🔹 Mapping–ներ օրերի, շաբաթների, ժամային սլոտների համար
+dayMap = {1: "Երկուշաբթի", 2: "Երեքշաբթի", 3: "Չորեքշաբթի", 4: "Հինգշաբթի", 5: "Ուրբաթ"}
+weekMap = {1: "համարիչ", 2: "հայտարար"}
+slotMap = {1: "09:30-10:50", 2: "11:00-12:20", 3: "12:50-14:10", 4: "14:20-15:40"}
+
+# 🔹 Տվյալների ներմուծում
 for entry in data:
-    level_name = entry["level"]
-    course_code = entry["course"]
-    subject_name = entry["subject"]
-    subject_type = entry["type"]
-    teachers = entry["teachers"]
-    rooms = entry["rooms"]
+    try:
+        level_name = entry["level"]
+        course_code = entry["course"]
+        subject_name = entry["subject"]
+        subject_type = entry["type"][0]
+        teachers = entry["teachers"]
+        rooms = entry["rooms"]
+        week_type_value = entry["week_type"]
+        day_of_week_value = entry["day_of_week"]
+        time_of_day_value = entry["time_of_day"]
 
-    # Levels աղյուսակ
-    cursor.execute("IF NOT EXISTS (SELECT 1 FROM Levels WHERE name = ?) INSERT INTO Levels (name) VALUES (?)", (level_name, level_name))
+        # 🔸 Courses աղյուսակ (Ստուգում + Ավելացում)
+        print(f"🔍 Checking course: {course_code}")  
+        cursor.execute("SELECT id FROM Courses WHERE code = ?", (course_code,))
+        course_row = cursor.fetchone()
 
-    # Courses աղյուսակ
-    cursor.execute("IF NOT EXISTS (SELECT 1 FROM Courses WHERE code = ?) INSERT INTO Courses (code) VALUES (?)", (course_code, course_code))
+        if not course_row:
+            print(f"⚠️ Course '{course_code}' not found. Inserting...")
+            cursor.execute("INSERT INTO Courses (code) VALUES (?)", (course_code,))
+            conn.commit()
 
-    # Levels և Courses ID-ների ստացում
-    cursor.execute("SELECT id FROM Levels WHERE name = ?", level_name)
-    level_id = cursor.fetchone()[0]
+            cursor.execute("SELECT id FROM Courses WHERE code = ?", (course_code,))
+            course_row = cursor.fetchone()
 
-    cursor.execute("SELECT id FROM Courses WHERE code = ?", course_code)
-    course_id = cursor.fetchone()[0]
+        if not course_row:
+            print(f"❌ ERROR: Course '{course_code}' could not be inserted!")
+            continue
 
-    # Subjects աղյուսակ
-    cursor.execute("""
-        IF NOT EXISTS (SELECT 1 FROM Subjects WHERE name = ? AND course_id = ?)
-        INSERT INTO Subjects (name, type, level_id, course_id) VALUES (?, ?, ?, ?)
-    """, (subject_name, course_id, subject_name, subject_type, level_id, course_id))
+        course_id = course_row[0]
+        print(f"✅ Found Course ID: {course_id}")
 
-    # Subject ID-ի ստացում
-    cursor.execute("SELECT id FROM Subjects WHERE name = ? AND course_id = ?", subject_name, course_id)
-    subject_id = cursor.fetchone()[0]
+        # 🔸 Schedule-ի տվյալների ավելացում
+        cursor.execute("""
+            INSERT INTO Schedule 
+            (course_id, day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id, details)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (course_id, day_of_week_value, week_type_value, time_of_day_value, None, None, None, None, None))
+        conn.commit()
 
-    # Teachers աղյուսակ
-    for teacher in teachers:
-        cursor.execute("IF NOT EXISTS (SELECT 1 FROM Teachers WHERE name = ?) INSERT INTO Teachers (name) VALUES (?)", (teacher, teacher))
-        cursor.execute("SELECT id FROM Teachers WHERE name = ?", teacher)
-        teacher_id = cursor.fetchone()[0]
+        print(f"✅ INSERT Schedule for course '{course_code}' with course_id '{course_id}'.\n")
 
-        # Subject_Teachers աղյուսակ
-        cursor.execute("IF NOT EXISTS (SELECT 1 FROM Subject_Teachers WHERE subject_id = ? AND teacher_id = ?) INSERT INTO Subject_Teachers (subject_id, teacher_id) VALUES (?, ?)", 
-                       (subject_id, teacher_id, subject_id, teacher_id))
+    except Exception as e:
+        print(f"❌ Error processing entry: {entry}")
+        print(f"❗ Exception: {e}")
 
-    # Rooms աղյուսակ
-    for room in rooms:
-        cursor.execute("IF NOT EXISTS (SELECT 1 FROM Rooms WHERE number = ?) INSERT INTO Rooms (number) VALUES (?)", (room, room))
-        cursor.execute("SELECT id FROM Rooms WHERE number = ?", room)
-        room_id = cursor.fetchone()[0]
-
-        # Subject_Rooms աղյուսակ
-        cursor.execute("IF NOT EXISTS (SELECT 1 FROM Subject_Rooms WHERE subject_id = ? AND room_id = ?) INSERT INTO Subject_Rooms (subject_id, room_id) VALUES (?, ?)", 
-                       (subject_id, room_id, subject_id, room_id))
-
-# Փոփոխությունները պահպանում ենք
-conn.commit()
 cursor.close()
 conn.close()
 
-print("✅ Տվյալները հաջողությամբ ներմուծվեցին MSSQL-ի մեջ!")
+print("🎉 Տվյալները հաջողությամբ ներմուծվեցին MSSQL-ի մեջ!")

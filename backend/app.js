@@ -33,6 +33,7 @@ app.use(async (req, res, next) => {
     }
 });
 
+
 // Обработчики HTML-страниц
 app.get('/guest', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/guest.html'));
@@ -52,8 +53,9 @@ app.get('/admin-dashboard', (req, res) => {
 
 // Подключение маршрутов
 app.use('/guest', require('./routes/guestRoutes'));
-app.use('/admin', require('./routes/adminRoutes'));
-app.use('/schedule', require('./routes/scheduleRoutes'));
+app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/schedule', require('./routes/scheduleRoutes'));
+
 
 // Маршрут для корневого пути "/"
 app.get('/', (req, res) => {

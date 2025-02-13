@@ -1,154 +1,96 @@
 import json
 import pyodbc
 
-# MSSQL-ի համար կապված պարամետրերը
+# ✅ MSSQL կապի տվյալները
 server = "localhost"
 database = "schedule"
 username = "admin"
 password = "mypassword"
 
-# Միանում ենք MSSQL-ի տվյալների բազային
 conn = pyodbc.connect(
     f"DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
 )
 cursor = conn.cursor()
 
-# Օգնական ֆունկցիա՝ ստանալու կամ ավելացնելու համար
+# ✅ JSON ֆայլի բացում
+json_file = "final_schedule.json"
+with open(json_file, "r", encoding="utf-8") as file:
+    data = json.load(file)
+
+# ✅ Mapping օրերի, շաբաթների, ժամային սլոտների համար
+dayMap = {1: "Երկուշաբթի", 2: "Երեքշաբթի", 3: "Չորեքշաբթի", 4: "Հինգշաբթի", 5: "Ուրբաթ"}
+weekMap = {1: "համարիչ", 2: "հայտարար"}
+slotMap = {1: "09:30-10:50", 2: "11:00-12:20", 3: "12:50-14:10", 4: "14:20-15:40"}
+
+# ✅ Օժանդակ ֆունկցիա `get_or_insert`
 def get_or_insert(table, column, value):
-    """
-    Փնտրում է, թե արդյոք տրված աղյուսակում կա գրառում, որտեղ column = value:
-    Եթե կա, վերադարձնում է id-ն, իսկ եթե չկա, ավելացնում է նոր գրառում եւ վերադարձնում է նոր id-ն:
-    """
-    select_query = f"SELECT id FROM {table} WHERE {column} = ?"
-    cursor.execute(select_query, value)
+    """Վերադարձնում է արժեքի ID-ն, եթե գոյություն ունի, հակառակ դեպքում ավելացնում է ու վերադարձնում ID-ն"""
+    cursor.execute(f"SELECT id FROM {table} WHERE {column} = ?", (value,))
     row = cursor.fetchone()
     if row:
         return row[0]
-    else:
-        insert_query = f"INSERT INTO {table} ({column}) VALUES (?)"
-        cursor.execute(insert_query, value)
-        conn.commit()
-        cursor.execute(select_query, value)
-        return cursor.fetchone()[0]
+    
+    cursor.execute(f"INSERT INTO {table} ({column}) VALUES (?)", (value,))
+    cursor.execute("SELECT SCOPE_IDENTITY();")
+    return cursor.fetchone()[0]
 
-# Օգնական ֆունկցիաներ՝ օրերի, ժամային սլոտների և շաբաթների համար
-def get_day_name(day_number):
-    # Հնարավոր mapping՝ 1՝ Երկուշաբթի, 2՝ Երեքշաբթի, 3՝ Չորեքշաբթի, 4՝ Հինգշաբթի, 5՝ Ուրբաթ
-    mapping = {
-        1: "Երկուշաբթի",
-        2: "Երեքշաբթի",
-        3: "Չորեքշաբթի",
-        4: "Հինգշաբթի",
-        5: "Ուրբաթ"
-    }
-    return mapping.get(day_number, "Անհայտ")
-
-def get_time_slot(time_number):
-    mapping = {
-        1: "09:30-10:50",
-        2: "11:00-12:20",
-        3: "12:50-14:10",
-        4: "14:20-15:40"
-    }
-    return mapping.get(time_number, "Անհայտ")
-
-def get_week_name(week_type):
-    # Օրինակ՝ 1 = "համարիչ", 2 = "հայտարար"
-    mapping = {
-        1: "համարիչ",
-        2: "հայտարար"
-    }
-    return mapping.get(week_type, "Անհայտ")
-
-def get_first_type(type_list):
-    # Կարդում ենք առաջին տողի արժեքը, օրինակ՝ ["Գործ"] => "Գործ"
-    if type_list and len(type_list) > 0:
-        return type_list[0]
-    return "Անհայտ"
-
-# Բեռնում ենք JSON ֆայլը, որտեղ պահված են դասերի տվյալները (օրինակ՝ data.json)
-with open("final_schedule.json", "r", encoding="utf-8") as f:
-    data = json.load(f)
-
-# Քանի որ մենք պետք է նորմալիզացնենք տվյալները, նախ անհրաժեշտ է ավելացնել բոլոր բազայի աղյուսակների արժեքները:
+# ✅ Տվյալների ներմուծման հիմնական ցիկլ
 for entry in data:
-    # JSON-ից վերցնել տվյալները
-    level_value    = entry["level"]         # օրինակ՝ "Առաջին"
-    course_value   = entry["course"]        # օրինակ՝ "ԷԷ434"
-    subject_value  = entry["subject"]       # օրինակ՝ "Ինֆորմատիկա"
-    type_value     = get_first_type(entry["type"])   # օրինակ՝ "Գործ"
-    teacher_values = entry["teachers"]      # օրինակ՝ ["Մանուկյան Վ."]
-    room_values    = entry["rooms"]         # օրինակ՝ ["5118"]
-    week_type_val  = entry["week_type"]     # օրինակ՝ 1 (համարիչ) կամ 2 (հայտարար)
-    day_number     = entry["day_of_week"]   # օրինակ՝ 4
-    time_number    = entry["time_of_day"]   # օրինակ՝ 4
+    try:
+        # 🔹 Ստանում ենք JSON-ից արժեքները
+        level_id = get_or_insert("Levels", "name", entry["level"])
+        course_id = get_or_insert("Courses", "code", entry["course"])
+        type_id = get_or_insert("Types", "name", entry["type"][0])
+        subject_id = get_or_insert("Subjects", "name", entry["subject"])
 
-    # Հեռացնելու/ավելացմանն այն աղյուսակներում, որոնք պահում են հիմնական տեղեկությունները:
+        # 🔹 Ստանում ենք շաբաթ, օր, ժամ ID-ները
+        week_id = get_or_insert("Weeks", "type", weekMap.get(entry["week_type"], "հայտարար"))
+        day_id = get_or_insert("Days", "name", dayMap.get(entry["day_of_week"], "Չի գտնվել"))
+        time_slot_id = get_or_insert("TimeSlots", "slot", slotMap.get(entry["time_of_day"], "Չի գտնվել"))
 
-    # 1. Levels աղյուսակ
-    level_id = get_or_insert("Levels", "name", level_value)
+        # 🔹 Ստուգում ենք ուսուցիչներին
+        teacher_ids = []
+        for teacher in entry["teachers"]:
+            teacher_id = get_or_insert("Teachers", "name", teacher)
+            teacher_ids.append(teacher_id)
+            cursor.execute("IF NOT EXISTS (SELECT 1 FROM Subject_Teachers WHERE subject_id = ? AND teacher_id = ?) "
+                           "INSERT INTO Subject_Teachers (subject_id, teacher_id) VALUES (?, ?)", 
+                           (subject_id, teacher_id, subject_id, teacher_id))
 
-    # 2. Courses աղյուսակ
-    course_id = get_or_insert("Courses", "code", course_value)
+        # 🔹 Ստուգում ենք լսարանները
+        room_ids = []
+        for room in entry["rooms"]:
+            room_id = get_or_insert("Rooms", "number", room)
+            room_ids.append(room_id)
+            cursor.execute("IF NOT EXISTS (SELECT 1 FROM Subject_Rooms WHERE subject_id = ? AND room_id = ?) "
+                           "INSERT INTO Subject_Rooms (subject_id, room_id) VALUES (?, ?)", 
+                           (subject_id, room_id, subject_id, room_id))
 
-    # 3. Types աղյուսակ (դասի տիպ, որպես օրինակ "Գործ")
-    type_id = get_or_insert("Types", "name", type_value)
+        # 🔹 Ընտրում ենք առաջին ուսուցչի և լսարանի ID-ները
+        first_teacher_id = teacher_ids[0] if teacher_ids else None
+        first_room_id = room_ids[0] if room_ids else None
 
-    # 4. Subjects աղյուսակ: անհրաժեշտ է պահել subject-ի անունը, ինչպես նաև level_id, course_id, type_id
-    cursor.execute("""
-        SELECT id FROM Subjects 
-        WHERE name = ? AND level_id = ? AND course_id = ? AND type_id = ?
-    """, subject_value, level_id, course_id, type_id)
-    row = cursor.fetchone()
-    if row:
-        subject_id = row[0]
-    else:
+        # 🔹 Ստուգում ենք None արժեքները՝ սխալներից խուսափելու համար
+        if not all([course_id, day_id, week_id, time_slot_id, first_room_id, subject_id, first_teacher_id, type_id]):
+            print(f"⚠️ Բաց թողնված գրառում՝ բացակայող տվյալների պատճառով: {entry}")
+            continue
+
+        # ✅ Ավելացնում ենք տվյալները Schedule աղյուսակում
         cursor.execute("""
-            INSERT INTO Subjects (name, type_id, level_id, course_id)
-            VALUES (?, ?, ?, ?)
-        """, subject_value, type_id, level_id, course_id)
-        conn.commit()
-        cursor.execute("""
-            SELECT id FROM Subjects 
-            WHERE name = ? AND level_id = ? AND course_id = ? AND type_id = ?
-        """, subject_value, level_id, course_id, type_id)
-        subject_id = cursor.fetchone()[0]
+            INSERT INTO Schedule 
+            (course_id, day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id, details)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (course_id, day_id, week_id, time_slot_id, first_room_id, subject_id, first_teacher_id, type_id, None))
 
-    # 5. Teachers աղյուսակ
-    teacher_ids = []
-    for teacher in teacher_values:
-        tid = get_or_insert("Teachers", "name", teacher)
-        teacher_ids.append(tid)
+        print(f"✅ Գրված է '{entry['subject']}' առարկան '{entry['course']}' կուրսի համար։")
 
-    # 6. Rooms աղյուսակ
-    room_ids = []
-    for room in room_values:
-        rid = get_or_insert("Rooms", "number", room)
-        room_ids.append(rid)
+    except Exception as e:
+        print(f"❌ Սխալ գրառման ժամանակ: {entry}")
+        print(f"❗ Սխալ: {e}")
 
-    # 7. Days աղյուսակ: օգտագործելով day_number-ը, ստանում ենք օրերի անունը
-    day_name = get_day_name(day_number)
-    day_id = get_or_insert("Days", "name", day_name)
-
-    # 8. TimeSlots աղյուսակ: օգտագործելով time_number-ը
-    time_slot_value = get_time_slot(time_number)
-    time_slot_id = get_or_insert("TimeSlots", "slot", time_slot_value)
-
-    # 9. Weeks աղյուսակ: օգտագործելով week_type-ի արժեքը
-    week_name = get_week_name(week_type_val)
-    week_id = get_or_insert("Weeks", "type", week_name)
-
-    # 10. Վերջում, Insert ենք անում Schedule աղյուսակում:
-    # Այս աղյուսակում մենք կպահենք ամեն դասի համար
-    for teacher_id in teacher_ids:
-        for room_id in room_ids:
-            cursor.execute("""
-                INSERT INTO Schedule (day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id, details)
-                VALUES (?, ?, ?, ?, ?, ?, ?, NULL)
-            """, day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id)
-            conn.commit()
-
+# ✅ Փոփոխությունները պահպանում ենք
+conn.commit()
 cursor.close()
 conn.close()
 
-print("✅ Տվյալները հաջողությամբ ներմուծվեցին բազայում!")
+print("🎉 ✅ Տվյալները հաջողությամբ ներմուծվեցին MSSQL-ի մեջ!")

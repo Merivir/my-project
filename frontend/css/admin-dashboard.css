@@ -1,52 +1,126 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
-    margin: 20px;
+    margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-form {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
+/* Մեծացնում ենք քառակուսին (card) */
+.container {
+    max-width: 750px; /* Ավելի լայն */
+    width: 90%;
     background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
 }
 
-input {
-    width: calc(100% - 22px);
+/* Վերնագիրը տեղափոխվում է վերև */
+h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+/* Լինքերը նույնպես տեղափոխում ենք դուրս */
+nav {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+nav a {
+    margin: 0 15px;
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Ընտրության դաշտի գեղեցիկ ձևավորում */
+select {
+    width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+/* Ստեղծում ենք դասավորություն կողք կողքի */
+.time-slot-container {
+    display: flex;
+    justify-content: space-between; /* Ձախ ու աջ */
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+/* Ամեն աղյուսակը ունի իր բաժինը */
+.schedule-table-container {
+    flex: 1;
+    text-align: center;
+}
+
+/* Աղյուսակի դիզայն */
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.schedule-table th, .schedule-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+/* Checkbox-ների չափ */
+.time-slot-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Կոճակների փոքրացում և կողք-կողքի դասավորում */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Տարածություն կոճակների միջև */
+    margin-top: 20px;
+}
+
+.button-container button {
+    width: auto;
+    padding: 8px 15px;
     font-size: 14px;
 }
 
+/* Կոճակների ձևավորում */
 button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #007BFF;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
+    margin-top: 15px;
 }
 
-button:hover {
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+button:hover:enabled {
     background-color: #0056b3;
 }
 
-#responseMessage {
-    text-align: center;
-    color: green;
-    font-size: 16px;
-    margin-top: 10px;
-}

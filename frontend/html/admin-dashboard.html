@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="hy">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,45 +7,37 @@
     <link rel="stylesheet" href="/css/admin-dashboard.css">
 </head>
 <body>
+
     <h1>Դասացուցակի ստեղծում</h1>
-    <form onsubmit="createSchedule(event)">
-        <input type="number" id="group_id" placeholder="Խմբի ID" required />
-        <input type="text" id="subject" placeholder="Առարկա" required />
-        <input type="number" id="teacher_id" placeholder="Դասախոսի ID" required />
-        <input type="number" id="room_id" placeholder="Լսարան ID" required />
-        <input type="number" id="time_slot_id" placeholder="Ժամի ID" required />
-        <button type="submit">Ստեղծել</button>
-    </form>
-    <p id="responseMessage"></p>
 
-    <script>
-        async function createSchedule(event) {
-            event.preventDefault();
+    <nav>
+        <a href="/edit-subjects">📚 Փոփոխել առարկաները</a>
+        <a href="/student-view">👀 Դիտել որպես ուսանող</a>
+    </nav>
 
-            const group_id = document.getElementById('group_id').value;
-            const subject = document.getElementById('subject').value;
-            const teacher_id = document.getElementById('teacher_id').value;
-            const room_id = document.getElementById('room_id').value;
-            const time_slot_id = document.getElementById('time_slot_id').value;
+    <div class="container">
+        <h2>Ընտրել դասախոս</h2>
+        <select id="teacherSelect" onchange="loadAvailableSlots()">
+            <option value="">Ընտրել դասախոս</option>
+        </select>
 
-            try {
-                const response = await fetch('/api/schedule', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ group_id, subject, teacher_id, room_id, time_slot_id })
-                });
+        <div class="time-slot-container">
+            <div class="schedule-table-container">
+                <h2>Առաջնային դասաժամեր</h2>
+                <div id="primarySlotsContainer"></div>
+            </div>
+        
+            <div class="schedule-table-container">
+                <h2>Երկրորդային դասաժամեր</h2>
+                <div id="backupSlotsContainer"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="confirmAvailability" onclick="confirmAvailability()" disabled>✅ Հաստատել ժամերը</button>
+            <button id="generateSchedule" onclick="generateSchedule()" disabled>⚡ Ստեղծել դասացուցակ</button>
+        </div>
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    document.getElementById('responseMessage').innerText = 'Դասացուցակը բարեհաջող ստեղծվել է!';
-                } else {
-                    document.getElementById('responseMessage').innerText = result.message;
-                }
-            } catch (err) {
-                document.getElementById('responseMessage').innerText = 'Սերվերի խնդիր';
-            }
-        }
-    </script>
+    <script src="/js/admin-dashboard.js"></script>
 </body>
 </html>

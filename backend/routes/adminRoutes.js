@@ -24,6 +24,19 @@ function verifyToken(req, res, next) {
     }
 }
 
+router.get('/teachers', async (req, res) => {
+    console.log("📌 API /api/teachers request received!");
+    try {
+        const result = await sql.query("SELECT id, name FROM Teachers");
+        console.log("✅ Data fetched:", result.recordset);
+        res.json(result.recordset);
+    } catch (err) {
+        console.error("⛔ Error fetching teachers:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
 // Пример защищённого маршрута
 router.get('/protected-route', verifyToken, (req, res) => {
     res.json({ message: 'Welcome to the protected route!', user: req.user });

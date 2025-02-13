@@ -55,9 +55,10 @@ CREATE TABLE Subjects (
     course_id INT FOREIGN KEY REFERENCES Courses(id)
 );
 
--- 11. Расписание (Основная таблица)
+-- 11. Расписание (Основная таблица) – նորացված
 CREATE TABLE Schedule (
     id INT PRIMARY KEY IDENTITY(1,1),
+    course_id INT FOREIGN KEY REFERENCES Courses(id),  -- Ավելացվեց՝ երկրորդ սյուն
     day_id INT FOREIGN KEY REFERENCES Days(id),
     week_id INT FOREIGN KEY REFERENCES Weeks(id),
     time_slot_id INT FOREIGN KEY REFERENCES TimeSlots(id),
@@ -67,6 +68,7 @@ CREATE TABLE Schedule (
     type_id INT FOREIGN KEY REFERENCES Types(id),
     details NVARCHAR(MAX)  -- JSON-поле для хранения доп. данных (например, формат, онлайн-ссылка и т.д.)
 );
+
 
 
 
@@ -101,7 +103,7 @@ Select * from Courses
 
 USE schedule;
 SELECT name FROM sys.tables;
-
+Select * from Courses;
 SELECT * FROM Types;
 
 SELECT 
@@ -127,3 +129,26 @@ JOIN Types ty ON s.type_id = ty.id
 ORDER BY 
     d.id, ts.id;
 
+SELECT 
+    s.id,
+    s.course_code,
+    d.name AS day_name,
+    w.type AS week_type,
+    ts.slot AS time_slot,
+    STRING_AGG(r.number, ', ') AS room_numbers,
+    sub.name AS subject_name,
+    STRING_AGG(t.name, ', ') AS teacher_names,
+    ty.name AS type_name,
+    s.details
+FROM Schedule s
+JOIN Days d ON s.day_id = d.id
+JOIN Weeks w ON s.week_id = w.id
+JOIN TimeSlots ts ON s.time_slot_id = ts.id
+JOIN Subjects sub ON s.subject_id = sub.id
+JOIN Types ty ON s.type_id = ty.id
+LEFT JOIN Subject_Rooms sr ON sr.subject_id = sub.id
+LEFT JOIN Rooms r ON sr.room_id = r.id
+LEFT JOIN Subject_Teachers st ON st.subject_id = sub.id
+LEFT JOIN Teachers t ON st.teacher_id = t.id
+GROUP BY 
+    s.id, s.course_code, d.name, w.type, ts.slot, sub.name, ty.name, s.details;

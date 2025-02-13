@@ -10,6 +10,7 @@ const courseMap = {
   "4": "ՄԹ459"
 };
 
+
 // Օրերի և ժամային սլոտների ցուցակը (ստանդարտ)
 const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
 const timeSlots = ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"];
@@ -54,20 +55,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
 //
 // 1. Ֆունկցիա՝ ամբողջ դասացուցակի տվյալների բեռնում API-ից
 //
-async function loadSchedule() {
-  try {
-    console.log("🔍Fetching schedule data from API...");
-    const response = await fetch('/schedule');
-    if (!response.ok) throw new Error('❌ Backend error');
-    scheduleData = await response.json();
-    console.log("📌 Schedule data loaded:", scheduleData.slice(0, 5));
-  } catch (err) {
-    console.error("❌ Error loading schedule:", err);
+async function loadSchedule(courseCode) {
+    try {
+      console.log("🔍Fetching schedule data for", courseCode);
+      const response = await fetch(`/schedule?course=${courseCode}`);
+      if (!response.ok) throw new Error('❌ Backend error');
+      scheduleData = await response.json();
+      console.log("📌 Schedule data loaded:", scheduleData.slice(0, 5)); 
+    } catch (err) {
+      console.error("❌ Error loading schedule:", err);
+    }
   }
-}
+  
 
 //
 // 2. Ֆունկցիա՝ ընտրված կուրսի գրառումների ֆիլտրում
@@ -201,6 +204,7 @@ function buildScheduleTable(containerId, entries) {
   container.innerHTML = "";
   container.appendChild(table);
 }
+
 
 //
 // 4. Փոփափ պատուհանի բացման ֆունկցիա
