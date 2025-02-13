@@ -38,6 +38,7 @@ async function loadTeachers() {
     }
 }
 
+
 // Կանչում ենք `loadTeachers()`, երբ էջը բեռնվում է
 document.addEventListener("DOMContentLoaded", () => {
     loadTeachers();
@@ -116,4 +117,24 @@ function generateSchedule() {
     }
 
     alert("📅 Դասացուցակը ստեղծվեց!");
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadTeachers();
+    generateTimeSlotCheckboxes("primarySlotsContainer");
+    generateTimeSlotCheckboxes("backupSlotsContainer");
+
+    // ✅ Հետաքրքրվում ենք checkbox-ների փոփոխություններով
+    document.addEventListener("change", (event) => {
+        if (event.target.classList.contains("time-slot-checkbox")) {
+            updateConfirmButton(); // Կանչում ենք ֆունկցիան, որ ստուգենք կոճակի ակտիվությունը
+        }
+    });
+});
+
+// ✅ Թարմացնում ենք "Հաստատել ժամերը" կոճակը
+function updateConfirmButton() {
+    const anyChecked = document.querySelectorAll(".time-slot-checkbox:checked").length > 0;
+    document.getElementById("confirmAvailability").disabled = !anyChecked; 
 }
