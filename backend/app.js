@@ -53,9 +53,8 @@ app.get('/admin-dashboard', (req, res) => {
 
 // Подключение маршрутов
 app.use('/guest', require('./routes/guestRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/schedule', require('./routes/scheduleRoutes'));
-
+app.use('/api', require('./routes/adminRoutes'));
 
 // Маршрут для корневого пути "/"
 app.get('/', (req, res) => {

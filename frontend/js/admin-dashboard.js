@@ -11,13 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadTeachers() {
     try {
-        const response = await fetch('/api/teachers');
+        const response = await fetch('/api/teachers'); // Կանչում է backend API-ն
         if (!response.ok) throw new Error("⚠️ Server Error: " + response.status);
 
         const teachers = await response.json();
         const teacherSelect = document.getElementById("teacherSelect");
 
+        // Մաքրում ենք dropdown-ը և ավելացնում ենք "Ընտրել դասախոս"
         teacherSelect.innerHTML = '<option value="">Ընտրել դասախոս</option>';
+        
+        // Ավելացնում ենք բոլոր դասախոսներին ընտրացանկում
         teachers.forEach(teacher => {
             const option = document.createElement("option");
             option.value = teacher.id;
@@ -25,6 +28,7 @@ async function loadTeachers() {
             teacherSelect.appendChild(option);
         });
 
+        // Դասախոսի ընտրության դեպքում թույլատրում ենք checkbox-ները
         teacherSelect.addEventListener("change", () => {
             toggleCheckboxes(true);
         });
@@ -33,6 +37,12 @@ async function loadTeachers() {
         console.error("⛔ Error loading teachers:", error);
     }
 }
+
+// Կանչում ենք `loadTeachers()`, երբ էջը բեռնվում է
+document.addEventListener("DOMContentLoaded", () => {
+    loadTeachers();
+});
+
 
 // Ստեղծում ենք checkbox-ները (սկզբում անաշխատունակ)
 function generateTimeSlotCheckboxes(containerId) {
@@ -81,4 +91,29 @@ function toggleCheckboxes(enable) {
     document.querySelectorAll(".time-slot-checkbox").forEach(checkbox => {
         checkbox.disabled = !enable;
     });
+}
+
+// Հաստատում ենք ընտրված դասաժամերը
+function confirmAvailability() {
+    const checkedSlots = Array.from(document.querySelectorAll(".time-slot-checkbox:checked"))
+        .map(checkbox => checkbox.value);
+
+    if (checkedSlots.length === 0) {
+        alert("⚠️ Խնդրում ենք ընտրել առնվազն մեկ դասաժամ:");
+        return;
+    }
+
+    isConfirmed = true;
+    document.getElementById("generateSchedule").disabled = false;
+    alert("✅ Ժամերը հաստատված են!");
+}
+
+// Ստեղծում ենք դասացուցակը
+function generateSchedule() {
+    if (!isConfirmed) {
+        alert("⚠️ Խնդրում ենք նախ հաստատել ժամերը:");
+        return;
+    }
+
+    alert("📅 Դասացուցակը ստեղծվեց!");
 }
