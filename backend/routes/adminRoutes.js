@@ -1,7 +1,6 @@
 const express = require('express');
 const { sql, poolPromise } = require('../models/db');
 const jwt = require('jsonwebtoken');
-
 const SECRET_KEY = 'your_secret_key'; // Используйте переменные окружения для безопасности
 
 const router = express.Router();
@@ -23,6 +22,23 @@ function verifyToken(req, res, next) {
         res.status(401).json({ message: 'Invalid token' });
     }
 }
+
+router.get("/levels", async (req, res) => {
+    try {
+        console.log("📡 Fetching levels from database...");
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT id, name FROM Levels");
+        const levels = result.recordset;
+        
+        console.log("✅ Levels fetched:", levels);
+
+        res.json(levels);
+    } catch (error) {
+        console.error("⛔ Database error:", error);
+        res.status(500).json({ error: "Database error while fetching levels" });
+    }
+});
+
 
 router.get('/teachers', async (req, res) => {
     console.log("📌 API /api/teachers request received!");

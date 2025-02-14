@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Փոփոխել Առարկաները</title>
+    <link rel="stylesheet" href="/css/edit-subjects.css">
+</head>
+<body>
+
+    <header>
+        <div class="back-container">
+            <img src="/assets/left-arrow.png" alt="Վերադառնալ" class="back-arrow" id="backArrow">
+        </div>
+        <h1>Փոփոխել Առարկաները</h1>
+    </header>
+
+    <div class="course-selection">
+        <div class="dropdown-container">
+            <label for="courseSelect">Ընտրել կուրս</label>
+            <select id="courseSelect">
+                <option value="">Ընտրել կուրս...</option>
+            </select>
+
+            <label for="courseCodeSelect">Ընտրել կուրսի կոդ</label>
+            <select id="courseCodeSelect" disabled>
+                <option value="">Ընտրել կուրսի կոդ...</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="subjectsContainer" class="subjects-container">
+        <!-- Առարկաները կավելացվեն այստեղ -->
+    </div>
+
+    <button id="saveChangesBtn" disabled>✅ Հաստատել փոփոխությունները</button>
+
+    <!-- Popup հաստատման համար -->
+    <div id="confirmPopup" class="modal hidden">
+        <div class="modal-content">
+            <p>Դուք վստահ ե՞ք, որ ցանկանում եք դուրս գալ առանց պահպանելու</p>
+            <button id="confirmExit">Այո</button>
+            <button id="cancelExit">Ոչ</button>
+        </div>
+    </div>
+
+    <script src="/js/edit-subjects.js"></script>
+</body>
+</html>

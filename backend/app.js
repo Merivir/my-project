@@ -57,6 +57,8 @@ app.use('/schedule', require('./routes/scheduleRoutes'));
 app.use('/api/schedule', require('./routes/scheduleRoutes'));
 app.use('/api', require('./routes/adminRoutes'));
 
+const subjectsRoutes = require('./routes/subjectsRoutes');
+app.use('/api', subjectsRoutes);
 
 
 // Маршрут для корневого пути "/"

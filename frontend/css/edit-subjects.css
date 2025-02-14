@@ -1,0 +1,114 @@
+/* Ընդհանուր ոճավորում */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+/* Header-ի ստիլ */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0A2540;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+/* Վերադառնալու սլաք */
+.back-container {
+    position: absolute;
+    left: 20px;
+}
+
+.back-arrow {
+    width: 40px;
+    height: auto;
+    cursor: pointer;
+}
+
+/* Կուրսի և կուրսի կոդի ընտրության բաժին */
+.course-selection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.dropdown-container {
+    display: flex;
+    gap: 20px;
+}
+
+.course-selection select {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Առարկաների բաժին */
+.subjects-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Պահպանման կոճակը */
+#saveChangesBtn {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background-color: #0A2540;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Popup-ի ստիլ */
+.modal {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    width: 350px;
+    text-align: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.modal button {
+    padding: 10px;
+    width: 100px;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#confirmExit {
+    background-color: #d9534f;
+    color: white;
+}
+
+#cancelExit {
+    background-color: #0A2540;
+    color: white;
+}
