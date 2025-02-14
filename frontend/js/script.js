@@ -10,6 +10,17 @@ const courseMap = {
   "4": "ՄԹ459"
 };
 
+document.addEventListener("DOMContentLoaded", function () {
+    const referrer = document.referrer; // Նախորդ էջի URL-ը
+    const adminPages = ["/admin-dashboard", "/edit-subjects"]; // ✅ Ադմինի էջերը
+  
+    // Եթե նախորդ էջը ադմին էջերից մեկն է, ցույց ենք տալիս "Վերադառնալ" սլաքը
+    if (adminPages.some(page => referrer.includes(page))) {
+        document.getElementById("backArrow").style.display = "block";
+    }
+});
+
+
 
 // Օրերի և ժամային սլոտների ցուցակը (ստանդարտ)
 const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];

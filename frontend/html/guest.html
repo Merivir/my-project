@@ -5,65 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ուսանողի Դասացուցակ</title>
   <link rel="stylesheet" href="/css/guest.css">
-  <style>
-    /* Հարմարեցնել աղյուսակի still-ը՝ անհրաժեշտության դեպքում */
-    table.schedule-table {
-      border-collapse: collapse;
-      width: 100%;
-      margin-bottom: 20px;
-    }
-    table.schedule-table th,
-    table.schedule-table td {
-      border: 1px solid #ccc;
-      padding: 5px;
-      text-align: center;
-      vertical-align: top;
-    }
-    .entry {
-      border: 1px solid #eee;
-      margin: 2px 0;
-      padding: 2px;
-      background: #f9f9f9;
-    }
-    .entry-logo {
-      font-size: 1.2em;
-      margin-right: 4px;
-    }
-  </style>
 </head>
 <body>
-  <header>
-    <h1>Ուսանողի Դասացուցակ</h1>
-  </header>
 
-  <!-- Կուրսի ընտրության կոճակներ -->
-  <div class="course-buttons">
-    <button class="course-btn" data-course="1">1-ին կուրս</button>
-    <button class="course-btn" data-course="2">2-րդ կուրս</button>
-    <button class="course-btn" data-course="3">3-րդ կուրս</button>
-    <button class="course-btn" data-course="4">4-րդ կուրս</button>
-  </div>
+    <!-- ✅ Վերադառնալու սլաք (ճիշտ տեղում) -->
+    <a href="javascript:history.back()" class="back-arrow">
+        <img src="/assets/left-arrow.png" class="back-arrow-img">
+    </a>
 
-  <!-- Դասացուցակի դինամիկ կառուցման համար բաժին -->
-  <div id="scheduleContainer">
-    <h2>Համարիչ</h2>
-    <div id="scheduleNumerator"></div>
-    <h2>Հայտարար</h2>
-    <div id="scheduleDenominator"></div>
-  </div>
+    <header>
+        <h1>Ուսանողի Դասացուցակ</h1>
+    </header>
 
-  <!-- Պոպափ պատուհան -->
-  <div id="classPopup" class="modal hidden">
-    <div class="modal-content">
-      <span class="close-popup">&times;</span>
-      <h3 id="popupSubject">Առարկա</h3>
-      <p><strong>Դասախոս:</strong> <span id="popupTeacher"></span></p>
-      <p><strong>Լսարան:</strong> <span id="popupRoom"></span></p>
-      <p><strong>Տիպ:</strong> <span id="popupType"></span></p>
-      <p><strong>Հղում:</strong> <a id="popupLink" href="#" target="_blank">Zoom</a></p>
+    <!-- Կուրսի ընտրության կոճակներ -->
+    <div class="course-buttons">
+        <button class="course-btn" data-course="1">1-ին կուրս</button>
+        <button class="course-btn" data-course="2">2-րդ կուրս</button>
+        <button class="course-btn" data-course="3">3-րդ կուրս</button>
+        <button class="course-btn" data-course="4">4-րդ կուրս</button>
     </div>
-  </div>
 
-  <script src="/js/script.js"></script>
+    <!-- Դասացուցակի դինամիկ կառուցման համար բաժին -->
+    <div id="scheduleContainer">
+        <h2>Համարիչ</h2>
+        <div id="scheduleNumerator"></div>
+        <h2>Հայտարար</h2>
+        <div id="scheduleDenominator"></div>
+    </div>
+
+    <!-- Պոպափ պատուհան -->
+    <div id="classPopup" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-popup">&times;</span>
+            <h3 id="popupSubject">Առարկա</h3>
+            <p><strong>Դասախոս:</strong> <span id="popupTeacher"></span></p>
+            <p><strong>Լսարան:</strong> <span id="popupRoom"></span></p>
+            <p><strong>Տիպ:</strong> <span id="popupType"></span></p>
+            <p><strong>Հղում:</strong> <a id="popupLink" href="#" target="_blank">Zoom</a></p>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>
 </body>
 </html>
