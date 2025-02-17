@@ -112,3 +112,41 @@ header {
     background-color: #0A2540;
     color: white;
 }
+
+.subjects-container {
+    max-width: 90%;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 8px;
+    position: relative;
+    left: 20px; /* Փոխիր այս թիվը, որպեսզի տեղափոխես աջ */
+}
+
+
+/* Առարկայի քարտ */
+.subject-card {
+    width: 250px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Պահել հաստատման կոճակը ներքևում */
+.save-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+}

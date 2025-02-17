@@ -17,12 +17,16 @@ router.get("/levels", async (req, res) => {
     }
 });
 
+
+
 // 📌 Բերում ենք ընտրված կուրսի կոդին համապատասխան առարկաները
 router.get("/subjects/:courseCode", async (req, res) => {
     const courseCode = req.params.courseCode;
 
     try {
         const pool = await poolPromise;
+        console.log(`📡 Fetching subjects for courseCode: ${courseCode}`);
+
         const result = await pool.request()
             .input("courseCode", sql.NVarChar, courseCode)
             .query(`
@@ -32,12 +36,14 @@ router.get("/subjects/:courseCode", async (req, res) => {
                 WHERE s.course_code = @courseCode
             `);
 
+        console.log("✅ Query Result:", result.recordset); // ✅ Ստուգում ենք տվյալները
         res.json(result.recordset);
     } catch (err) {
         console.error("⛔ Error fetching subjects:", err);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 });
+
 
 router.get("/courses", async (req, res) => {
     try {

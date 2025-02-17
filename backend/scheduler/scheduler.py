@@ -106,7 +106,7 @@ def generate_schedule(data):
 
 # Գեներացնել դասացուցակը JSON ֆայլից
 if __name__ == "__main__":
-    with open("updated_everything.json", "r", encoding="utf-8") as f:
+    with open("schedule_with_week_type.json", "r", encoding="utf-8") as f:
         sample_data = json.load(f)
 
     final_schedule, detected_conflicts = generate_schedule(sample_data)

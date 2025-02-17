@@ -1,21 +1,25 @@
-﻿USE schedule;
+﻿-- 🔹 1. Հեռացնում ենք FOREIGN KEY-ները բոլոր աղյուսակներից
+DECLARE @sql NVARCHAR(MAX) = '';
 
--- Удаляем связи между таблицами
-IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Subject_Teachers')
-    ALTER TABLE Subject_Teachers DROP CONSTRAINT IF EXISTS FK_Subject_Teachers_Subjects;
+SELECT @sql += 'ALTER TABLE ' + QUOTENAME(OBJECT_NAME(parent_object_id)) + 
+' DROP CONSTRAINT ' + QUOTENAME(name) + ';' + CHAR(13)
+FROM sys.foreign_keys;
 
-IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Subject_Rooms')
-    ALTER TABLE Subject_Rooms DROP CONSTRAINT IF EXISTS FK_Subject_Rooms_Subjects;
+EXEC sp_executesql @sql;
+GO
 
--- Удаляем таблицы, если они существуют
+-- 🔹 2. Ջնջում ենք բոլոր աղյուսակները ճիշտ հերթականությամբ
 DROP TABLE IF EXISTS Subject_Teachers;
 DROP TABLE IF EXISTS Subject_Rooms;
+DROP TABLE IF EXISTS Schedule;
 DROP TABLE IF EXISTS Subjects;
+DROP TABLE IF EXISTS Courses;
 DROP TABLE IF EXISTS Teachers;
 DROP TABLE IF EXISTS Rooms;
-DROP TABLE IF EXISTS TimeSlotsNew;
 DROP TABLE IF EXISTS Days;
-DROP TABLE IF EXISTS Levels;
-DROP TABLE IF EXISTS Courses;
-DROP TABLE IF EXISTS Type;
+DROP TABLE IF EXISTS TimeSlots;
+DROP TABLE IF EXISTS Weeks;
+DROP TABLE IF EXISTS Types;
+GO
 
+PRINT '✅ Բոլոր աղյուսակները հաջողությամբ ջնջվեցին';

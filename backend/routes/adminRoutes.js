@@ -5,6 +5,7 @@ const SECRET_KEY = 'your_secret_key'; // Используйте переменн
 
 const router = express.Router();
 
+
 // Middleware для проверки токена
 function verifyToken(req, res, next) {
     const authHeader = req.headers['authorization'];

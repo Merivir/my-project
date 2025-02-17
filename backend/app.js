@@ -60,6 +60,10 @@ app.use('/api', require('./routes/adminRoutes'));
 const subjectsRoutes = require('./routes/subjectsRoutes');
 app.use('/api', subjectsRoutes);
 
+app.get('/edit-subjects', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/edit-subjects.html'));
+});
+
 
 // Маршрут для корневого пути "/"
 app.get('/', (req, res) => {

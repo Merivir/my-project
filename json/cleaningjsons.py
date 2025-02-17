@@ -2,7 +2,7 @@ import json
 import pandas as pd
 
 # Имя файла с исходным расписанием
-input_filename = "updated_witheverything.json"
+input_filename = "thematic.json"
 
 # Загрузка данных из JSON
 with open(input_filename, "r", encoding="utf-8") as f:

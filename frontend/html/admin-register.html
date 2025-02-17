@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="hy">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Ադմինիստրատորի գրանցում</h1>
-    <form id="adminRegisterForm" onsubmit="submitAdminRegisterForm(event)">
+    <form id="adminRegisterForm">
         <label for="name">Անուն:</label>
         <input type="text" id="name" name="name" required>
         
@@ -26,34 +26,7 @@
     <p id="registerErrorMessage"></p>
     <p>Ունե՞ք էջ? <a href="/admin-login">Մուտք այստեղ</a>.</p>
 
-    <script>
-        async function submitAdminRegisterForm(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const login = document.getElementById('login').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const response = await fetch('/admin/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, login, email, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert('Գրանցումը բարեհաջող ավարտվեց, կարող եք մուտք գործել');
-                    window.location.href = '/admin-login';
-                } else {
-                    document.getElementById('registerErrorMessage').innerText = data.message;
-                }
-            } catch (err) {
-                document.getElementById('registerErrorMessage').innerText = 'Սերվերի խնդիր';
-            }
-        }
-    </script>
+    <!-- Կապում ենք նոր admin-register.js ֆայլը -->
+    <script src="/js/admin-register.js"></script>
 </body>
 </html>

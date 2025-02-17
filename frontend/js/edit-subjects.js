@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const subjectsContainer = document.getElementById("subjectsContainer");
     const saveChangesBtn = document.getElementById("saveChangesBtn");
 
+    document.querySelector(".back-arrow").addEventListener("click", (event) => {
+        event.preventDefault();
+        window.history.back(); // Տանում է նախորդ էջ
+    });
+
     // Բեռնում ենք կուրսերը Levels աղյուսակից
     async function loadCourses() {
         try {
@@ -38,10 +43,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Բեռնում ենք առարկաները՝ ըստ կուրսի կոդի
-    async function loadSubjects(courseCodeId) {
+    async function loadSubjects(courseCode) {
         try {
-            const response = await fetch(`/api/subjects?courseCodeId=${courseCodeId}`);
+            const response = await fetch(`/api/subjects/${courseCode}`);
             const subjects = await response.json();
+            console.log("📦 Received subjects:", subjects); // ✅ Ստուգում ենք, ինչ տվյալ է գալիս
+    
+            if (!Array.isArray(subjects)) {
+                throw new Error("Returned data is not an array");
+            }
+    
             subjectsContainer.innerHTML = subjects.map(subject => `
                 <div class="subject-card">
                     <h3>${subject.name}</h3>
@@ -51,11 +62,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <button class="delete-btn" data-id="${subject.id}">❌ Ջնջել</button>
                 </div>
             `).join("");
+    
             saveChangesBtn.disabled = false;
         } catch (error) {
             console.error("⛔ Error loading subjects:", error);
         }
     }
+    
 
     // Կուրս ընտրելիս բեռնում ենք համապատասխան կոդերը
     courseSelect.addEventListener("change", (e) => {
@@ -97,3 +110,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Բեռնում ենք կուրսերը սկզբում
     loadCourses();
 });
+
+

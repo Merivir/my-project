@@ -1,26 +1,37 @@
 const daysOfWeek = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
 const timeSlots = ["I", "II", "III", "IV"];
-let selectedTimeslots = [];
 let isConfirmed = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     loadTeachers();
     generateTimeSlotCheckboxes("primarySlotsContainer");
     generateTimeSlotCheckboxes("backupSlotsContainer");
+
+    document.getElementById("teacherSelect").addEventListener("change", (e) => {
+        updateTeacherInfo(e.target.value);
+        toggleCheckboxes(true);
+    });
+
+    document.addEventListener("change", (event) => {
+        if (event.target.classList.contains("time-slot-checkbox")) {
+            updateConfirmButton();
+        }
+    });
+
+    document.getElementById("confirmAvailability").addEventListener("click", confirmAvailability);
+    document.getElementById("generateSchedule").addEventListener("click", generateSchedule);
 });
 
+// ✅ Բեռնում ենք դասախոսների ցանկը
 async function loadTeachers() {
     try {
-        const response = await fetch('/api/teachers'); // Կանչում է backend API-ն
+        const response = await fetch('/api/teachers');
         if (!response.ok) throw new Error("⚠️ Server Error: " + response.status);
 
         const teachers = await response.json();
         const teacherSelect = document.getElementById("teacherSelect");
 
-        // Մաքրում ենք dropdown-ը և ավելացնում ենք "Ընտրել դասախոս"
         teacherSelect.innerHTML = '<option value="">Ընտրել դասախոս</option>';
-        
-        // Ավելացնում ենք բոլոր դասախոսներին ընտրացանկում
         teachers.forEach(teacher => {
             const option = document.createElement("option");
             option.value = teacher.id;
@@ -28,24 +39,35 @@ async function loadTeachers() {
             teacherSelect.appendChild(option);
         });
 
-        // Դասախոսի ընտրության դեպքում թույլատրում ենք checkbox-ները
-        teacherSelect.addEventListener("change", () => {
-            toggleCheckboxes(true);
-        });
-
     } catch (error) {
         console.error("⛔ Error loading teachers:", error);
     }
 }
 
+// ✅ Թարմացնում ենք դասաժամերի քանակի ցուցադրումը
+async function updateTeacherInfo(teacherId) {
+    if (!teacherId) {
+        document.getElementById("teacher-info").innerHTML = "";
+        return;
+    }
 
-// Կանչում ենք `loadTeachers()`, երբ էջը բեռնվում է
-document.addEventListener("DOMContentLoaded", () => {
-    loadTeachers();
-});
+    try {
+        const response = await fetch(`/api/teacher-schedule/${teacherId}`);
+        const data = await response.json();
 
+        if (data && data.subjectCount !== undefined) {
+            document.getElementById("teacher-info").innerHTML = `
+                <strong>${data.teacherName}</strong> ունի <strong>${data.subjectCount}</strong> դասաժամ:
+            `;
+        } else {
+            document.getElementById("teacher-info").innerHTML = "Տվյալներ չեն գտնվել";
+        }
+    } catch (error) {
+        console.error("⛔ Error fetching teacher schedule:", error);
+    }
+}
 
-// Ստեղծում ենք checkbox-ները (սկզբում անաշխատունակ)
+// ✅ Ստեղծում ենք checkbox-ները
 function generateTimeSlotCheckboxes(containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -71,9 +93,8 @@ function generateTimeSlotCheckboxes(containerId) {
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.classList.add("time-slot-checkbox");
-            checkbox.name = `${containerId}_slots`;
             checkbox.value = `${dayIndex + 1}-${slotIndex + 1}`;
-            checkbox.disabled = true; // Սկզբում անաշխատունակ
+            checkbox.disabled = true;
 
             const cell = document.createElement("td");
             cell.appendChild(checkbox);
@@ -87,14 +108,20 @@ function generateTimeSlotCheckboxes(containerId) {
     container.appendChild(table);
 }
 
-// Թույլատրում ենք checkbox-ները դասախոսի ընտրությունից հետո
+// ✅ Թույլատրում կամ անջատում ենք checkbox-ները
 function toggleCheckboxes(enable) {
     document.querySelectorAll(".time-slot-checkbox").forEach(checkbox => {
         checkbox.disabled = !enable;
     });
 }
 
-// Հաստատում ենք ընտրված դասաժամերը
+// ✅ Թարմացնում ենք "Հաստատել ժամերը" կոճակը
+function updateConfirmButton() {
+    const anyChecked = document.querySelectorAll(".time-slot-checkbox:checked").length > 0;
+    document.getElementById("confirmAvailability").disabled = !anyChecked; 
+}
+
+// ✅ Հաստատում ենք ընտրված դասաժամերը
 function confirmAvailability() {
     const checkedSlots = Array.from(document.querySelectorAll(".time-slot-checkbox:checked"))
         .map(checkbox => checkbox.value);
@@ -109,7 +136,7 @@ function confirmAvailability() {
     alert("✅ Ժամերը հաստատված են!");
 }
 
-// Ստեղծում ենք դասացուցակը
+// ✅ Ստեղծում ենք դասացուցակը
 function generateSchedule() {
     if (!isConfirmed) {
         alert("⚠️ Խնդրում ենք նախ հաստատել ժամերը:");
@@ -117,24 +144,4 @@ function generateSchedule() {
     }
 
     alert("📅 Դասացուցակը ստեղծվեց!");
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    loadTeachers();
-    generateTimeSlotCheckboxes("primarySlotsContainer");
-    generateTimeSlotCheckboxes("backupSlotsContainer");
-
-    // ✅ Հետաքրքրվում ենք checkbox-ների փոփոխություններով
-    document.addEventListener("change", (event) => {
-        if (event.target.classList.contains("time-slot-checkbox")) {
-            updateConfirmButton(); // Կանչում ենք ֆունկցիան, որ ստուգենք կոճակի ակտիվությունը
-        }
-    });
-});
-
-// ✅ Թարմացնում ենք "Հաստատել ժամերը" կոճակը
-function updateConfirmButton() {
-    const anyChecked = document.querySelectorAll(".time-slot-checkbox:checked").length > 0;
-    document.getElementById("confirmAvailability").disabled = !anyChecked; 
 }

@@ -12,85 +12,107 @@ conn = pyodbc.connect(
 )
 cursor = conn.cursor()
 
+# ✅ Օժանդակ ֆունկցիա `get_or_insert()`
+def get_or_insert(table, column, value):
+    """Եթե տվյալը բազայում չկա, ավելացնում ենք, եթե կա՝ վերադարձնում ենք ID-ն"""
+    if not value:
+        return None
+
+    cursor.execute(f"SELECT id FROM {table} WHERE {column} = ?", (value,))
+    row = cursor.fetchone()
+    if row:
+        return row[0]
+
+    cursor.execute(f"INSERT INTO {table} ({column}) VALUES (?)", (value,))
+    cursor.execute("SELECT SCOPE_IDENTITY();")
+    row = cursor.fetchone()
+    return row[0] if row else None
+
 # ✅ JSON ֆայլի բացում
 json_file = "final_schedule.json"
 with open(json_file, "r", encoding="utf-8") as file:
     data = json.load(file)
 
-# ✅ Mapping օրերի, շաբաթների, ժամային սլոտների համար
-dayMap = {1: "Երկուշաբթի", 2: "Երեքշաբթի", 3: "Չորեքշաբթի", 4: "Հինգշաբթի", 5: "Ուրբաթ"}
-weekMap = {1: "համարիչ", 2: "հայտարար"}
-slotMap = {1: "09:30-10:50", 2: "11:00-12:20", 3: "12:50-14:10", 4: "14:20-15:40"}
+# ✅ Week ID ստանալու ճիշտ մեթոդ
+week_mapping = {1: "համարիչ", 2: "հայտարար"}
 
-# ✅ Օժանդակ ֆունկցիա `get_or_insert`
-def get_or_insert(table, column, value):
-    """Վերադարձնում է արժեքի ID-ն, եթե գոյություն ունի, հակառակ դեպքում ավելացնում է ու վերադարձնում ID-ն"""
-    cursor.execute(f"SELECT id FROM {table} WHERE {column} = ?", (value,))
-    row = cursor.fetchone()
-    if row:
-        return row[0]
+# ✅ **1. Նախ բոլոր տվյալները ավելացնում ենք առանձին աղյուսակներում**
+for entry in data:
+    course_code = entry["course"].strip()
+    subject_name = entry["subject"].strip()
+    subject_type = entry["type"][0].strip() if entry.get("type") else None
+    teachers = entry["teachers"] if entry["teachers"] else ["Անորոշ"]
+    rooms = entry["rooms"] if entry["rooms"] else ["Անորոշ"]
+
+    # ✅ Ավելացնում ենք Course, Type, Subjects
+    course_id = get_or_insert("Courses", "code", course_code)
+    type_id = get_or_insert("Types", "name", subject_type)
     
-    cursor.execute(f"INSERT INTO {table} ({column}) VALUES (?)", (value,))
-    cursor.execute("SELECT SCOPE_IDENTITY();")
-    return cursor.fetchone()[0]
+    # ✅ Ստանում ենք Subject-ի ID, եթե արդեն կա, ապա չենք ավելացնում նորից
+    cursor.execute("SELECT id FROM Subjects WHERE name = ? AND course_id = ?", (subject_name, course_id))
+    subject_row = cursor.fetchone()
+    if subject_row:
+        subject_id = subject_row[0]
+    else:
+        cursor.execute("INSERT INTO Subjects (name, type_id, course_id) VALUES (?, ?, ?)", (subject_name, type_id, course_id))
+        cursor.execute("SELECT SCOPE_IDENTITY();")
+        subject_id = cursor.fetchone()[0]
 
-# ✅ Տվյալների ներմուծման հիմնական ցիկլ
+    # ✅ Ավելացնում ենք Teachers & Rooms
+    for teacher in teachers:
+        get_or_insert("Teachers", "name", teacher.strip())
+    
+    for room in rooms:
+        get_or_insert("Rooms", "number", room.strip())
+
+conn.commit()
+print("✅ All base tables (Courses, Subjects, Teachers, Rooms, Types) added successfully!")
+
+# ✅ **2. Հիմա բոլոր տվյալները բազայում են, կարող ենք ավելացնել `Schedule`**
 for entry in data:
     try:
-        # 🔹 Ստանում ենք JSON-ից արժեքները
-        level_id = get_or_insert("Levels", "name", entry["level"])
-        course_id = get_or_insert("Courses", "code", entry["course"])
-        type_id = get_or_insert("Types", "name", entry["type"][0])
-        subject_id = get_or_insert("Subjects", "name", entry["subject"])
+        course_id = get_or_insert("Courses", "code", entry["course"].strip())
+        cursor.execute("SELECT id FROM Subjects WHERE name = ? AND course_id = ?", (entry["subject"].strip(), course_id))
+        subject_row = cursor.fetchone()
+        subject_id = subject_row[0] if subject_row else None
 
-        # 🔹 Ստանում ենք շաբաթ, օր, ժամ ID-ները
-        week_id = get_or_insert("Weeks", "type", weekMap.get(entry["week_type"], "հայտարար"))
-        day_id = get_or_insert("Days", "name", dayMap.get(entry["day_of_week"], "Չի գտնվել"))
-        time_slot_id = get_or_insert("TimeSlots", "slot", slotMap.get(entry["time_of_day"], "Չի գտնվել"))
+        type_id = get_or_insert("Types", "name", entry["type"][0].strip() if entry.get("type") else None)
 
-        # 🔹 Ստուգում ենք ուսուցիչներին
-        teacher_ids = []
-        for teacher in entry["teachers"]:
-            teacher_id = get_or_insert("Teachers", "name", teacher)
-            teacher_ids.append(teacher_id)
-            cursor.execute("IF NOT EXISTS (SELECT 1 FROM Subject_Teachers WHERE subject_id = ? AND teacher_id = ?) "
-                           "INSERT INTO Subject_Teachers (subject_id, teacher_id) VALUES (?, ?)", 
-                           (subject_id, teacher_id, subject_id, teacher_id))
+        # ✅ Ստանում ենք Week, Day, Time Slot ID-ները
+        week_type_name = week_mapping.get(entry["week_type"])
+        cursor.execute("SELECT id FROM Weeks WHERE type = ?", (week_type_name,))
+        week_row = cursor.fetchone()
+        week_id = week_row[0] if week_row else None
 
-        # 🔹 Ստուգում ենք լսարանները
-        room_ids = []
-        for room in entry["rooms"]:
-            room_id = get_or_insert("Rooms", "number", room)
-            room_ids.append(room_id)
-            cursor.execute("IF NOT EXISTS (SELECT 1 FROM Subject_Rooms WHERE subject_id = ? AND room_id = ?) "
-                           "INSERT INTO Subject_Rooms (subject_id, room_id) VALUES (?, ?)", 
-                           (subject_id, room_id, subject_id, room_id))
+        day_id = entry["day_of_week"]
+        time_slot_id = entry["time_of_day"]
 
-        # 🔹 Ընտրում ենք առաջին ուսուցչի և լսարանի ID-ները
-        first_teacher_id = teacher_ids[0] if teacher_ids else None
-        first_room_id = room_ids[0] if room_ids else None
+        # ✅ Ստանում ենք ուսուցչի և լսարանի ID-ները
+        teachers = entry["teachers"] if entry["teachers"] else ["Անորոշ"]
+        rooms = entry["rooms"] if entry["rooms"] else ["Անորոշ"]
 
-        # 🔹 Ստուգում ենք None արժեքները՝ սխալներից խուսափելու համար
-        if not all([course_id, day_id, week_id, time_slot_id, first_room_id, subject_id, first_teacher_id, type_id]):
-            print(f"⚠️ Բաց թողնված գրառում՝ բացակայող տվյալների պատճառով: {entry}")
-            continue
+        teacher_id = get_or_insert("Teachers", "name", teachers[0].strip())
+        room_id = get_or_insert("Rooms", "number", rooms[0].strip())
 
-        # ✅ Ավելացնում ենք տվյալները Schedule աղյուսակում
+        # ✅ Եթե որևէ բան բացակայում է, ավտոմատ լրացնում ենք
+        teacher_id = teacher_id if teacher_id else get_or_insert("Teachers", "name", "Անորոշ")
+        room_id = room_id if room_id else get_or_insert("Rooms", "number", "Անորոշ")
+
+        # ✅ Ավելացնում ենք Schedule գրառումը
         cursor.execute("""
             INSERT INTO Schedule 
             (course_id, day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id, details)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (course_id, day_id, week_id, time_slot_id, first_room_id, subject_id, first_teacher_id, type_id, None))
+        """, (course_id, day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id, None))
 
-        print(f"✅ Գրված է '{entry['subject']}' առարկան '{entry['course']}' կուրսի համար։")
+        print(f"✅ Schedule inserted for course '{entry['course']}', subject '{entry['subject']}'.")
 
     except Exception as e:
-        print(f"❌ Սխալ գրառման ժամանակ: {entry}")
-        print(f"❗ Սխալ: {e}")
+        print("❌ Error processing entry:", entry)
+        print("❗ Exception:", e)
 
-# ✅ Փոփոխությունները պահպանում ենք
 conn.commit()
 cursor.close()
 conn.close()
 
-print("🎉 ✅ Տվյալները հաջողությամբ ներմուծվեցին MSSQL-ի մեջ!")
+print("🎉 ✅ Բոլոր տվյալները հաջողությամբ ներմուծվեցին MSSQL-ի մեջ!")
