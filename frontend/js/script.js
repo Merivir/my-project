@@ -3,11 +3,6 @@ let scheduleData = []; // Ամեն դասացուցակի տվյալները
 let currentCourseYear = "1"; // Սկզբում ընտրում ենք առաջին կուրսը
 let courseMap = {}; // Mapping՝ կուրսի համար՝ courses-ի ID-ներով
 
-// Օրերի և ժամային սլոտների ցուցակը (ստանդարտ)
-const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
-const timeSlots = ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"];
-
-// 🔹 Հիմնական գործողություններ, երբ բեռնվում է էջը
 document.addEventListener("DOMContentLoaded", () => {
     fetch('http://localhost:3000/api/schedule')
         .then(response => response.json())
@@ -15,62 +10,209 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("📌 Data from API:", data);
 
             const container = document.getElementById("scheduleContainer");
-            container.innerHTML = ""; // Մաքրում ենք նախորդ աղյուսակները
 
-            // ✅ Բերում ենք բոլոր course_code-երը և ստեղծում ենք դրանց համար աղյուսակներ
-            const courses = [...new Set(data.map(row => row.course_code))]; // Վերցնում ենք միայն եզակի կուրսերը
+            // ✅ Նախ մաքրում ենք նախորդ կուրսի կոճակները
+            const existingButtons = document.querySelector(".course-buttons");
+            if (existingButtons) existingButtons.remove();
 
-            courses.forEach(course => {
-                // ✅ Ստեղծում ենք 2 առանձին աղյուսակ՝ "Համարիչ" և "Հայտարար"
-                ["համարիչ", "հայտարար"].forEach(weekType => {
-                    const title = document.createElement("h2");
-                    title.textContent = `${course} - ${weekType}`;
-                    container.appendChild(title);
+            // ✅ Կուրսերի սահմանում ըստ կուրսի կոդի առաջին թվի
+            const getCourseYear = (code) => {
+                const match = code.match(/\d/); // Վերցնում ենք առաջին թվանշանը
+                return match ? match[0] : null;
+            };
 
-                    const table = document.createElement("table");
-                    table.setAttribute("border", "1");
+            const courseGroups = {
+                "1": data.filter(entry => getCourseYear(entry.course_code) === "4"),
+                "2": data.filter(entry => getCourseYear(entry.course_code) === "3"),
+                "3": data.filter(entry => getCourseYear(entry.course_code) === "2"),
+                "4": data.filter(entry => getCourseYear(entry.course_code) === "1")
+            };
 
-                    // ✅ Ավելացնում ենք աղյուսակի վերնագրերը
-                    table.innerHTML = `
-                        <thead>
-                            <tr>
-                                <th>Կուրս</th>
-                                <th>Օր</th>
-                                <th>Շաբաթ</th>
-                                <th>Ժամ</th>
-                                <th>Սենյակ</th>
-                                <th>Առարկա</th>
-                                <th>Դասախոս</th>
-                                <th>Տիպ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-${course}-${weekType}"></tbody>
-                    `;
-                    container.appendChild(table);
+            console.log("📌 Filtered Course Groups:", courseGroups);
+
+            // ✅ Ստեղծում ենք կուրսերի կոճակները
+            const buttonContainer = document.createElement("div");
+            buttonContainer.classList.add("course-buttons");
+
+            ["1", "2", "3", "4"].forEach(courseNum => {
+                const button = document.createElement("button");
+                button.classList.add("course-btn");
+                button.textContent = `${courseNum}-րդ կուրս`;
+                button.dataset.course = courseNum;
+
+                button.addEventListener("click", () => {
+                    console.log(`📌 Button Clicked: ${courseNum}-րդ կուրս`);
+                    filterByCourse(courseNum, courseGroups);
                 });
+
+                buttonContainer.appendChild(button);
             });
 
-            // ✅ Տվյալները ավելացնում ենք համապատասխան աղյուսակի մեջ
-            data.forEach(row => {
-                const tbody = document.getElementById(`tbody-${row.course_code}-${row.week_type}`);
-                if (tbody) {
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${row.course_code}</td>
-                        <td>${row.day_name}</td>
-                        <td>${row.week_type}</td>
-                        <td>${row.time_slot}</td>
-                        <td>${row.room_number}</td>
-                        <td>${row.subject_name}</td>
-                        <td>${row.teacher_name}</td>
-                        <td>${row.type_name}</td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            });
+            container.prepend(buttonContainer);
+
+            // ✅ Սկզբում ցուցադրում ենք **1-ին կուրսի աղյուսակները**
+            filterByCourse("1", courseGroups);
         })
         .catch(error => console.error("❌ Error fetching schedule:", error));
 });
+
+// ✅ Ֆիլտրող ֆունկցիա (1-ին, 2-րդ, 3-րդ, 4-րդ կուրսերը)
+function filterByCourse(selectedCourse, courseGroups) {
+    console.log(`📌 Filtering for Course: ${selectedCourse}`);
+    
+    const container = document.getElementById("scheduleContainer");
+
+    // ✅ Ջնջում ենք նախորդ աղյուսակները
+    document.querySelectorAll(".schedule-table, .no-schedule").forEach(el => el.remove());
+
+    if (!courseGroups[selectedCourse] || courseGroups[selectedCourse].length === 0) {
+        console.log(`❌ No Schedule Found for Course ${selectedCourse}`);
+        
+        const message = document.createElement("p");
+        message.classList.add("no-schedule");
+        message.textContent = "Ներկա պահին դասացուցակը դեռևս հասանելի չէ";
+        container.appendChild(message);
+        return;
+    }
+
+    console.log(`✅ Rendering Schedule for Course ${selectedCourse}`, courseGroups[selectedCourse]);
+
+    // ✅ Ավելացնում ենք աղյուսակները
+    renderTables(courseGroups[selectedCourse]);
+}
+
+function renderTables(scheduleData) {
+    console.log("📌 Creating Tables with Data:", scheduleData);
+
+    const container = document.getElementById("scheduleContainer");
+    container.querySelectorAll("table, h2, p").forEach(element => element.remove());
+
+    let uniqueCourseCodes = [...new Set(scheduleData.map(item => item.course_code))].sort();
+
+    uniqueCourseCodes.forEach(courseCode => {
+        ["համարիչ", "հայտարար"].forEach(weekType => {
+            const filteredData = scheduleData
+                .filter(item => item.course_code === courseCode && item.week_type === weekType);
+
+            if (filteredData.length === 0) {
+                const noDataMessage = document.createElement("p");
+                noDataMessage.classList.add("no-schedule");
+                noDataMessage.textContent = `${courseCode} - ${weekType}: Ներկա պահին տվյալներ չկան`;
+                container.appendChild(noDataMessage);
+                return;
+            }
+
+            const courseTitle = document.createElement("h2");
+            courseTitle.textContent = `${courseCode} - ${weekType}`;
+            container.appendChild(courseTitle);
+
+            const table = document.createElement("table");
+            table.classList.add("schedule-table");
+
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+
+            ["Ժամ", "Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"].forEach(day => {
+                const th = document.createElement("th");
+                th.textContent = day;
+                headerRow.appendChild(th);
+            });
+
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement("tbody");
+
+            const timeSlots = ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"];
+
+            timeSlots.forEach(slot => {
+                const row = document.createElement("tr");
+
+                const timeCell = document.createElement("td");
+                timeCell.textContent = slot;
+                row.appendChild(timeCell);
+
+                ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"].forEach(day => {
+                    const cell = document.createElement("td");
+                    const lessons = filteredData.filter(item => item.day_name === day && item.time_slot === slot);
+
+                    if (lessons.length > 0) {
+                        lessons.forEach(lesson => {
+                            const lessonDiv = document.createElement("div");
+
+                            // ✅ **Առարկայի անունին ավելացնում ենք էմոջի՝ առանց փակագծերի**
+                            const typeEmojiMap = {
+                                "Դաս": "📖",
+                                "Լաբ": "🔬",
+                                "Լաբ1": "🔬", 
+                                "Լաբ1": "🔬", 
+                                "Լաբ1": "🔬", 
+                                "Լաբ1": "🔬", 
+                                "Լաբ1": "🔬", 
+                                "Գործ": "🛠️",
+                                "Գործ1": "🛠️",
+                                "Գործ2": "🛠️",
+                                "Գործ3": "🛠️",
+                                "Գործ4": "🛠️",
+                            };
+
+                            const lessonType = lesson.type_name || "Այլ";
+                            const lessonText = `${typeEmojiMap[lessonType] || "📌"} ${lesson.subject_name}`;
+
+                            lessonDiv.textContent = lessonText;
+
+                            lessonDiv.dataset.subject = lesson.subject_name;
+                            lessonDiv.dataset.teacher = lesson.teacher_name;
+                            lessonDiv.dataset.room = lesson.room_number;
+                            lessonDiv.dataset.type = lesson.type_name;
+
+                            lessonDiv.addEventListener("click", () => openPopup(lessonDiv));
+
+                            cell.appendChild(lessonDiv);
+                        });
+                    } else {
+                        cell.textContent = "-";
+                    }
+
+                    row.appendChild(cell);
+                });
+
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(tbody);
+            container.appendChild(table);
+        });
+    });
+}
+
+
+// ✅ Պոպափ պատուհանի բացման ֆունկցիա
+// ✅ Փոփափ բացելու ֆունկցիա
+function openPopup(element) {
+    const popup = document.getElementById("classPopup");
+    document.getElementById("popupSubject").textContent = element.dataset.subject || "Առարկա չստացվեց";
+    document.getElementById("popupTeacher").textContent = element.dataset.teacher || "Դասախոս չստացվեց";
+    document.getElementById("popupRoom").textContent = element.dataset.room || "Լսարան չստացվեց";
+    document.getElementById("popupType").textContent = element.dataset.type || "Տիպ չստացվեց";
+    popup.classList.remove("hidden");
+    popup.style.display = "block";
+}
+
+// ✅ Փակելու ֆունկցիա (աշխատում է բոլոր դեպքերում)
+function closePopup() {
+    const popup = document.getElementById("classPopup");
+    if (!popup) {
+        console.error("⛔ Popup element not found!");
+        return;
+    }
+
+    popup.classList.add("hidden"); // ✅ Ավելացնում ենք `hidden` դասը
+    popup.style.display = "none"; // ✅ Եթե CSS-ում խնդիր լինի, սա էլ կաշխատի
+
+    console.log("✅ Popup closed!");
+}
+
 
 
 // 🔹 Ֆունկցիա՝ API-ից դասացուցակի տվյալների բեռնում
@@ -274,20 +416,4 @@ function buildScheduleTable(containerId, entries) {
     container.appendChild(table);
 }
 
-// 🔹 Փոփափ պատուհանի բացում
-function openPopup(element) {
-    const popup = document.getElementById("classPopup");
-    if (!popup) return;
-    document.getElementById("popupSubject").textContent = element.dataset.subject || "Առարկա չստացվեց";
-    document.getElementById("popupTeacher").textContent = element.dataset.teacher || "Դասախոս չստացվեց";
-    document.getElementById("popupRoom").textContent = element.dataset.room || "Լսարան չստացվեց";
-    document.getElementById("popupType").textContent = element.dataset.type || "Տիպ չստացվեց";
-    popup.classList.remove("hidden");
-}
 
-// 🔹 Փոփափ պատուհանի փակում
-function closePopup() {
-    const popup = document.getElementById("classPopup");
-    if (!popup) return;
-    popup.classList.add("hidden");
-}

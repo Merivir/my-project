@@ -27,22 +27,22 @@
 
     <!-- Դասացուցակի դինամիկ կառուցման համար բաժին -->
     <div id="scheduleContainer">
-        <div id="scheduleContainer">
-            <h1>Դասացուցակ</h1>
-        </div>        
+        <h1>Դասացուցակ</h1>
     </div>
-
+    
     <!-- Պոպափ պատուհան -->
-    <div id="classPopup" class="modal hidden">
-        <div class="modal-content">
-            <span class="close-popup">&times;</span>
-            <h3 id="popupSubject">Առարկա</h3>
+    <div id="classPopup" class="popup hidden">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h2>Դասի Մանրամասներ</h2>
+            <p><strong>Առարկա:</strong> <span id="popupSubject"></span></p>
             <p><strong>Դասախոս:</strong> <span id="popupTeacher"></span></p>
             <p><strong>Լսարան:</strong> <span id="popupRoom"></span></p>
-            <p><strong>Տիպ:</strong> <span id="popupType"></span></p>
-            <p><strong>Հղում:</strong> <a id="popupLink" href="#" target="_blank">Zoom</a></p>
+            <p><strong>Դասի Տիպ:</strong> <span id="popupType"></span></p>
         </div>
     </div>
+    
+    
 
     <script src="/js/script.js"></script>
 </body>
