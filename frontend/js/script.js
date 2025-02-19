@@ -1,252 +1,293 @@
-// Global փոփոխականներ
+// 🔹 Global փոփոխականներ
 let scheduleData = []; // Ամեն դասացուցակի տվյալները
-let currentCourse = "1"; // Սկզբում ընտրում ենք առաջին կուրսը
-
-// Mapping՝ կոճակի համար՝ համարի համար
-const courseMap = {
-  "1": "ՄԹ440",
-  "2": "ՄԹ448",
-  "3": "Մ426",
-  "4": "ՄԹ459"
-};
-
-document.addEventListener("DOMContentLoaded", function () {
-    const referrer = document.referrer; // Նախորդ էջի URL-ը
-    const adminPages = ["/admin-dashboard", "/edit-subjects"]; // ✅ Ադմինի էջերը
-  
-    // Եթե նախորդ էջը ադմին էջերից մեկն է, ցույց ենք տալիս "Վերադառնալ" սլաքը
-    if (adminPages.some(page => referrer.includes(page))) {
-        document.getElementById("backArrow").style.display = "block";
-    }
-});
-
-
+let currentCourseYear = "1"; // Սկզբում ընտրում ենք առաջին կուրսը
+let courseMap = {}; // Mapping՝ կուրսի համար՝ courses-ի ID-ներով
 
 // Օրերի և ժամային սլոտների ցուցակը (ստանդարտ)
 const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
 const timeSlots = ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"];
 
-// Եթե API-ի պատասխաններում թվային օրերի կամ ժամային սլոտների դաշտեր չկան,
-// մենք կստեղծենք՝ օգտագործելով արդեն տեքստային արժեքները "day_name" և "time_slot"
-// (հետևյալ mapping-ը օգտագործվում է նախորդ կոդում, բայց այստեղ մենք դրանք անմիջապես համեմատում ենք)
-
+// 🔹 Հիմնական գործողություններ, երբ բեռնվում է էջը
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("📌 Script loaded: initializing schedule display...");
+    fetch('http://localhost:3000/api/schedule')
+        .then(response => response.json())
+        .then(data => {
+            console.log("📌 Data from API:", data);
 
-  // Կապում ենք կուրսի ընտրության կոճակների իրադարձությունները
-  document.querySelectorAll(".course-btn").forEach(btn => {
-    btn.addEventListener("click", function () {
-      currentCourse = this.dataset.course;
-      // 'active' դասը ավելացնում ենք ընտրված կոճակի համար
-      document.querySelectorAll(".course-btn").forEach(b => b.classList.remove("active"));
-      this.classList.add("active");
-      filterScheduleByCourse(currentCourse);
-    });
-  });
+            const container = document.getElementById("scheduleContainer");
+            container.innerHTML = ""; // Մաքրում ենք նախորդ աղյուսակները
 
-  // Բեռնում ենք ամբողջ դասացուցակի տվյալները API-ից
-  loadSchedule().then(() => {
-    // Սկզբում ֆիլտրում ենք տվյալները՝ ընտրված կուրսի համար (հիմա "ՄԹ440")
-    filterScheduleByCourse(currentCourse);
-  });
+            // ✅ Բերում ենք բոլոր course_code-երը և ստեղծում ենք դրանց համար աղյուսակներ
+            const courses = [...new Set(data.map(row => row.course_code))]; // Վերցնում ենք միայն եզակի կուրսերը
 
-  // Թարմացնում ենք տվյալները ամեն 10 վայրկյան
-  setInterval(() => {
-    loadSchedule().then(() => {
-      filterScheduleByCourse(currentCourse);
-    });
-  }, 10000);
+            courses.forEach(course => {
+                // ✅ Ստեղծում ենք 2 առանձին աղյուսակ՝ "Համարիչ" և "Հայտարար"
+                ["համարիչ", "հայտարար"].forEach(weekType => {
+                    const title = document.createElement("h2");
+                    title.textContent = `${course} - ${weekType}`;
+                    container.appendChild(title);
 
-  // Պոպափ պատուհանի փակման համար, եթե կլիկվում ենք արտօրինակ տարածքում
-  document.addEventListener("click", function (event) {
-    const popup = document.getElementById("classPopup");
-    if (popup && !popup.contains(event.target)) {
-      closePopup();
-    }
-  });
+                    const table = document.createElement("table");
+                    table.setAttribute("border", "1");
+
+                    // ✅ Ավելացնում ենք աղյուսակի վերնագրերը
+                    table.innerHTML = `
+                        <thead>
+                            <tr>
+                                <th>Կուրս</th>
+                                <th>Օր</th>
+                                <th>Շաբաթ</th>
+                                <th>Ժամ</th>
+                                <th>Սենյակ</th>
+                                <th>Առարկա</th>
+                                <th>Դասախոս</th>
+                                <th>Տիպ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-${course}-${weekType}"></tbody>
+                    `;
+                    container.appendChild(table);
+                });
+            });
+
+            // ✅ Տվյալները ավելացնում ենք համապատասխան աղյուսակի մեջ
+            data.forEach(row => {
+                const tbody = document.getElementById(`tbody-${row.course_code}-${row.week_type}`);
+                if (tbody) {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${row.course_code}</td>
+                        <td>${row.day_name}</td>
+                        <td>${row.week_type}</td>
+                        <td>${row.time_slot}</td>
+                        <td>${row.room_number}</td>
+                        <td>${row.subject_name}</td>
+                        <td>${row.teacher_name}</td>
+                        <td>${row.type_name}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            });
+        })
+        .catch(error => console.error("❌ Error fetching schedule:", error));
 });
 
 
-//
-// 1. Ֆունկցիա՝ ամբողջ դասացուցակի տվյալների բեռնում API-ից
-//
-async function loadSchedule(courseCode) {
+// 🔹 Ֆունկցիա՝ API-ից դասացուցակի տվյալների բեռնում
+async function loadSchedule() {
     try {
-      console.log("🔍Fetching schedule data for", courseCode);
-      const response = await fetch(`/schedule?course=${courseCode}`);
-      if (!response.ok) throw new Error('❌ Backend error');
-      scheduleData = await response.json();
-      console.log("📌 Schedule data loaded:", scheduleData.slice(0, 5)); 
-    } catch (err) {
-      console.error("❌ Error loading schedule:", err);
-    }
-  }
-  
+        console.log("📡 Fetching schedule from API...");
+        const response = await fetch("/api/schedule");
+        const scheduleData = await response.json();
 
-//
-// 2. Ֆունկցիա՝ ընտրված կուրսի գրառումների ֆիլտրում
-//
-function filterScheduleByCourse(courseNumber) {
-  // Ստանում ենք ընտրված կուրսի կոդը, օրինակ "ՄԹ440"
-  const selectedCourseCode = courseMap[courseNumber];
-  console.log("Ընտրված կուրսի կոդ:", selectedCourseCode);
+        console.log("✅ Full Schedule Data with course_code:", JSON.stringify(scheduleData, null, 2));
 
-  // Եթե API-ի պատասխաններում գրառումներում չունենք "course" կամ "course_code" դաշտ,
-  // ապա ցույց կտանք բոլոր գրառումները (կամ կարող եք փոփոխել՝ միայն մի կուրսի համար)
-  const filteredEntries = scheduleData.filter(entry => {
-    if (!entry.course && !entry.course_code) {
-      return true;
-    }
-    const entryCourse = (entry.course || entry.course_code || "").trim();
-    return entryCourse === selectedCourseCode.trim();
-  });
-
-  // Բաժանում ենք գրառումները՝ ըստ week_type-ի
-  // Համարիչ՝ եթե week_type-ը պարունակում է "համար" (case-insensitive)
-  // Հայտարար՝ եթե week_type-ը պարունակում է "հայտարար"
-  const numeratorEntries = filteredEntries.filter(entry => {
-    return entry.week_type.toLowerCase().includes("համար");
-  });
-  const denominatorEntries = filteredEntries.filter(entry => {
-    return entry.week_type.toLowerCase().includes("հայտարար");
-  });
-
-  // Ստեղծում ենք աղյուսակները համապատասխան կոնտեյների մեջ
-  buildScheduleTable("scheduleNumerator", numeratorEntries);
-  buildScheduleTable("scheduleDenominator", denominatorEntries);
-}
-
-//
-// 3. Ֆունկցիա՝ HTML աղյուսակի կառուցում տվյալ գրառումների հիման վրա
-//
-function buildScheduleTable(containerId, entries) {
-  // Ստեղծում ենք table-ի կառուցվածքը
-  const table = document.createElement("table");
-  table.className = "schedule-table";
-
-  // Հեդեր
-  const thead = document.createElement("thead");
-  const headerRow = document.createElement("tr");
-  const thTime = document.createElement("th");
-  thTime.textContent = "Ժամ";
-  headerRow.appendChild(thTime);
-  days.forEach(day => {
-    const th = document.createElement("th");
-    th.textContent = day;
-    headerRow.appendChild(th);
-  });
-  thead.appendChild(headerRow);
-  table.appendChild(thead);
-
-  // Թbody՝ ժամային սլոտներով
-  const tbody = document.createElement("tbody");
-  timeSlots.forEach(slot => {
-    const row = document.createElement("tr");
-    // Ժամային սլոտի սյուն
-    const tdSlot = document.createElement("td");
-    tdSlot.textContent = slot;
-    row.appendChild(tdSlot);
-
-    // Ամեն օրվա համար բջիջ
-    days.forEach(day => {
-      const cell = document.createElement("td");
-      cell.className = "schedule-cell";
-      cell.dataset.day = day;
-      cell.dataset.slot = slot;
-
-      // Հիմա ֆիլտրում ենք API-ից ստացված գրառումները՝ օգտագործելով դաշտերը՝
-      // entry.day_name և entry.time_slot, որոնք արդեն տեքստային են:
-      const cellEntries = entries.filter(entry => {
-        return entry.day_name === day && entry.time_slot === slot;
-      });
-
-      // Եթե բջիջում կան գրառումներ, դրանք ցուցադրում ենք
-      cellEntries.forEach(entry => {
-        const entryDiv = document.createElement("div");
-        entryDiv.className = "entry";
-
-        // Ըստ entry.type_name ընտրում ենք emoji
-        let logo = "";
-        const typeText = entry.type_name ? entry.type_name.toLowerCase() : "";
-        if (typeText.includes("գործ")) {
-          logo = "📝";
-        } else if (typeText.includes("դաս")) {
-          logo = "📚";
-        } else if (typeText.includes("լաբ")) {
-          logo = "🔬";
-        } else {
-          logo = "❓";
+        if (!scheduleData || scheduleData.length === 0) {
+            console.warn("⚠️ No schedule data received from API!");
+            return;
         }
 
-        entryDiv.innerHTML = `<span class="entry-logo">${logo}</span>
-                              <span class="entry-text">
-                                <strong>${entry.subject_name}</strong><br>
-                                ${entry.teacher_name}<br>
-                                ${entry.room_number}
-                              </span>`;
-
-        // Պահպանում ենք տվյալները, որպեսզի փոփափ բացելիս օգտագործենք
-        entryDiv.dataset.subject = entry.subject_name;
-        entryDiv.dataset.teacher = entry.teacher_name;
-        entryDiv.dataset.room = entry.room_number;
-        entryDiv.dataset.type = entry.type_name;
-
-        // Ավելացնում ենք կլիկի իրադարձություն՝ փոփափ բացելու համար
-        entryDiv.addEventListener("click", function (e) {
-          e.stopPropagation();
-          openPopup(entryDiv);
+        scheduleData.forEach(item => {
+            if (!item.course_code) {
+                console.warn("⚠️ Missing course_code in:", item);
+            }
         });
 
-        cell.appendChild(entryDiv);
-      });
+        displaySchedule(scheduleData);
+    } catch (error) {
+        console.error("❌ Error loading schedule:", error);
+    }
+}
 
-      // Եթե բջիջը դատարկ է, ցուցադրում ենք "-"
-      if (cell.innerHTML.trim() === "") {
-        cell.textContent = "-";
-      }
-      row.appendChild(cell);
+
+function displaySchedule(scheduleData) {
+    const scheduleContainer = document.getElementById("scheduleContainer");
+    scheduleContainer.innerHTML = "";
+
+    scheduleData.forEach((item) => {
+        const scheduleItem = document.createElement("div");
+        scheduleItem.classList.add("schedule-item");
+        scheduleItem.innerHTML = `
+            <p><strong>Կուրսի կոդը:</strong> ${item.course_code}</p>
+            <p><strong>Օր:</strong> ${item.day_name}</p>
+            <p><strong>Ժամ:</strong> ${item.time_slot}</p>
+            <p><strong>Առարկա:</strong> ${item.subject_name}</p>
+            <p><strong>Դասարան:</strong> ${item.room_number}</p>
+            <p><strong>Դասախոս:</strong> ${item.teacher_name}</p>
+            <p><strong>Դասի տեսակ:</strong> ${item.type_name}</p>
+        `;
+        scheduleContainer.appendChild(scheduleItem);
     });
-    tbody.appendChild(row);
-  });
-  table.appendChild(tbody);
-
-  // Ավելացնում ենք աղյուսակը համապատասխան կոնտեյնரில்
-  const container = document.getElementById(containerId);
-  container.innerHTML = "";
-  container.appendChild(table);
 }
 
 
-//
-// 4. Փոփափ պատուհանի բացման ֆունկցիա
-//
+// 🔹 Ֆունկցիա՝ API-ից կուրսերի տվյալների բեռնում
+async function loadCourses() {
+    try {
+        console.log("📡 Fetching courses from API...");
+        const response = await fetch("/api/courses");
+        if (!response.ok) throw new Error(`⚠️ Server error: ${response.status}`);
+        const courses = await response.json();
+
+        console.log("✅ Raw Courses Data:", courses);
+        console.log("🔍 First Course Example:", courses[0]); // Ստուգում ենք առաջին կուրսի օրինակը
+
+        // Մաքուր courseMap-ի ստեղծում
+        courseMap = { "1": [], "2": [], "3": [], "4": [] };
+
+        courses.forEach(course => {
+            const courseCode = course.code || course.course_code || course.id;
+            if (!courseCode) {
+                console.warn("⚠️ Course entry missing 'code':", course);
+                return;
+            }
+
+            const firstDigit = courseCode.match(/\d/); // Գտնում ենք առաջին թիվը
+            if (!firstDigit) {
+                console.warn(`⚠️ No digit found in course code: ${courseCode}`);
+                return;
+            }
+
+            const year = firstDigit[0];
+            if (year === "4") courseMap["1"].push(courseCode);
+            else if (year === "3") courseMap["2"].push(courseCode);
+            else if (year === "2") courseMap["3"].push(courseCode);
+            else if (year === "1") courseMap["4"].push(courseCode);
+        });
+
+        console.log("✅ courseMap after processing:", courseMap);
+    } catch (error) {
+        console.error("⛔ Error loading courses:", error);
+    }
+}
+
+function filterScheduleByCourseYear(courseYear) {
+    const courseCodes = courseMap[courseYear] || [];
+    console.log("🔍 Course Codes for Year:", courseYear, "→", courseCodes);
+
+    if (courseCodes.length === 0) {
+        console.warn(`⚠️ No course codes found for year ${courseYear}`);
+        return;
+    }
+
+    const scheduleContainer = document.getElementById("scheduleContainer");
+    if (!scheduleContainer) {
+        console.error("⛔ scheduleContainer not found in DOM!");
+        return;
+    }
+
+    scheduleContainer.innerHTML = "";
+    let foundAny = false;
+
+    courseCodes.forEach(courseCode => {
+        console.log(`🔍 Checking for course code: ${courseCode}`);
+
+        const filteredEntries = scheduleData.filter(entry => {
+            if (!entry.course_code) {
+                console.warn(`⚠️ Missing course_code for entry:`, entry);
+                return false; // Չփորձենք համեմատել `undefined`
+            }
+            return entry.course_code.trim() === courseCode.trim();
+        });
+
+        console.log(`📌 Found ${filteredEntries.length} entries for course code: ${courseCode}`);
+
+        if (filteredEntries.length > 0) {
+            foundAny = true;
+            const courseTitle = document.createElement("h2");
+            courseTitle.textContent = `Դասացուցակ - ${courseCode}`;
+            scheduleContainer.appendChild(courseTitle);
+
+            const tableDiv = document.createElement("div");
+            tableDiv.id = `schedule-${courseCode}`;
+            scheduleContainer.appendChild(tableDiv);
+
+            buildScheduleTable(tableDiv.id, filteredEntries);
+        } else {
+            console.warn(`⚠️ No schedule found for course code: ${courseCode}`);
+        }
+    });
+
+    if (!foundAny) {
+        scheduleContainer.innerHTML = `<p style="color: red;">📢 No schedules available for this year!</p>`;
+    }
+}
+
+
+
+// 🔹 Ֆունկցիա՝ կուրսերի կոճակները թարմացնելու համար
+function updateCourseButtons() {
+    const courseButtonsContainer = document.getElementById("course-buttons");
+    if (!courseButtonsContainer) {
+        console.error("⛔ course-buttons container not found!");
+        return;
+    }
+
+    console.log("🔍 Updating Course Buttons. Current Course Map:", courseMap);
+    courseButtonsContainer.innerHTML = "";
+
+    Object.keys(courseMap).forEach(year => {
+        if (courseMap[year].length > 0) {
+            const button = document.createElement("button");
+            button.textContent = `Կուրս ${year}`;
+            button.onclick = () => {
+                currentCourseYear = year;
+                filterScheduleByCourseYear(year);
+            };
+            courseButtonsContainer.appendChild(button);
+        } else {
+            console.warn(`❌ Skipping year ${year}, no schedules available.`);
+        }
+    });
+
+    if (courseButtonsContainer.innerHTML === "") {
+        courseButtonsContainer.innerHTML = `<p style="color: red;">📢 No courses available!</p>`;
+    }
+}
+
+// 🔹 Ֆունկցիա՝ HTML աղյուսակի կառուցում
+function buildScheduleTable(containerId, entries) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        console.error(`⛔ Container with id ${containerId} not found.`);
+        return;
+    }
+
+    const table = document.createElement("table");
+    table.className = "schedule-table";
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    headerRow.innerHTML = "<th>Ժամ</th>" + days.map(day => `<th>${day}</th>`).join("");
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    timeSlots.forEach(slot => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${slot}</td>` + days.map(day => `<td class='schedule-cell' data-day='${day}' data-slot='${slot}'>-</td>`).join("");
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    container.innerHTML = "";
+    container.appendChild(table);
+}
+
+// 🔹 Փոփափ պատուհանի բացում
 function openPopup(element) {
-  const popup = document.getElementById("classPopup");
-  if (!popup) return;
-  document.getElementById("popupSubject").textContent = element.dataset.subject || "Առարկա չստացվեց";
-  document.getElementById("popupTeacher").textContent = element.dataset.teacher || "Դասախոս չստացվեց";
-  document.getElementById("popupRoom").textContent = element.dataset.room || "Լսարան չստացվեց";
-  document.getElementById("popupType").textContent = element.dataset.type || "Տիպ չստացվեց";
-
-  // Օրինակ՝ եթե կա լրացուցիչ հղում, ավելացնել կարելի է, հիմա սահմանվում է որպես "Zoom"
-  const link = document.getElementById("popupLink");
-  link.href = "#";
-  link.textContent = "Zoom";
-
-  popup.classList.remove("hidden");
-  popup.style.display = "block";
-  popup.style.visibility = "visible";
-  popup.style.opacity = "1";
+    const popup = document.getElementById("classPopup");
+    if (!popup) return;
+    document.getElementById("popupSubject").textContent = element.dataset.subject || "Առարկա չստացվեց";
+    document.getElementById("popupTeacher").textContent = element.dataset.teacher || "Դասախոս չստացվեց";
+    document.getElementById("popupRoom").textContent = element.dataset.room || "Լսարան չստացվեց";
+    document.getElementById("popupType").textContent = element.dataset.type || "Տիպ չստացվեց";
+    popup.classList.remove("hidden");
 }
 
-//
-// 5. Փոփափ պատուհանի փակման ֆունկցիա
-//
+// 🔹 Փոփափ պատուհանի փակում
 function closePopup() {
-  const popup = document.getElementById("classPopup");
-  if (!popup) return;
-  popup.classList.add("hidden");
-  popup.style.display = "none";
-  popup.style.visibility = "hidden";
-  popup.style.opacity = "0";
+    const popup = document.getElementById("classPopup");
+    if (!popup) return;
+    popup.classList.add("hidden");
 }

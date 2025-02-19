@@ -33,7 +33,6 @@ app.use(async (req, res, next) => {
     }
 });
 
-
 // Обработчики HTML-страниц
 app.get('/guest', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/guest.html'));
@@ -64,7 +63,6 @@ app.get('/edit-subjects', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/edit-subjects.html'));
 });
 
-
 // Маршрут для корневого пути "/"
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
@@ -75,5 +73,3 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-

@@ -2,36 +2,34 @@ const express = require('express');
 const { sql, poolPromise } = require('../models/db');
 const router = express.Router();
 
-// ✅ Ստանալ ՄԹ440 (344) կուրսի ամբողջ դասացուցակը
-router.get('/schedule', async (req, res) => {
+router.get('/', async (req, res) => {
+    console.log("📌 API HIT: /schedule");
     try {
-        const courseId = 344; // ՄԹ440 կուրսի ID-ն
         const pool = await poolPromise;
-        const result = await pool.request()
-            .input('course_id', sql.Int, courseId)
-            .query(`
-                SELECT 
-                    s.id, 
-                    c.code AS course_code, 
-                    d.name AS day_name, 
-                    w.type AS week_type, 
-                    ts.slot AS time_slot, 
-                    r.number AS room_number, 
-                    sub.name AS subject_name, 
-                    t.name AS teacher_name, 
-                    ty.name AS type_name
-                FROM Schedule s
-                JOIN Days d ON s.day_id = d.id
-                JOIN Weeks w ON s.week_id = w.id
-                JOIN TimeSlots ts ON s.time_slot_id = ts.id
-                JOIN Rooms r ON s.room_id = r.id
-                JOIN Subjects sub ON s.subject_id = sub.id
-                JOIN Courses c ON sub.course_id = c.id
-                JOIN Teachers t ON s.teacher_id = t.id
-                JOIN Types ty ON s.type_id = ty.id
-                WHERE c.id = @course_id
-                ORDER BY d.id, ts.id;
-            `);
+        const result = await pool.request().query(`
+            SELECT 
+                s.id, 
+                c.code AS course_code,  
+                d.name AS day_name, 
+                w.type AS week_type, 
+                ts.slot AS time_slot, 
+                r.number AS room_number, 
+                sub.name AS subject_name, 
+                t.name AS teacher_name, 
+                ty.name AS type_name
+            FROM Schedule s
+            LEFT JOIN Courses c ON s.course_id = c.id  
+            JOIN Days d ON s.day_id = d.id
+            JOIN Weeks w ON s.week_id = w.id
+            JOIN TimeSlots ts ON s.time_slot_id = ts.id
+            JOIN Rooms r ON s.room_id = r.id
+            JOIN Subjects sub ON s.subject_id = sub.id
+            JOIN Teachers t ON s.teacher_id = t.id
+            JOIN Types ty ON s.type_id = ty.id
+            ORDER BY d.id, ts.id;
+        `);
+
+        console.log("📌 Query Result:", JSON.stringify(result.recordset, null, 2));
 
         res.json(result.recordset);
     } catch (error) {
@@ -64,14 +62,16 @@ router.get('/available-timeslots', async (req, res) => {
 });
 
 
-
 // ✅ Ստանալ դասացուցակը ֆիլտրերով (եթե պետք լինի)
-router.get('/', async (req, res) => {
+router.get('/filtered-schedule', async (req, res) => {  // ✅ Փոխում ենք '/' -> '/filtered-schedule'
+    console.log("📌 API HIT: /filtered-schedule");
+
     const { day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id } = req.query;
 
     let query = `
         SELECT 
             s.id, 
+            c.code AS course_code, 
             d.name AS day_name, 
             w.type AS week_type, 
             ts.slot AS time_slot, 
@@ -80,6 +80,7 @@ router.get('/', async (req, res) => {
             t.name AS teacher_name, 
             ty.name AS type_name
         FROM Schedule s
+        LEFT JOIN Courses c ON s.course_id = c.id  
         JOIN Days d ON s.day_id = d.id
         JOIN Weeks w ON s.week_id = w.id
         JOIN TimeSlots ts ON s.time_slot_id = ts.id
@@ -105,12 +106,17 @@ router.get('/', async (req, res) => {
         params.forEach(param => request.input(param.name, param.type, param.value));
 
         const result = await request.query(query);
+
+        console.log("📌 Filtered Query Result:", JSON.stringify(result.recordset, null, 2));
+
         res.json(result.recordset);
     } catch (err) {
         console.error('❌ SQL Query Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
+
+
 
 // ✅ Ստանալ ֆիլտրերի տարբերակները
 router.get('/filters', async (req, res) => {
@@ -131,6 +137,7 @@ router.get('/filters', async (req, res) => {
         res.status(500).send("❌ Server Error: SQL սխալ");
     }
 });
+
 
 // ✅ Ավելացնել նոր գրառում
 router.post('/', async (req, res) => {
@@ -158,6 +165,7 @@ router.post('/', async (req, res) => {
     }
 });
 
+
 // ✅ Հաշվել տարբեր կուրսերի քանակը
 router.get('/courses-count', async (req, res) => {
     try {
@@ -171,5 +179,6 @@ router.get('/courses-count', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 module.exports = router;

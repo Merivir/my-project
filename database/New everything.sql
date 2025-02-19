@@ -88,3 +88,10 @@ SELECT * FROM Weeks;
 SELECT * FROM Days;
 SELECT * FROM TimeSlots;
 SELECT * FROM Schedule;
+SELECT * FROM Levels;
+
+
+SELECT s.id, s.course_id, c.code AS course_code
+FROM Schedule s
+LEFT JOIN Courses c ON s.course_id = c.id
+WHERE c.code IS NULL;
