@@ -37,16 +37,6 @@ header {
     transform: scale(1.1);
 }
 
-/* Դասացուցակի կոնտեյներ */
-.dashboard-container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 /* Աղյուսակի կարգավորումներ */
 table {
     width: 100%;
@@ -67,11 +57,6 @@ table th {
     color: white;
 }
 
-/* Դասերի տեսակների գույները */
-.lecture { background-color: #FFD700; }   /* 📖 Լեկցիա */
-.practice { background-color: #98FB98; }  /* 🛠️ Գործնական */
-.lab { background-color: #87CEFA; }       /* 🔬 Լաբորատոր */
-
 /* Հպման (hover) էֆեկտ */
 .schedule-cell {
     cursor: pointer;
@@ -81,6 +66,52 @@ table th {
 .schedule-cell:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end; /* ✅ Ֆիլտրը աջ կողմում */
+    margin-bottom: 15px;
+}
+
+.filter-container label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.filter-container select {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#applyFilter {
+    background-color: #0A2540;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#applyFilter:hover {
+    background-color: #082033;
+}
+
+.reset-icon {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: 0.2s;
+}
+
+.reset-icon:hover {
+    opacity: 1;
+}
+
 
 /* Popup-ի ձևավորում */
 .modal {
@@ -140,48 +171,27 @@ table th {
 /* Կուրսի ընտրության կոճակներ */
 .course-buttons {
     display: flex;
-    justify-content: flex-start; /* Ձախից */
-    margin: 20px;
-    gap: 10px; /* Կոճակների միջև տարածություն */
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .course-btn {
     font-size: 14px;
-    background-color: #0A2540; 
-    color: #fff;
-    padding: 10px 20px;
+    background-color: #0A2540;
+    color: white;
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease-in-out;
 }
 
 .course-btn:hover {
-    background-color: #082033; /* Ավելի մուգ երանգ */
+    background-color: #082033;
 }
 
-/* Ֆիլտրի կոճակների ձևավորում */
-.filter-buttons {
-    display: flex;
-    justify-content: flex-end; /* Աջից */
-    margin: 20px;
-    gap: 10px;
-}
 
-.filter-buttons button {
-    font-size: 14px;
-    background-color: #10324e; /* Կապույտ թողնում ենք */
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.filter-buttons button:hover {
-    background-color: #10324e;
-}
 
 /* Աղյուսակի ավելի գեղեցիկ դիրքավորում */
 .dashboard-container {
