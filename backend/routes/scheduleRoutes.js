@@ -116,6 +116,75 @@ router.get('/filtered-schedule', async (req, res) => {  // ✅ Փոխում են
     }
 });
 
+router.post('/save-availability', async (req, res) => {
+    const { teacher_id, primary_slots, backup_slots } = req.body;
+
+    if (!teacher_id || (!primary_slots.length && !backup_slots.length)) {
+        return res.status(400).json({ error: "Պահանջվում է դասախոս և առնվազն մեկ նշված ժամ" });
+    }
+
+    try {
+        const pool = await poolPromise;
+
+        console.log("🟢 Սկսում ենք պահպանել հասանելիությունը՝ teacher_id:", teacher_id);
+
+        // Ջնջում ենք նախորդ տվյալները, որ կրկնօրինակ չլինի
+        await pool.request()
+            .input("teacher_id", sql.Int, teacher_id)
+            .query("DELETE FROM PrimaryAvailability WHERE teacher_id = @teacher_id");
+
+        await pool.request()
+            .input("teacher_id", sql.Int, teacher_id)
+            .query("DELETE FROM BackupAvailability WHERE teacher_id = @teacher_id");
+
+        console.log("🟢 Նախորդ տվյալները ջնջվեցին");
+
+        // ✅ Պատրաստում ենք SQL հարցումները՝ կրկնությունները բացառելու համար
+        const insertPrimary = `
+            IF NOT EXISTS (
+                SELECT 1 FROM PrimaryAvailability 
+                WHERE teacher_id = @teacher_id AND day_id = @day_id AND time_slot_id = @time_slot_id
+            )
+            INSERT INTO PrimaryAvailability (teacher_id, day_id, time_slot_id)
+            VALUES (@teacher_id, @day_id, @time_slot_id)
+        `;
+
+        const insertBackup = `
+            IF NOT EXISTS (
+                SELECT 1 FROM BackupAvailability 
+                WHERE teacher_id = @teacher_id AND day_id = @day_id AND time_slot_id = @time_slot_id
+            )
+            INSERT INTO BackupAvailability (teacher_id, day_id, time_slot_id)
+            VALUES (@teacher_id, @day_id, @time_slot_id)
+        `;
+
+        // ✅ Ավելացնում ենք նոր տվյալները (առանց կրկնությունների)
+        for (const slot of primary_slots) {
+            const [day_id, time_slot_id] = slot.split('-').map(Number);
+            await pool.request()
+                .input("teacher_id", sql.Int, teacher_id)
+                .input("day_id", sql.Int, day_id)
+                .input("time_slot_id", sql.Int, time_slot_id)
+                .query(insertPrimary);
+        }
+
+        for (const slot of backup_slots) {
+            const [day_id, time_slot_id] = slot.split('-').map(Number);
+            await pool.request()
+                .input("teacher_id", sql.Int, teacher_id)
+                .input("day_id", sql.Int, day_id)
+                .input("time_slot_id", sql.Int, time_slot_id)
+                .query(insertBackup);
+        }
+
+        console.log("✅ Ժամերը հաջողությամբ ավելացվեցին");
+        res.json({ message: "✅ Ժամերը հաջողությամբ պահպանվեցին" });
+
+    } catch (error) {
+        console.error("❌ SQL Query Error:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 // ✅ Ստանալ ֆիլտրերի տարբերակները

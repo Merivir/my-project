@@ -70,6 +70,48 @@ async function updateTeacherInfo(teacherId) {
     }
 }
 
+async function saveAvailability() {
+    const teacherId = document.getElementById("teacherSelect").value;
+    if (!teacherId) {
+        alert("⚠️ Խնդրում ենք ընտրել դասախոս");
+        return;
+    }
+
+    const primarySlots = Array.from(document.querySelectorAll("#primarySlotsContainer .time-slot-checkbox:checked"))
+                              .map(checkbox => checkbox.value);
+    const backupSlots = Array.from(document.querySelectorAll("#backupSlotsContainer .time-slot-checkbox:checked"))
+                             .map(checkbox => checkbox.value);
+
+    if (!primarySlots.length && !backupSlots.length) {
+        alert("⚠️ Խնդրում ենք նշել առնվազն մեկ դասաժամ");
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/schedule/save-availability', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                teacher_id: teacherId,
+                primary_slots: primarySlots,
+                backup_slots: backupSlots
+            })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert("✅ Ժամերը հաջողությամբ պահպանվեցին!");
+        } else {
+            alert(`⛔ Սխալ: ${data.error}`);
+        }
+    } catch (error) {
+        console.error("⛔ Error saving availability:", error);
+        alert("❌ Սերվերի սխալ");
+    }
+}
+
 
 // ✅ Ստեղծում ենք checkbox-ները
 function generateTimeSlotCheckboxes(containerId) {
@@ -136,20 +178,53 @@ function updateConfirmButton() {
     document.getElementById("confirmAvailability").disabled = !anyChecked; 
 }
 
-// ✅ Հաստատում ենք ընտրված դասաժամերը
-function confirmAvailability() {
-    const checkedSlots = Array.from(document.querySelectorAll(".time-slot-checkbox:checked"))
-        .map(checkbox => checkbox.value);
-
-    if (checkedSlots.length === 0) {
-        alert("⚠️ Խնդրում ենք ընտրել առնվազն մեկ դասաժամ:");
+async function confirmAvailability() {
+    const teacherId = document.getElementById("teacherSelect").value;
+    if (!teacherId) {
+        alert("⚠️ Խնդրում ենք ընտրել դասախոս");
         return;
     }
 
-    isConfirmed = true;
-    document.getElementById("generateSchedule").disabled = false;
-    alert("✅ Ժամերը հաստատված են!");
+    const primarySlots = Array.from(document.querySelectorAll("#primarySlotsContainer .time-slot-checkbox:checked"))
+                              .map(checkbox => checkbox.value);
+    const backupSlots = Array.from(document.querySelectorAll("#backupSlotsContainer .time-slot-checkbox:checked"))
+                             .map(checkbox => checkbox.value);
+
+    if (!primarySlots.length && !backupSlots.length) {
+        alert("⚠️ Խնդրում ենք նշել առնվազն մեկ դասաժամ");
+        return;
+    }
+
+    try {
+        console.log("📡 Ուղարկում ենք API-ին՝ /api/schedule/save-availability");
+
+        const response = await fetch('/api/schedule/save-availability', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                teacher_id: teacherId,
+                primary_slots: primarySlots,
+                backup_slots: backupSlots
+            })
+        });
+
+        console.log("📡 Պատասխան ստացանք:", response);
+
+        const data = await response.json();
+        if (response.ok) {
+            alert("✅ Ժամերը հաջողությամբ հաստատվեցին և պահվեցին բազայում!");
+            document.getElementById("generateSchedule").disabled = false; // Թույլատրում ենք հաջորդ քայլը
+        } else {
+            alert(`⛔ Սխալ: ${data.error}`);
+        }
+    } catch (error) {
+        console.error("⛔ Error saving availability:", error);
+        alert("❌ Սերվերի սխալ");
+    }
 }
+
 
 // ✅ Ստեղծում ենք դասացուցակը
 function generateSchedule() {
