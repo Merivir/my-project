@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("generateSchedule").addEventListener("click", generateSchedule);
 });
 
+
 // ✅ Բեռնում ենք դասախոսների ցանկը
 async function loadTeachers() {
     try {
@@ -44,32 +45,45 @@ async function loadTeachers() {
     }
 }
 
-// ✅ Թարմացնում ենք դասաժամերի քանակի ցուցադրումը
 async function updateTeacherInfo(teacherId) {
     if (!teacherId) {
-        document.getElementById("teacher-info").innerHTML = "";
+        document.getElementById("teacher-info").innerHTML = "Ընտրեք դասախոս";
         return;
     }
 
     try {
-        const response = await fetch(`/api/teacher-schedule/${teacherId}`);
-        const data = await response.json();
+        const response = await fetch(`/api/schedule/teacher/${teacherId}`);
 
-        if (data && data.subjectCount !== undefined) {
-            document.getElementById("teacher-info").innerHTML = `
-                <strong>${data.teacherName}</strong> ունի <strong>${data.subjectCount}</strong> դասաժամ:
-            `;
-        } else {
+        if (!response.ok) {
+            console.error(`❌ Server Error: ${response.status}`);
             document.getElementById("teacher-info").innerHTML = "Տվյալներ չեն գտնվել";
+            return;
         }
+
+        const data = await response.json();
+        document.getElementById("teacher-info").innerHTML = `
+            <strong>${data.teacherName}</strong> ունի <strong>${data.subjectCount}</strong> դասաժամ:
+        `;
     } catch (error) {
         console.error("⛔ Error fetching teacher schedule:", error);
+        document.getElementById("teacher-info").innerHTML = "Տվյալներ չեն գտնվել";
     }
 }
+
 
 // ✅ Ստեղծում ենք checkbox-ները
 function generateTimeSlotCheckboxes(containerId) {
     const container = document.getElementById(containerId);
+    
+    // Ստուգում ենք, եթե վերնագիրը արդեն կա, չավելացնենք կրկնակի
+    if (!container.previousElementSibling || container.previousElementSibling.tagName !== "H2") {
+        const title = document.createElement("h2");
+        title.textContent = containerId === "primarySlotsContainer" ? "Առաջնային դասաժամեր" : "Երկրորդային դասաժամեր";
+        title.classList.add("schedule-title");
+        container.parentNode.insertBefore(title, container);
+    }
+
+    // Ջնջում ենք միայն աղյուսակը, ոչ թե վերնագիրը
     container.innerHTML = "";
 
     const table = document.createElement("table");
@@ -107,6 +121,7 @@ function generateTimeSlotCheckboxes(containerId) {
     table.appendChild(tbody);
     container.appendChild(table);
 }
+
 
 // ✅ Թույլատրում կամ անջատում ենք checkbox-ները
 function toggleCheckboxes(enable) {

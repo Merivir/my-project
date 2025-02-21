@@ -90,8 +90,25 @@ SELECT * FROM TimeSlots;
 SELECT * FROM Schedule;
 SELECT * FROM Levels;
 
-
-SELECT s.id, s.course_id, c.code AS course_code
+SELECT 
+    s.id, 
+    s.course_id,  -- ✅ Տեսնենք, արդյոք `course_id`-ները կան
+    c.id AS course_id_from_courses, 
+    c.code AS course_code,  
+    d.name AS day_name, 
+    w.type AS week_type, 
+    ts.slot AS time_slot, 
+    r.number AS room_number, 
+    sub.name AS subject_name, 
+    t.name AS teacher_name, 
+    ty.name AS type_name
 FROM Schedule s
-LEFT JOIN Courses c ON s.course_id = c.id
-WHERE c.code IS NULL;
+LEFT JOIN Courses c ON s.course_id = c.id  
+JOIN Days d ON s.day_id = d.id
+JOIN Weeks w ON s.week_id = w.id
+JOIN TimeSlots ts ON s.time_slot_id = ts.id
+JOIN Rooms r ON s.room_id = r.id
+JOIN Subjects sub ON s.subject_id = sub.id
+JOIN Teachers t ON s.teacher_id = t.id
+JOIN Types ty ON s.type_id = ty.id
+ORDER BY d.id, ts.id;

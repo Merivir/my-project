@@ -154,6 +154,7 @@ body {
     border: 2px solid rgba(0, 0, 0, 0.2); /* Կարմիր եզրագիծ */
     border-radius: 5px;
     background-color: white;
+    font-weight: bold; 
     color: rgba(0, 0, 0, 0.2);
     font-size: 16px;
     text-align: center;
@@ -203,11 +204,27 @@ select {
     align-items: flex-start;
 }
 
-/* Ամեն աղյուսակը ունի իր բաժինը */
-.schedule-table-container {
-    flex: 1;
+.schedule-table-container h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000; /* Եթե ֆոնը բաց է, փոխիր #333 */
     text-align: center;
+    margin-bottom: 10px; /* Տարածություն ավելացրու աղյուսակից */
+    padding: 15px 0; /* Ավելացրած padding */
+    display: block; /* Ստիպում է, որ մնա իր տեղում */
+    position: relative; /* Խուսափում ենք հնարավոր վերև տեղափոխումից */
+    z-index: 5; /* Վերաբերում ենք վերևի շերտին */
 }
+
+.schedule-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff; /* Փոխիր #333, եթե ֆոնը բաց է */
+    text-align: center;
+    margin-bottom: 15px;
+    padding-top: 10px;
+}
+
 
 /* Աղյուսակի դիզայն */
 .schedule-table {

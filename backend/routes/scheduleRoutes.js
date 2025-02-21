@@ -180,5 +180,33 @@ router.get('/courses-count', async (req, res) => {
     }
 });
 
+router.get('/teacher/:teacherId', async (req, res) => {
+    const { teacherId } = req.params;
+
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('teacher_id', sql.Int, teacherId)
+            .query(`
+                SELECT 
+                    t.name AS teacherName,
+                    COUNT(s.id) AS subjectCount
+                FROM Schedule s
+                JOIN Teachers t ON s.teacher_id = t.id
+                WHERE s.teacher_id = @teacher_id
+                GROUP BY t.name
+            `);
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ error: "Teacher not found or no schedule data" });
+        }
+
+        res.json(result.recordset[0]);
+    } catch (error) {
+        console.error("⛔ Error fetching teacher schedule:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 
 module.exports = router;

@@ -55,6 +55,7 @@ router.get('/teachers', async (req, res) => {
 
 
 
+
 // Пример защищённого маршрута
 router.get('/protected-route', verifyToken, (req, res) => {
     res.json({ message: 'Welcome to the protected route!', user: req.user });

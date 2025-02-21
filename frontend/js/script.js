@@ -152,7 +152,6 @@ document.getElementById("applyFilter").addEventListener("click", function () {
     filterScheduleByCourseCode(selectedCode);
 });
 
-// 🔹 HTML աղյուսակի կառուցում
 function buildScheduleTable(containerId, entries) {
     const container = document.getElementById(containerId);
     if (!container) {
@@ -177,8 +176,25 @@ function buildScheduleTable(containerId, entries) {
         row.innerHTML = `<td>${slot}</td>` + ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"]
             .map(day => {
                 const lessons = entries.filter(entry => entry.day_name === day && entry.time_slot === slot);
-                return `<td>${lessons.length > 0 ? lessons.map(l => l.subject_name).join("<br>") : "-"}</td>`;
+                const cell = document.createElement("td");
+
+                if (lessons.length > 0) {
+                    lessons.forEach(lesson => {
+                        const lessonDiv = document.createElement("div");
+                        lessonDiv.textContent = `${lesson.subject_name} (${lesson.teacher_name})`;
+
+                        // ✅ Ավելացնում ենք կլիկ իրադարձություն (Popup)
+                        lessonDiv.addEventListener("click", () => openPopup(lessonDiv));
+
+                        cell.appendChild(lessonDiv);
+                    });
+                } else {
+                    cell.textContent = "-";
+                }
+
+                return cell.outerHTML;
             }).join("");
+
         tbody.appendChild(row);
     });
 
@@ -207,11 +223,9 @@ function filterScheduleByCourseCode(selectedCode) {
 
     // ✅ Մաքրում ենք աղյուսակը՝ առանց ֆիլտրը ջնջելու
     scheduleContainer.innerHTML = "";
-
-    // ✅ Վերականգնում ենք ֆիլտրը վերևում
     scheduleContainer.insertAdjacentHTML("afterbegin", filterHTML);
 
-    // ✅ ՆՈՐԻՑ ամրացնում ենք `applyFilter` կոճակի իրադարձությունը
+    // ✅ Կրկին ամրացնում ենք `applyFilter` կոճակի իրադարձությունը
     document.getElementById("applyFilter").addEventListener("click", function () {
         const newSelectedCode = document.getElementById("courseCodeFilter").value;
         console.log(`📌 Կրկին ընտրվեց ֆիլտրը: ${newSelectedCode}`);
@@ -224,6 +238,7 @@ function filterScheduleByCourseCode(selectedCode) {
         return;
     }
 
+    // 🔹 **Ֆիլտրում ըստ ընտրված կուրսի**
     const filteredEntries = scheduleData.filter(entry => entry.course_code === selectedCode);
     console.log(`✅ ${selectedCode}-ի համար գտնվեց ${filteredEntries.length} դաս`);
 
@@ -232,28 +247,34 @@ function filterScheduleByCourseCode(selectedCode) {
         return;
     }
 
+    let foundAny = false; // ✅ Նշում ենք, եթե գոնե մեկի համար ցուցադրում ենք աղյուսակ
+
     // ✅ Ցուցադրում ենք **երկու** աղյուսակ՝ համարիչ և հայտարար
     ["համարիչ", "հայտարար"].forEach(weekType => {
         const weekData = filteredEntries.filter(entry => entry.week_type === weekType);
+        
+        console.log(`🔍 ${weekType} weekType-ի համար գտնված տվյալների քանակը:`, weekData.length); // ✅ Ավելացրու սա
+        
         if (weekData.length > 0) {
             const title = document.createElement("h2");
             title.textContent = `${selectedCode} - ${weekType}`;
             scheduleContainer.appendChild(title);
-
-            buildScheduleTable(scheduleContainer.id, weekData);  // ✅ Ճիշտ փոխանցում ID-ով
+    
+            renderFilteredTables(weekData);
+        } else {
+            console.warn(`⚠️ ${weekType} տվյալներ չկան`);
         }
     });
+    
 }
 
-
-// 🔹 Ցուցադրում է միայն ընտրված կուրսի կոդին համապատասխան աղյուսակը
 function renderFilteredTables(scheduleData) {
     console.log("📌 Showing filtered schedule:", scheduleData);
 
     const container = document.getElementById("scheduleContainer");
-
+    
     // ✅ Մաքրում ենք նախորդ աղյուսակները, որ մնացածը չերևան
-    container.innerHTML = "";
+    container.querySelectorAll("table, h2, p").forEach(element => element.remove());
 
     let uniqueCourseCodes = [...new Set(scheduleData.map(item => item.course_code))].sort();
 
@@ -306,7 +327,20 @@ function renderFilteredTables(scheduleData) {
                     if (lessons.length > 0) {
                         lessons.forEach(lesson => {
                             const lessonDiv = document.createElement("div");
-                            lessonDiv.textContent = `${lesson.subject_name} (${lesson.teacher_name})`;
+                            const typeEmojiMap = {
+                                "Դաս": "📖",
+                                "Լաբ": "🔬",
+                                "Գործ": "🛠️"
+                            };
+
+                            lessonDiv.textContent = `${typeEmojiMap[lesson.type_name] || "📌"} ${lesson.subject_name}`;
+                            lessonDiv.dataset.subject = lesson.subject_name;
+                            lessonDiv.dataset.teacher = lesson.teacher_name;
+                            lessonDiv.dataset.room = lesson.room_number;
+                            lessonDiv.dataset.type = lesson.type_name;
+
+                            // ✅ Ավելացնում ենք click իրադարձություն (Popup)
+                            lessonDiv.addEventListener("click", () => openPopup(lessonDiv));
 
                             cell.appendChild(lessonDiv);
                         });
@@ -315,7 +349,11 @@ function renderFilteredTables(scheduleData) {
                     }
 
                     row.appendChild(cell);
+                    console.log(`🔍 ${weekType} weekType-ի համար գտնված տվյալների քանակը:`, filteredData.length);
+
                 });
+
+                
 
                 tbody.appendChild(row);
             });
