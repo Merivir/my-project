@@ -2,8 +2,6 @@
 let scheduleData = [];
 let currentCourseYear = "1"; // Սկզբում 1-ին կուրսն է ընտրված
 let courseGroups = {};
-
-// 🔹 API-ից դասացուցակի բեռնում
 document.addEventListener("DOMContentLoaded", () => {
     fetch('http://localhost:3000/api/schedule')
         .then(response => response.json())
@@ -33,7 +31,23 @@ document.addEventListener("DOMContentLoaded", () => {
             filterByCourse(currentCourseYear, courseGroups);
         })
         .catch(error => console.error("❌ API-ի սխալ:", error));
+
+    // ✅ Ստուգում ենք, որ "Հաստատել" կոճակը առկա է
+    const applyFilterButton = document.getElementById("applyFilter");
+    if (!applyFilterButton) {
+        console.error("⛔ applyFilter կոճակը չի գտնվել!");
+    } else {
+        console.log("✅ applyFilter կոճակը գտնվել է:", applyFilterButton);
+
+        applyFilterButton.addEventListener("click", function () {
+            const selectedCode = document.getElementById("courseCodeFilter").value;
+            console.log(`📌 Ընտրվել է ֆիլտրի արժեքը: ${selectedCode}`);
+
+            filterScheduleByCourseCode(selectedCode);
+        });
+    }
 });
+
 
 function activateCourseButtons() {
     console.log("📌 Կուրսի կոճակները ակտիվացվում են");
@@ -142,7 +156,7 @@ document.getElementById("applyFilter").addEventListener("click", function () {
 function buildScheduleTable(containerId, entries) {
     const container = document.getElementById(containerId);
     if (!container) {
-        console.error(`⛔ Container with id ${containerId} not found.`);
+        console.error(`⛔ Container with id '${containerId}' not found.`);
         return;
     }
 
@@ -161,27 +175,42 @@ function buildScheduleTable(containerId, entries) {
     ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"].forEach(slot => {
         const row = document.createElement("tr");
         row.innerHTML = `<td>${slot}</td>` + ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"]
-            .map(day => `<td class='schedule-cell' data-day='${day}' data-slot='${slot}'>-</td>`).join("");
+            .map(day => {
+                const lessons = entries.filter(entry => entry.day_name === day && entry.time_slot === slot);
+                return `<td>${lessons.length > 0 ? lessons.map(l => l.subject_name).join("<br>") : "-"}</td>`;
+            }).join("");
         tbody.appendChild(row);
     });
 
     table.appendChild(tbody);
-    container.innerHTML = "";
     container.appendChild(table);
 }
 
 
-// 🔹 Դասացուցակի ֆիլտրում ըստ ընտրված կուրսի կոդի (միայն համարիչ/հայտարար)
 function filterScheduleByCourseCode(selectedCode) {
-    const scheduleContainer = document.getElementById("scheduleContainer");
+    console.log(`🔍 filterScheduleByCourseCode կանչվեց: ${selectedCode}`);
 
+    const scheduleContainer = document.getElementById("scheduleContainer");
     if (!scheduleContainer) {
         console.error("⛔ scheduleContainer տարրը չի գտնվել!");
         return;
     }
 
-    // ✅ Մաքրում ենք բոլոր աղյուսակները, որ մնացածը չերևան
+    // ✅ Պահպանում ենք ֆիլտրի տարրը, որ չջնջվի աղյուսակի հետ միասին
+    const filterContainer = document.querySelector(".filter-container");
+    if (!filterContainer) {
+        console.error("⚠️ Ֆիլտրը չի գտնվել!");
+        return;
+    }
+
+    // ✅ Պահպանում ենք ֆիլտրի HTML կոդը
+    const filterHTML = filterContainer.outerHTML;
+
+    // ✅ Մաքրում ենք աղյուսակը՝ առանց ֆիլտրը ջնջելու
     scheduleContainer.innerHTML = "";
+
+    // ✅ Վերականգնում ենք ֆիլտրը վերևում
+    scheduleContainer.insertAdjacentHTML("afterbegin", filterHTML);
 
     if (!selectedCode || selectedCode === "") {
         console.log("📌 Ցուցադրում ենք բոլոր դասացուցակները");
@@ -190,17 +219,27 @@ function filterScheduleByCourseCode(selectedCode) {
     }
 
     const filteredEntries = scheduleData.filter(entry => entry.course_code === selectedCode);
+    console.log(`✅ ${selectedCode}-ի համար գտնվեց ${filteredEntries.length} դաս`);
 
     if (filteredEntries.length === 0) {
-        scheduleContainer.innerHTML = `<p style="color: red;">📢 No schedule available for ${selectedCode}!</p>`;
+        scheduleContainer.innerHTML += `<p style="color: red;">📢 No schedule available for ${selectedCode}!</p>`;
         return;
     }
 
-    console.log(`✅ ${selectedCode}-ի համար գտնվեց ${filteredEntries.length} դաս`);
+    // ✅ Ցուցադրում ենք **երկու** աղյուսակ՝ համարիչ և հայտարար
+    ["համարիչ", "հայտարար"].forEach(weekType => {
+        const weekData = filteredEntries.filter(entry => entry.week_type === weekType);
+        if (weekData.length > 0) {
+            const title = document.createElement("h2");
+            title.textContent = `${selectedCode} - ${weekType}`;
+            scheduleContainer.appendChild(title);
 
-    // ✅ Ցուցադրում ենք աղյուսակը միայն ընտրված կուրսի կոդի համար
-    renderFilteredTables(filteredEntries);
+            buildScheduleTable(scheduleContainer.id, weekData);  // ✅ Ճիշտ փոխանցում ID-ով
+        }
+    });
 }
+
+
 
 // 🔹 Ցուցադրում է միայն ընտրված կուրսի կոդին համապատասխան աղյուսակը
 function renderFilteredTables(scheduleData) {
