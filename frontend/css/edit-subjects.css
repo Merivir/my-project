@@ -129,15 +129,41 @@ header {
 }
 
 
-/* Առարկայի քարտ */
 .subject-card {
-    width: 250px;
-    padding: 10px;
-    border: 1px solid #ddd;
+    background: white;
     border-radius: 8px;
-    background: #f9f9f9;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 300px;
     text-align: center;
+}
+
+.subject-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.subject-card p {
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.delete-btn {
+    background: #d9534f;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.delete-btn:hover {
+    background: #c9302c;
 }
 
 /* Պահել հաստատման կոճակը ներքևում */

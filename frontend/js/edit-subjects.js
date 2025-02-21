@@ -29,43 +29,55 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
     
-    // Բեռնում ենք կուրսի կոդերը՝ ըստ ընտրված կուրսի
     async function loadCourseCodes(levelId) {
         try {
+            console.log(`📡 Fetching courses for levelId: ${levelId}`);
+            
+            if (!levelId || isNaN(levelId)) {
+                console.error("⛔ Invalid levelId:", levelId);
+                return;
+            }
+    
             const response = await fetch(`/api/courses?levelId=${levelId}`);
+            if (!response.ok) throw new Error(`Server error: ${response.status}`);
+    
             const courses = await response.json();
+            console.log("✅ Courses fetched:", courses);
+    
+            if (!Array.isArray(courses)) throw new Error("Returned data is not an array");
+    
             courseCodeSelect.innerHTML = `<option value="">Ընտրել կուրսի կոդ...</option>` +
                 courses.map(course => `<option value="${course.id}">${course.code}</option>`).join("");
+    
             courseCodeSelect.disabled = false;
         } catch (error) {
             console.error("⛔ Error loading course codes:", error);
         }
     }
-
-    // Բեռնում ենք առարկաները՝ ըստ կուրսի կոդի
-    async function loadSubjects(courseCode) {
-        try {
-            const response = await fetch(`/api/subjects/${courseCode}`);
-            const subjects = await response.json();
-            console.log("📦 Received subjects:", subjects); // ✅ Ստուգում ենք, ինչ տվյալ է գալիս
     
-            if (!Array.isArray(subjects)) {
-                throw new Error("Returned data is not an array");
+    async function loadCourseCodes(levelId) {
+        try {
+            console.log(`📡 Fetching courses for levelId: ${levelId}`);
+            
+            if (!levelId || isNaN(levelId)) {
+                console.error("⛔ Invalid levelId:", levelId);
+                return;
             }
     
-            subjectsContainer.innerHTML = subjects.map(subject => `
-                <div class="subject-card">
-                    <h3>${subject.name}</h3>
-                    <p><strong>Դասախոս:</strong> ${subject.teacher}</p>
-                    <p><strong>Տիպ:</strong> ${subject.type}</p>
-                    <button class="edit-btn" data-id="${subject.id}">✏️ Խմբագրել</button>
-                    <button class="delete-btn" data-id="${subject.id}">❌ Ջնջել</button>
-                </div>
-            `).join("");
+            const response = await fetch(`/api/courses?levelId=${levelId}`);
+            if (!response.ok) throw new Error(`Server error: ${response.status}`);
     
-            saveChangesBtn.disabled = false;
+            const courses = await response.json();
+            console.log("✅ Courses fetched:", courses);
+    
+            if (!Array.isArray(courses)) throw new Error("Returned data is not an array");
+    
+            courseCodeSelect.innerHTML = `<option value="">Ընտրել կուրսի կոդ...</option>` +
+                courses.map(course => `<option value="${course.id}">${course.code}</option>`).join("");
+    
+            courseCodeSelect.disabled = false;
         } catch (error) {
-            console.error("⛔ Error loading subjects:", error);
+            console.error("⛔ Error loading course codes:", error);
         }
     }
     
