@@ -186,7 +186,6 @@ function buildScheduleTable(containerId, entries) {
     container.appendChild(table);
 }
 
-
 function filterScheduleByCourseCode(selectedCode) {
     console.log(`🔍 filterScheduleByCourseCode կանչվեց: ${selectedCode}`);
 
@@ -211,6 +210,13 @@ function filterScheduleByCourseCode(selectedCode) {
 
     // ✅ Վերականգնում ենք ֆիլտրը վերևում
     scheduleContainer.insertAdjacentHTML("afterbegin", filterHTML);
+
+    // ✅ ՆՈՐԻՑ ամրացնում ենք `applyFilter` կոճակի իրադարձությունը
+    document.getElementById("applyFilter").addEventListener("click", function () {
+        const newSelectedCode = document.getElementById("courseCodeFilter").value;
+        console.log(`📌 Կրկին ընտրվեց ֆիլտրը: ${newSelectedCode}`);
+        filterScheduleByCourseCode(newSelectedCode);
+    });
 
     if (!selectedCode || selectedCode === "") {
         console.log("📌 Ցուցադրում ենք բոլոր դասացուցակները");
@@ -238,7 +244,6 @@ function filterScheduleByCourseCode(selectedCode) {
         }
     });
 }
-
 
 
 // 🔹 Ցուցադրում է միայն ընտրված կուրսի կոդին համապատասխան աղյուսակը
