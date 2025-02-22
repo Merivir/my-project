@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Դասացուցակի Հաստատում</title>
+    <link rel="stylesheet" href="/css/schedule-approval.css">
+</head>
+<body>
+    <header>Դասացուցակի Հաստատում</header>
+    
+    <div class="back-arrow" onclick="goBack()">
+        <img src="/assets/back-arrow.png" alt="Back" class="back-arrow-img">
+    </div>
+    
+    <div class="button-container">
+        <button id="rejectBtn" class="reject">Հրաժարվել</button>
+        <button id="confirmBtn" class="confirm">Հաստատել</button>
+    </div>
+    
+    <div class="dashboard-container">
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>Օր</th>
+                    <th>Ժամ</th>
+                    <th>Առարկա</th>
+                    <th>Դասախոս</th>
+                    <th>Լսարան</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleBody">
+                <!-- Տվյալները կավելացվեն այստեղ -->
+            </tbody>
+        </table>
+        
+    </div>
+    
+    <script src="/js/schedule-approval.js"></script>
+</body>
+</html>

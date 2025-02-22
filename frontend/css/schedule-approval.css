@@ -1,0 +1,82 @@
+/* Հիմնական ոճերը */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+/* Վերնագիր */
+header {
+    background-color: #0A2540; /* Մուգ կապույտ */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    position: relative;
+}
+
+/* Վերադառնալ սլաք */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.back-arrow-img {
+    width: 50px; /* ✅ Սլաքի չափ */
+    height: auto;
+    opacity: 0.9;
+    transition: 0.3s ease-in-out;
+}
+
+.back-arrow:hover .back-arrow-img {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Կոճակների նոր դիրքավորում (աջ վերևում, կողք կողքի) */
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* ✅ Աջ կողմում */
+    margin-bottom: 15px;
+    padding-right: 20px;
+    margin-top: 20px;
+    gap: 10px; /* ✅ Ավելացնում է տարածություն կոճակների միջև */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.confirm {
+    background-color: #28a745;
+    color: white;
+}
+
+.reject {
+    background-color: #dc3545;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+/* Աղյուսակի ավելի գեղեցիկ դիրքավորում */
+.dashboard-container {
+    max-width: 90%; /* ✅ Հարմարեցնում ենք լայնությունը */
+    margin: 80px auto 40px auto; /* ✅ Իջեցնում ենք, որ կոճակները վերևում լինեն */
+    padding: 30px; /* ✅ Ավելացնում ենք padding եզրերին */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}

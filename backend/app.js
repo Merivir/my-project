@@ -18,9 +18,17 @@ const config = {
 
 const app = express();
 
+
+
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../frontend')));
+//app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, '../frontend/html')));
+// 🔹 Թույլ ենք տալիս static ֆայլերի մատուցում
+app.use("/css", express.static(path.join(__dirname, "../frontend/css")));
+app.use("/js", express.static(path.join(__dirname, "../frontend/js")));
+app.use("/assets", express.static(path.join(__dirname, "../frontend/assets")));
+
 
 // Подключение к MSSQL
 app.use(async (req, res, next) => {
@@ -45,6 +53,11 @@ app.get('/admin-login', (req, res) => {
 app.get('/admin-register', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/admin-register.html'));
 });
+
+app.get('/schedule-approval', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/schedule-approval.html'));
+});
+
 
 app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/admin-dashboard.html'));

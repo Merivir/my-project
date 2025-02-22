@@ -81,7 +81,52 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
     
-
+    async function loadSubjects(courseCode) {
+        try {
+            console.log(`📡 Fetching subjects for courseCode: ${courseCode}`);
+            const response = await fetch(`/api/subjects/${courseCode}`);
+    
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+    
+            const subjects = await response.json();
+            console.log("📦 Received subjects:", subjects); // ✅ Ստուգում ենք API-ից ստացված տվյալները
+            
+            if (!Array.isArray(subjects) || subjects.length === 0) {
+                console.warn("⚠️ No subjects received or data is not an array!");
+                return;
+            }
+    
+            renderSubjects(subjects); // ✅ Առարկաները ցույց ենք տալիս
+        } catch (error) {
+            console.error("⛔ Error loading subjects:", error);
+        }
+    }
+    
+    
+    function renderSubjects(subjects) {
+        console.log("📦 Rendering subjects:", subjects); // ✅ Ստուգում ենք տվյալները
+    
+        const subjectsContainer = document.getElementById("subjectsContainer");
+        if (!subjectsContainer) {
+            console.error("⛔ Error: subjectsContainer not found in DOM!");
+            return;
+        }
+    
+        subjectsContainer.innerHTML = subjects.map(subject => `
+            <div class="subject-card">
+                <h3>${subject.subject_name || "Առարկա չկա"}</h3>
+                <p><strong>Դասախոս:</strong> ${subject.teacher_name || "Չի նշված"}</p>
+                <button class="delete-btn" data-id="${subject.id}">❌ Ջնջել</button>
+            </div>
+        `).join("");
+    
+        console.log("✅ Rendered subjects successfully!");
+    }
+    
+    
+    
     // Կուրս ընտրելիս բեռնում ենք համապատասխան կոդերը
     courseSelect.addEventListener("change", (e) => {
         const selectedLevel = e.target.value;

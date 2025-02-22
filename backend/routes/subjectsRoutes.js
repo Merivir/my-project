@@ -23,21 +23,33 @@ router.get("/subjects/:courseCode", async (req, res) => {
         console.log(`📡 Fetching subjects for courseCode: ${courseCode}`);
 
         const result = await pool.request()
-            .input("courseCode", sql.NVarChar, courseCode)
+            .input("courseCode", sql.Int, courseCode) // Փոխի՛ր եթե պետք է NVARCHAR
             .query(`
-                SELECT s.id, s.name AS subject, t.name AS teacher, s.classroom, s.type
+                SELECT 
+                    s.id, 
+                    s.name AS subject_name, 
+                    ISNULL(t.name, 'Չի նշված') AS teacher_name
                 FROM Subjects s
-                LEFT JOIN Teachers t ON s.teacher_id = t.id
-                WHERE s.course_code = @courseCode
+                LEFT JOIN Schedule sch ON s.id = sch.subject_id
+                LEFT JOIN Teachers t ON sch.teacher_id = t.id
+                WHERE s.course_id = (SELECT id FROM Courses WHERE code = @courseCode);
             `);
 
-        console.log("✅ Subjects fetched:", result.recordset);
+        console.log("✅ Query executed successfully.");
+        console.log("✅ Query Result:", result.recordset);
+
+        if (!result.recordset || result.recordset.length === 0) {
+            console.warn(`⚠️ No subjects found for courseCode: ${courseCode}`);
+            return res.status(404).json({ message: "No subjects found" });
+        }
+
         res.json(result.recordset);
     } catch (err) {
         console.error("⛔ Error fetching subjects:", err);
         res.status(500).json({ message: "Server error", error: err.message });
     }
 });
+
 
 
 // 📌 Բերում ենք ընտրված կուրսի ID-ին համապատասխան առարկաները (Եթե ըստ ID է աշխատելու)

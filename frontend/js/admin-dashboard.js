@@ -215,6 +215,7 @@ async function confirmAvailability() {
         const data = await response.json();
         if (response.ok) {
             alert("✅ Ժամերը հաջողությամբ հաստատվեցին և պահվեցին բազայում!");
+            isConfirmed = true; // ✅ Ավելացվել է, որ հաստատումը ճանաչվի
             document.getElementById("generateSchedule").disabled = false; // Թույլատրում ենք հաջորդ քայլը
         } else {
             alert(`⛔ Սխալ: ${data.error}`);
@@ -226,6 +227,7 @@ async function confirmAvailability() {
 }
 
 
+
 // ✅ Ստեղծում ենք դասացուցակը
 function generateSchedule() {
     if (!isConfirmed) {
@@ -234,4 +236,5 @@ function generateSchedule() {
     }
 
     alert("📅 Դասացուցակը ստեղծվեց!");
+    window.location.href = "/schedule-approval.html";
 }

@@ -20,6 +20,8 @@ DROP TABLE IF EXISTS Days;
 DROP TABLE IF EXISTS TimeSlots;
 DROP TABLE IF EXISTS Weeks;
 DROP TABLE IF EXISTS Types;
+DROP TABLE IF EXISTS Levels;
+DROP TABLE IF EXISTS Weekly;
 GO
 
 PRINT '✅ Բոլոր աղյուսակները հաջողությամբ ջնջվեցին';
