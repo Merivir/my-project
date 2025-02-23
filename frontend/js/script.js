@@ -159,8 +159,14 @@ function applyFilter() {
         return;
     }
 
-    const filteredEntries = scheduleData.filter(entry => 
-        entry.level_name === currentLevel && entry.course_code === selectedCode
+    if (!levelGroups[currentLevel]) {
+        console.warn(`❌ No schedule data found for course level: ${currentLevel}`);
+        return;
+    }
+
+    // 🔹 Ֆիլտրում ենք տվյալ կուրսի դասացուցակը ըստ կուրսի կոդի
+    const filteredEntries = levelGroups[currentLevel].filter(entry => 
+        entry.course_code === selectedCode
     );
 
     console.log(`✅ Ֆիլտրված տվյալներ ${selectedCode}-ի համար:`, filteredEntries);
@@ -170,9 +176,8 @@ function applyFilter() {
         return;
     }
 
-    renderFilteredTables(filteredEntries);
+    renderTables(filteredEntries);
 }
-
 
 function buildScheduleTable(containerId, entries) {
     const container = document.getElementById(containerId);
@@ -526,7 +531,6 @@ document.getElementById("courseCodeFilter").addEventListener("change", function 
     console.log(`📌 Պահպանվել է ֆիլտրը: ${this.value}`);
 });
 
-
 function updateCourseFilter() {
     const courseCodeFilter = document.getElementById("courseCodeFilter");
     courseCodeFilter.innerHTML = `<option value="">Բոլորը</option>`; // Սկզբնական արժեք
@@ -536,11 +540,13 @@ function updateCourseFilter() {
         return;
     }
 
-    // 🔹 Վերցնում ենք միայն ընտրված կուրսի կոդերը
-    const filteredCourses = scheduleData
-        .filter(entry => entry.level_name === currentLevel)
-        .map(entry => entry.course_code);
+    if (!levelGroups[currentLevel]) {
+        console.warn(`⚠️ No data for current level: ${currentLevel}`);
+        return;
+    }
 
+    // 🔹 Վերցնում ենք միայն ընտրված կուրսի կոդերը
+    const filteredCourses = levelGroups[currentLevel].map(entry => entry.course_code);
     const uniqueCourseCodes = [...new Set(filteredCourses)].sort();
 
     uniqueCourseCodes.forEach(code => {
@@ -552,6 +558,8 @@ function updateCourseFilter() {
 
     console.log(`✅ Course codes updated for level "${currentLevel}"`);
 }
+
+
 function activateCourseButtons() {
     console.log("📌 Կուրսի կոճակները ակտիվացվում են");
 
@@ -591,15 +599,18 @@ function activateCourseButtons() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const filterButton = document.getElementById("applyFilter");
+
     if (filterButton) {
+        console.log("✅ applyFilter կոճակը գտնվեց, ավելացնում ենք կլիկ իրադարձություն...");
         filterButton.addEventListener("click", function () {
-            console.log("📌 applyFilter կոճակը սեղմվեց!");
-            applyFilter();
+            console.log("📌 applyFilter կոճակը սեղմվեց!"); // ✅ Սեղմելուց պետք է տպվի
+            applyFilter(); // ✅ Կանչում ենք ֆիլտրման ֆունկցիան
         });
     } else {
         console.error("⛔ applyFilter կոճակը չի գտնվել!");
     }
 });
+
 
 function restoreFilterSelection() {
     console.log("📌 Վերականգնում ենք ֆիլտրի վերջին ընտրությունը...");
