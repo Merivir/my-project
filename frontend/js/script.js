@@ -150,11 +150,12 @@ function filterByCourse(selectedLevel) {
 
 function applyFilter() {
     const selectedCode = document.getElementById("courseCodeFilter").value;
-    
+
     console.log(`📌 Ընտրված կուրսը: ${currentLevel}`);
     console.log(`📌 Ընտրված կուրսի կոդը: ${selectedCode}`);
 
     if (!selectedCode) {
+        console.log("📌 Չկա ընտրված կուրսի կոդ, ցուցադրում ենք ամբողջ դասացուցակը...");
         filterByCourse(currentLevel);
         return;
     }
@@ -178,6 +179,7 @@ function applyFilter() {
 
     renderTables(filteredEntries);
 }
+
 
 function buildScheduleTable(containerId, entries) {
     const container = document.getElementById(containerId);
@@ -210,8 +212,17 @@ function buildScheduleTable(containerId, entries) {
                         const lessonDiv = document.createElement("div");
                         lessonDiv.textContent = `${lesson.subject_name} (${lesson.teacher_name})`;
 
-                        // ✅ Ավելացնում ենք կլիկ իրադարձություն (Popup)
-                        lessonDiv.addEventListener("click", () => openPopup(lessonDiv));
+                        // ✅ Ավելացնում ենք dataset տվյալները
+                        lessonDiv.dataset.subject = lesson.subject_name;
+                        lessonDiv.dataset.teacher = lesson.teacher_name;
+                        lessonDiv.dataset.room = lesson.room_number;
+                        lessonDiv.dataset.type = lesson.type_name;
+
+                        // ✅ Ավելացնում ենք click իրադարձություն
+                        lessonDiv.addEventListener("click", function () {
+                            console.log(`📌 Սեղմվեց ${lesson.subject_name}, բացում ենք popup...`);
+                            openPopup(this);
+                        });
 
                         cell.appendChild(lessonDiv);
                     });
@@ -229,7 +240,6 @@ function buildScheduleTable(containerId, entries) {
     container.appendChild(table);
 }
 
-
 function filterScheduleByCourseCode(selectedCode) {
     console.log(`🔍 filterScheduleByCourseCode կանչվեց: ${selectedCode}`);
 
@@ -238,18 +248,6 @@ function filterScheduleByCourseCode(selectedCode) {
         console.error("⛔ scheduleContainer տարրը չի գտնվել!");
         return;
     }
-
-    // ✅ Պահպանում ենք վերնագիրը, եթե այն արդեն կա
-    let titleElement = document.querySelector(".schedule-title");
-    if (!titleElement) {
-        titleElement = document.createElement("h2");
-        titleElement.classList.add("schedule-title");
-        titleElement.textContent = "Դասացուցակ";
-        scheduleContainer.prepend(titleElement); // ✅ Դնում ենք վերևում
-    }
-
-    // ✅ Մաքրում ենք աղյուսակը՝ առանց վերնագիրը ջնջելու
-    scheduleContainer.querySelectorAll("table").forEach(table => table.remove());
 
     if (!selectedCode || selectedCode === "") {
         console.log("📌 Ցուցադրում ենք բոլոր դասացուցակները");
@@ -268,6 +266,7 @@ function filterScheduleByCourseCode(selectedCode) {
 
     renderFilteredTables(filteredEntries);
 }
+
 
 function renderFilteredTables(scheduleData) {
     console.log("📌 Showing filtered schedule:", scheduleData);
@@ -359,7 +358,6 @@ function renderFilteredTables(scheduleData) {
     });
 }
 
-
 function renderTables(scheduleData) {
     console.log("📌 Rendering tables...");
 
@@ -408,6 +406,19 @@ function renderTables(scheduleData) {
                         lessons.forEach(lesson => {
                             const lessonDiv = document.createElement("div");
                             lessonDiv.textContent = `${lesson.subject_name} (${lesson.teacher_name})`;
+                            
+                            // ✅ Պահպանում ենք տվյալները dataset-ի մեջ
+                            lessonDiv.dataset.subject = lesson.subject_name;
+                            lessonDiv.dataset.teacher = lesson.teacher_name;
+                            lessonDiv.dataset.room = lesson.room_number;
+                            lessonDiv.dataset.type = lesson.type_name;
+
+                            // ✅ Ավելացնում ենք click իրադարձություն՝ popup բացելու համար
+                            lessonDiv.addEventListener("click", function () {
+                                console.log(`📌 Սեղմվեց ${lesson.subject_name}, բացում ենք popup...`);
+                                openPopup(this);
+                            });
+
                             cell.appendChild(lessonDiv);
                         });
                     } else {
@@ -426,22 +437,28 @@ function renderTables(scheduleData) {
     });
 }
 
-
-
-
-// ✅ Փոփափ բացելու ֆունկցիա
 function openPopup(element) {
+    console.log("📌 Popup բացելու փորձ...");
+
     const popup = document.getElementById("classPopup");
+    if (!popup) {
+        console.error("⛔ Popup տարրը չի գտնվել!");
+        return;
+    }
+
+    console.log("✅ Popup-ը գտնվեց, բացում ենք...");
+
+    // ✅ Տվյալները ցուցադրում ենք popup-ում
     document.getElementById("popupSubject").textContent = element.dataset.subject || "Առարկա չստացվեց";
     document.getElementById("popupTeacher").textContent = element.dataset.teacher || "Դասախոս չստացվեց";
     document.getElementById("popupRoom").textContent = element.dataset.room || "Լսարան չստացվեց";
     document.getElementById("popupType").textContent = element.dataset.type || "Տիպ չստացվեց";
+
     popup.classList.remove("hidden");
     popup.style.display = "block";
+
+    console.log("✅ Popup բացված է!");
 }
-
-
-// ✅ Փակելու ֆունկցիա (աշխատում է բոլոր դեպքերում)
 function closePopup() {
     const popup = document.getElementById("classPopup");
     if (!popup) {
@@ -454,6 +471,10 @@ function closePopup() {
 
     console.log("✅ Popup closed!");
 }
+
+
+
+document.getElementById("closePopup").addEventListener("click", closePopup);
 
 // ✅ API-ից դասացուցակի բեռնում
 async function loadSchedule() {
@@ -556,7 +577,7 @@ function updateCourseFilter() {
         courseCodeFilter.appendChild(option);
     });
 
-    console.log(`✅ Course codes updated for level "${currentLevel}"`);
+    console.log(`✅ Course codes updated for level "${currentLevel}"`, uniqueCourseCodes);
 }
 
 
@@ -601,15 +622,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const filterButton = document.getElementById("applyFilter");
 
     if (filterButton) {
-        console.log("✅ applyFilter կոճակը գտնվեց, ավելացնում ենք կլիկ իրադարձություն...");
+        console.log("✅ applyFilter կոճակը գտնվեց, ավելացնում ենք click իրադարձություն...");
         filterButton.addEventListener("click", function () {
-            console.log("📌 applyFilter կոճակը սեղմվեց!"); // ✅ Սեղմելուց պետք է տպվի
+            console.log("📌 applyFilter կոճակը սեղմվեց!");
             applyFilter(); // ✅ Կանչում ենք ֆիլտրման ֆունկցիան
         });
     } else {
         console.error("⛔ applyFilter կոճակը չի գտնվել!");
     }
 });
+
 
 
 function restoreFilterSelection() {
