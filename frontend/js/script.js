@@ -358,7 +358,6 @@ function renderFilteredTables(scheduleData) {
         });
     });
 }
-
 function renderTables(scheduleData) {
     console.log("📌 Rendering tables...");
 
@@ -369,8 +368,23 @@ function renderTables(scheduleData) {
 
     uniqueCourseCodes.forEach(courseCode => {
         ["համարիչ", "հայտարար"].forEach(weekType => {
-            const filteredData = scheduleData.filter(item => item.course_code === courseCode && item.week_type === weekType);
-            if (filteredData.length === 0) return;
+            // ✅ Ստանում ենք տվյալ կուրսի համապատասխան տվյալները
+            let filteredData = scheduleData.filter(item => item.course_code === courseCode);
+
+            // ✅ "երկուսն էլ" պարունակող դասերը բաժանում ենք երկու մասի՝ "համարիչ" և "հայտարար"
+            let expandedData = [];
+            filteredData.forEach(entry => {
+                if (entry.week_type === "երկուսն էլ") {
+                    expandedData.push({ ...entry, week_type: "համարիչ" });
+                    expandedData.push({ ...entry, week_type: "հայտարար" });
+                } else {
+                    expandedData.push(entry);
+                }
+            });
+
+            // ✅ Ֆիլտրում ենք ըստ համապատասխան "համարիչ" կամ "հայտարար" արժեքի
+            const weeklyData = expandedData.filter(item => item.week_type === weekType);
+            if (weeklyData.length === 0) return;
 
             const courseTitle = document.createElement("h2");
             courseTitle.textContent = `${courseCode} - ${weekType}`;
@@ -401,7 +415,7 @@ function renderTables(scheduleData) {
 
                 ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"].forEach(day => {
                     const cell = document.createElement("td");
-                    const lessons = filteredData.filter(entry => entry.day_name === day && entry.time_slot === slot);
+                    const lessons = weeklyData.filter(entry => entry.day_name === day && entry.time_slot === slot);
 
                     if (lessons.length > 0) {
                         lessons.forEach(lesson => {
@@ -437,8 +451,9 @@ function renderTables(scheduleData) {
         });
     });
 
-    console.log("✅ Աղյուսակը թարմացվեց, popup-ի event-ները ավելացվեցին");
+    console.log("✅ Աղյուսակը թարմացվեց,  դասերը կրկնվեցին");
 }
+
 
 
 // ✅ Փոփափ բացելու ֆունկցիա
