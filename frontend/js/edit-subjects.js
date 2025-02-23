@@ -92,9 +92,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     
             const subjects = await response.json();
             console.log("📦 Received subjects:", subjects); // ✅ Ստուգում ենք API-ից ստացված տվյալները
-            
+    
             if (!Array.isArray(subjects) || subjects.length === 0) {
                 console.warn("⚠️ No subjects received or data is not an array!");
+                document.getElementById("subjectsContainer").innerHTML = `<p style="color: red;">📢 Առարկաներ չեն գտնվել!</p>`;
                 return;
             }
     
@@ -104,9 +105,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
     
-    
     function renderSubjects(subjects) {
-        console.log("📦 Rendering subjects:", subjects); // ✅ Ստուգում ենք տվյալները
+        console.log("📦 Rendering subjects:", subjects);
     
         const subjectsContainer = document.getElementById("subjectsContainer");
         if (!subjectsContainer) {
@@ -118,13 +118,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="subject-card">
                 <h3>${subject.subject_name || "Առարկա չկա"}</h3>
                 <p><strong>Դասախոս:</strong> ${subject.teacher_name || "Չի նշված"}</p>
-                <button class="delete-btn" data-id="${subject.id}">❌ Ջնջել</button>
+                <p><strong>Լսարան:</strong> ${subject.room_number || "Չի նշված"}</p>
+                <p><strong>Դասի Տիպ:</strong> ${subject.type_name || "Չի նշված"}</p>
+                <p><strong>Հաճախականություն:</strong> 
+                    ${subject.weekly_type === "weekly" ? "Ամեն շաբաթ" : subject.weekly_type === "biweekly" ? "2  շաբաթը մեկ" : "Չի նշված"}
+                </p>
+                <button class="delete-btn" data-id="${subject.subject_id}">❌ Ջնջել</button>
             </div>
         `).join("");
     
         console.log("✅ Rendered subjects successfully!");
     }
-    
     
     
     // Կուրս ընտրելիս բեռնում ենք համապատասխան կոդերը

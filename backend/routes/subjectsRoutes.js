@@ -1,6 +1,5 @@
-const express = require("express");
-const { sql, poolPromise } = require("../models/db");
-
+const express = require('express');
+const { sql, poolPromise } = require('../models/db');
 const router = express.Router();
 
 // 📌 Բոլոր կուրսերի բեռնում (Levels աղյուսակից)
@@ -16,40 +15,49 @@ router.get("/levels", async (req, res) => {
 });
 
 router.get("/subjects/:courseCode", async (req, res) => {
-    const courseCode = req.params.courseCode;
-
     try {
-        const pool = await poolPromise;
-        console.log(`📡 Fetching subjects for courseCode: ${courseCode}`);
+        const { courseCode } = req.params;
+        console.log(`📡 Fetching subjects for course code: ${courseCode}`);
 
+        if (!courseCode) {
+            return res.status(400).json({ error: "Course code is required" });
+        }
+
+        // ✅ Ստանում ենք տվյալների connection-ը
+        const pool = await poolPromise;
+
+        // ✅ SQL հարցում՝ Schedule-ի և Subjects-ի հետ միացմամբ
         const result = await pool.request()
-            .input("courseCode", sql.Int, courseCode) // Փոխի՛ր եթե պետք է NVARCHAR
+            .input("courseCode", sql.Int, courseCode)
             .query(`
                 SELECT 
-                    s.id, 
-                    s.name AS subject_name, 
-                    ISNULL(t.name, 'Չի նշված') AS teacher_name
-                FROM Subjects s
-                LEFT JOIN Schedule sch ON s.id = sch.subject_id
-                LEFT JOIN Teachers t ON sch.teacher_id = t.id
-                WHERE s.course_id = (SELECT id FROM Courses WHERE code = @courseCode);
+                    sub.id AS subject_id,
+                    c.code AS course_code,  
+                    sub.name AS subject_name, 
+                    t.name AS teacher_name, 
+                    r.number AS room_number, 
+                    ty.name AS type_name,
+                    wl.type AS weekly_type  
+                FROM Schedule s
+                JOIN Courses c ON s.course_id = c.id  
+                JOIN Subjects sub ON s.subject_id = sub.id
+                JOIN Teachers t ON s.teacher_id = t.id
+                JOIN Rooms r ON s.room_id = r.id
+                JOIN Types ty ON s.type_id = ty.id
+                LEFT JOIN Weekly wl ON s.weekly_id = wl.id
+                WHERE c.id = @courseCode;
             `);
 
-        console.log("✅ Query executed successfully.");
-        console.log("✅ Query Result:", result.recordset);
-
-        if (!result.recordset || result.recordset.length === 0) {
-            console.warn(`⚠️ No subjects found for courseCode: ${courseCode}`);
-            return res.status(404).json({ message: "No subjects found" });
+        if (!result.recordset.length) {
+            return res.status(404).json({ error: "No subjects found for this course code" });
         }
 
         res.json(result.recordset);
-    } catch (err) {
-        console.error("⛔ Error fetching subjects:", err);
-        res.status(500).json({ message: "Server error", error: err.message });
+    } catch (error) {
+        console.error("❌ Server error fetching subjects:", error);
+        res.status(500).json({ error: "Internal Server Error", details: error.message });
     }
 });
-
 
 
 // 📌 Բերում ենք ընտրված կուրսի ID-ին համապատասխան առարկաները (Եթե ըստ ID է աշխատելու)
