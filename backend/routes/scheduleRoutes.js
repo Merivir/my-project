@@ -2,13 +2,15 @@ const express = require('express');
 const { sql, poolPromise } = require('../models/db');
 const router = express.Router();
 
+
 router.get('/', async (req, res) => {
     console.log("📌 API HIT: /schedule");
     try {
         const pool = await poolPromise;
         const result = await pool.request().query(`
             SELECT 
-                s.id, 
+                s.id,
+                l.name AS level_name,  
                 c.code AS course_code,  
                 d.name AS day_name, 
                 w.type AS week_type, 
@@ -18,6 +20,7 @@ router.get('/', async (req, res) => {
                 t.name AS teacher_name, 
                 ty.name AS type_name
             FROM Schedule s
+            JOIN Levels l ON s.level_id = l.id 
             LEFT JOIN Courses c ON s.course_id = c.id  
             JOIN Days d ON s.day_id = d.id
             JOIN Weeks w ON s.week_id = w.id
@@ -37,6 +40,8 @@ router.get('/', async (req, res) => {
         res.status(500).send("❌ Error fetching schedule");
     }
 });
+
+
 
 router.get('/available-timeslots', async (req, res) => {
     const { teacher_id } = req.query;
