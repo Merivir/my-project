@@ -201,40 +201,59 @@ document.addEventListener("DOMContentLoaded", async () => {
 function openEditPopup(subjectCard) {
     const popup = document.getElementById("editPopup");
 
-    // Տվյալների ստացում `data-` ատրիբուտներից
-    const subjectId = subjectCard.getAttribute("data-subject_id");
-    const subjectName = subjectCard.querySelector("h3").textContent; // Առարկայի անվանում
-    const teacherId = subjectCard.getAttribute("data-teacher_id");
-    const roomId = subjectCard.getAttribute("data-room_id");
-    const typeId = subjectCard.getAttribute("data-type_id");
-    const frequency = subjectCard.getAttribute("data-frequency") || "weekly"; // Default
+    // 🔹 Ստանում ենք տվյալները data-ատրիբուտներից
+    const subjectId = subjectCard.dataset.subject_id;
+    const subjectName = subjectCard.querySelector("h3").textContent.trim(); // Վերցնում ենք ճիշտ անունը
+    const teacherName = subjectCard.querySelector("p:nth-child(2)").textContent.split(": ")[1].trim();
+    const roomNumber = subjectCard.querySelector("p:nth-child(3)").textContent.split(": ")[1].trim();
+    const typeName = subjectCard.querySelector("p:nth-child(4)").textContent.split(": ")[1].trim();
+    const frequency = subjectCard.dataset.frequency || "weekly";
 
-    // Դաշտերի ընտրում
-    const subjectInput = document.getElementById("editSubject");
+    console.log("🔍 Ստացված տվյալները ✅", {
+        subjectId,
+        subjectName,
+        teacherName,
+        roomNumber,
+        typeName,
+        frequency
+    });
+
+    // 🔹 Popup-ի դաշտերի ստացում
+    const subjectInput = document.getElementById("editSubject"); // Այստեղ readonly input է, անունը կտեսնենք
     const teacherSelect = document.getElementById("editTeacher");
     const roomSelect = document.getElementById("editRoom");
     const typeSelect = document.getElementById("editType");
     const frequencySelect = document.getElementById("editFrequency");
 
-    // ✅ 1. Առարկայի անունը միայն ցուցադրում ենք (input, readonly)
-    subjectInput.value = subjectName;
-    subjectInput.setAttribute("readonly", true);
+    if (!subjectInput || !teacherSelect || !roomSelect || !typeSelect || !frequencySelect) {
+        console.error("❌ DOM տարր չի գտնվել: Ստուգիր HTML-ում ID-ները։");
+        return;
+    }
 
-    // ✅ 2. Դասախոսի դաշտը բեռնվում է, բայց կարող ենք փոխել
+    // ✅ 1. Առարկայի անունը ուղիղ ցույց տալու համար input-ում
+    subjectInput.value = subjectName;
+    subjectInput.setAttribute("readonly", true); // Կանխում ենք փոփոխությունը
+
+    // ✅ 2. Լցնում ենք դասախոսների dropdown-ը
     fetch("/api/teachers")
         .then(response => response.json())
         .then(data => {
-            teacherSelect.innerHTML = ""; // Մաքրում ենք հինը
+            teacherSelect.innerHTML = "";
             data.forEach(teacher => {
                 const option = document.createElement("option");
                 option.value = teacher.id;
                 option.textContent = teacher.name;
                 teacherSelect.appendChild(option);
             });
-            teacherSelect.value = teacherId || ""; // Նախնական ընտրված դասախոս
-        });
 
-    // ✅ 3. Լսարանը բեռնվում է, բայց փոխելու հնարավորություն կա
+            const matchedTeacher = data.find(t => t.name === teacherName);
+            if (matchedTeacher) {
+                teacherSelect.value = matchedTeacher.id;
+            }
+        })
+        .catch(error => console.error("❌ Դասախոսների բեռնման սխալ:", error));
+
+    // ✅ 3. Լցնում ենք լսարանների dropdown-ը
     fetch("/api/rooms")
         .then(response => response.json())
         .then(data => {
@@ -245,10 +264,15 @@ function openEditPopup(subjectCard) {
                 option.textContent = room.number;
                 roomSelect.appendChild(option);
             });
-            roomSelect.value = roomId || "";
-        });
 
-    // ✅ 4. Դասի տեսակը նույնպես կարելի է փոխել
+            const matchedRoom = data.find(r => r.number === roomNumber);
+            if (matchedRoom) {
+                roomSelect.value = matchedRoom.id;
+            }
+        })
+        .catch(error => console.error("❌ Լսարանների բեռնման սխալ:", error));
+
+    // ✅ 4. Լցնում ենք դասի տեսակների dropdown-ը
     fetch("/api/types")
         .then(response => response.json())
         .then(data => {
@@ -259,17 +283,22 @@ function openEditPopup(subjectCard) {
                 option.textContent = type.name;
                 typeSelect.appendChild(option);
             });
-            typeSelect.value = typeId || "";
-        });
 
-    // ✅ 5. Հաճախականությունը բեռնում ենք միայն `weekly` կամ `biweekly`
+            const matchedType = data.find(t => t.name === typeName);
+            if (matchedType) {
+                typeSelect.value = matchedType.id;
+            }
+        })
+        .catch(error => console.error("❌ Դասի տեսակների բեռնման սխալ:", error));
+
+    // ✅ 5. Հաճախականությունը
     frequencySelect.innerHTML = `
         <option value="weekly">Ամեն շաբաթ</option>
         <option value="biweekly">2 շաբաթը մեկ</option>
     `;
     frequencySelect.value = frequency;
 
-    // ✅ Ցույց ենք տալիս popup-ը
+    // ✅ Popup-ը բացում ենք
     popup.classList.add("visible");
 }
 

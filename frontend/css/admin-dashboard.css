@@ -27,6 +27,13 @@ h1 {
     margin-bottom: 10px;
 }
 
+h2 {
+    font-size: 28px;
+    margin: 10px;
+    color: black;
+}
+
+
 /* Լինքերը նույնպես տեղափոխում ենք դուրս */
 nav {
     text-align: center;
@@ -219,7 +226,7 @@ select {
 .schedule-title {
     font-size: 20px;
     font-weight: bold;
-    color: #fff; /* Փոխիր #333, եթե ֆոնը բաց է */
+    color: #0C2D48; /* Փոխիր #333, եթե ֆոնը բաց է */
     text-align: center;
     margin-bottom: 15px;
     padding-top: 10px;
