@@ -29,7 +29,6 @@ app.use("/css", express.static(path.join(__dirname, "../frontend/css")));
 app.use("/js", express.static(path.join(__dirname, "../frontend/js")));
 app.use("/assets", express.static(path.join(__dirname, "../frontend/assets")));
 
-
 // Подключение к MSSQL
 app.use(async (req, res, next) => {
     try {
@@ -64,6 +63,7 @@ app.get('/admin-dashboard', (req, res) => {
 });
 
 // Подключение маршрутов
+app.use("/api", require("./routes/editRoutes"));
 app.use('/guest', require('./routes/guestRoutes'));
 app.use('/schedule', require('./routes/scheduleRoutes'));
 app.use('/api/schedule', require('./routes/scheduleRoutes'));

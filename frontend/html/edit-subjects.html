@@ -44,6 +44,39 @@
         </div>
     </div>
 
+    <!-- Overlay -->
+    <div id="popupOverlay" class="popup-overlay hidden"></div>
+
+    <!-- Դասի խմբագրման popup -->
+    <div id="editPopup" class="popup hidden">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closeEditPopup()">&times;</span>
+            <h2>Դասի Խմբագրում</h2>
+            
+            <label for="editSubject">Առարկա:</label>
+            <input type="text" id="editSubject" readonly>
+
+            <label for="editTeacher">Դասախոս:</label>
+            <select id="editTeacher"></select>
+
+            <label for="editRoom">Լսարան:</label>
+            <select id="editRoom"></select>
+
+            <label for="editType">Դասի Տեսակ:</label>
+            <select id="editType"></select>
+
+            <label for="editFrequency">Հաճախականություն:</label>
+            <select id="editFrequency">
+                <option value="weekly">Ամեն շաբաթ</option>
+                <option value="biweekly">2 շաբաթը մեկ</option>
+            </select>
+
+
+            <button onclick="saveEditedSchedule()">✅ Պահպանել</button>
+        </div>
+    </div>
+
+    
     <script src="/js/edit-subjects.js"></script>
 </body>
 </html>

@@ -78,6 +78,23 @@ CREATE TABLE Schedule (
     weekly_id INT FOREIGN KEY REFERENCES Weekly(id),
     details NVARCHAR(MAX)
 );
+
+CREATE TABLE schedule_editable (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    level_id INT FOREIGN KEY REFERENCES Levels(id),
+    course_id INT FOREIGN KEY REFERENCES Courses(id),
+    subject_id INT FOREIGN KEY REFERENCES Subjects(id),
+    type_id INT FOREIGN KEY REFERENCES Types(id),
+    teacher_id INT FOREIGN KEY REFERENCES Teachers(id),
+    room_id INT FOREIGN KEY REFERENCES Rooms(id),
+    week_id INT FOREIGN KEY REFERENCES Weeks(id),
+    day_id INT FOREIGN KEY REFERENCES Days(id),
+    time_slot_id INT FOREIGN KEY REFERENCES TimeSlots(id),
+    weekly_id INT FOREIGN KEY REFERENCES Weekly(id),
+    details NVARCHAR(MAX)
+);
+
+
 GO
 
 PRINT '✅ Բոլոր աղյուսակները հաջողությամբ ստեղծվեցին';
