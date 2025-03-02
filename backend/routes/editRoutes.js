@@ -35,6 +35,7 @@ router.get("/types", async (req, res) => {
     }
 });
 
+
 router.put('/edit/:id', async (req, res) => {
     const { id } = req.params;
     let { teacher_id, room_id, type_id, frequency } = req.body;
@@ -89,14 +90,13 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
-
 router.delete("/schedule/:id", async (req, res) => {
     const { id } = req.params;
 
     try {
         const pool = await poolPromise;
 
-        // Ստուգում ենք՝ արդյոք տվյալը գոյություն ունի `schedule_editable`-ում
+        // Ստուգում ենք՝ արդյոք տվյալը գոյություն ունի schedule_editable-ում
         const existing = await pool.request()
             .input("id", sql.Int, id)
             .query("SELECT id FROM schedule_editable WHERE id = @id");
@@ -105,7 +105,7 @@ router.delete("/schedule/:id", async (req, res) => {
             return res.status(404).json({ error: "❌ Գրառումը չի գտնվել schedule_editable-ում" });
         }
 
-        // ✅ Ջնջում ենք տվյալը `schedule_editable`-ից
+        // Հիմնական DELETE հարցում՝ ճիշտ id-ի համաձայն
         await pool.request()
             .input("id", sql.Int, id)
             .query("DELETE FROM schedule_editable WHERE id = @id");
@@ -116,5 +116,6 @@ router.delete("/schedule/:id", async (req, res) => {
         res.status(500).json({ error: "Server error while deleting from schedule_editable" });
     }
 });
+
 
 module.exports = router;

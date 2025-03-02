@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <p><strong>Հաճախականություն:</strong> 
                     ${subject.weekly_type === "weekly" ? "Ամեն շաբաթ" : subject.weekly_type === "biweekly" ? "2 շաբաթը մեկ" : "Չի նշված"}
                 </p>
-                <button class="delete-btn" data-id="${subject.subject_id}">❌ Ջնջել</button>
+                <button class="delete-btn" data-id="${subject.schedule_id}">❌ Ջնջել</button>
             `;
 
             // Եթե delete-btn-ին սեղմվում է, չբացել edit pop-up-ը
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const subjectId = e.target.dataset.id;
             if (confirm("Դուք համոզվա՞ծ եք, որ ցանկանում եք ջնջել այս առարկան?")) {
                 try {
-                    await fetch(`/api/subjects/${subjectId}`, { method: "DELETE" });
+                    await fetch(`/api/schedule/${subjectId}`, { method: "DELETE" });
                     alert("✅ Առարկան հաջողությամբ ջնջվեց");
                     loadSubjects(courseCodeSelect.value); // Թարմացնում ենք ցուցակը
                 } catch (error) {
