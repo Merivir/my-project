@@ -1,4 +1,4 @@
-use schedule
+﻿use schedule
 
 CREATE TABLE schedule_editable (
     id INT PRIMARY KEY IDENTITY(1,1),
@@ -15,6 +15,12 @@ CREATE TABLE schedule_editable (
     details NVARCHAR(MAX)
 );
 
+CREATE TABLE subjects_editable (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(255) NOT NULL,
+    teacher_id INT FOREIGN KEY REFERENCES Teachers(id),
+    room_id INT FOREIGN KEY REFERENCES Rooms(id),
+);
 
 SET IDENTITY_INSERT schedule_editable ON;
 
@@ -24,6 +30,14 @@ FROM schedule;
 
 SET IDENTITY_INSERT schedule_editable OFF;
 
+INSERT INTO subjects_editable (name, teacher_id, room_id)
+SELECT name, teacher_id, room_id FROM Subjects;
+
 
 SELECT * FROM Schedule
+SELECT * FROM Subjects
 select * from schedule_editable
+select * from subjects_editable
+
+DROP TABLE IF EXISTS schedule_editable;
+DROP TABLE IF EXISTS subjects_editable;

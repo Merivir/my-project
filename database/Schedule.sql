@@ -149,7 +149,8 @@ JOIN Rooms r ON s.room_id = r.id
 JOIN Subjects sub ON s.subject_id = sub.id
 JOIN Teachers t ON s.teacher_id = t.id
 JOIN Types ty ON s.type_id = ty.id
-ORDER BY d.id, ts.id;
+WHERE s.id = 1096;
+--ORDER BY d.id, ts.id;
 
 
 USE schedule;

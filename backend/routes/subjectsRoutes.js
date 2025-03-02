@@ -17,20 +17,19 @@ router.get("/levels", async (req, res) => {
 router.get("/subjects/:courseCode", async (req, res) => {
     try {
         const { courseCode } = req.params;
-        console.log(`📡 Fetching subjects for course code: ${courseCode}`);
 
         if (!courseCode) {
-            return res.status(400).json({ error: "Course code is required" });
+            return res.status(400).json({ error: "❌ Course code is required" });
         }
 
-        // ✅ Ստանում ենք տվյալների connection-ը
         const pool = await poolPromise;
+        console.log(`📡 Fetching subjects for course code: ${courseCode}`);
 
-        // ✅ SQL հարցում՝ Schedule-ի և Subjects-ի հետ միացմամբ
         const result = await pool.request()
             .input("courseCode", sql.Int, courseCode)
             .query(`
                 SELECT 
+                    s.id AS schedule_id, 
                     sub.id AS subject_id,
                     c.code AS course_code,  
                     sub.name AS subject_name, 
@@ -38,9 +37,9 @@ router.get("/subjects/:courseCode", async (req, res) => {
                     r.number AS room_number, 
                     ty.name AS type_name,
                     wl.type AS weekly_type  
-                FROM Schedule s
+                FROM schedule_editable s
                 JOIN Courses c ON s.course_id = c.id  
-                JOIN Subjects sub ON s.subject_id = sub.id
+                JOIN subjects_editable sub ON s.subject_id = sub.id
                 JOIN Teachers t ON s.teacher_id = t.id
                 JOIN Rooms r ON s.room_id = r.id
                 JOIN Types ty ON s.type_id = ty.id
@@ -49,7 +48,7 @@ router.get("/subjects/:courseCode", async (req, res) => {
             `);
 
         if (!result.recordset.length) {
-            return res.status(404).json({ error: "No subjects found for this course code" });
+            return res.status(404).json({ error: "❌ No subjects found for this course code" });
         }
 
         res.json(result.recordset);
