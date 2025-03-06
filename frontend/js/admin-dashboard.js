@@ -229,12 +229,36 @@ async function confirmAvailability() {
 
 
 // ✅ Ստեղծում ենք դասացուցակը
-function generateSchedule() {
+async function generateSchedule() {
     if (!isConfirmed) {
         alert("⚠️ Խնդրում ենք նախ հաստատել ժամերը:");
         return;
     }
 
-    alert("📅 Դասացուցակը ստեղծվեց!");
-    window.location.href = "/schedule-approval.html";
+    // 1️⃣ Ցույց ենք տալիս բեռնման նշանը
+    document.getElementById("loadingSpinner").style.display = "block";
+
+    try {
+        // 2️⃣ Կանչում ենք backend-ի ալգորիթմը
+        const response = await fetch("/api/generate-schedule", { method: "POST" });
+
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("📌 Սերվերի պատասխանը:", data);
+
+        // 3️⃣ Եթե ամեն ինչ հաջող է, տեղափոխվում ենք `schedule-approval.html`
+        alert("✅ Դասացուցակը կազմվել է հաջողությամբ!");
+        window.location.href = "/schedule-approval.html";
+
+    } catch (error) {
+        console.error("⛔ Սխալ դասացուցակ կազմելիս:", error);
+        alert("❌ Սխալ՝ դասացուցակը կազմելու ժամանակ");
+    } finally {
+        // 4️⃣ Հանում ենք բեռնման նշանը, եթե ինչ-որ բան սխալ գնաց
+        document.getElementById("loadingSpinner").style.display = "none";
+    }
 }
+

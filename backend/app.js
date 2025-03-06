@@ -29,6 +29,29 @@ app.use("/css", express.static(path.join(__dirname, "../frontend/css")));
 app.use("/js", express.static(path.join(__dirname, "../frontend/js")));
 app.use("/assets", express.static(path.join(__dirname, "../frontend/assets")));
 
+const { exec } = require("child_process");
+
+app.post("/api/generate-schedule", (req, res) => {
+    console.log("📌 Կանչվեց դասացուցակի ալգորիթմը...");
+
+    const scriptPath = path.join(__dirname, "algorithm.py");
+    console.log(`📌 Պատրաստվում ենք գործարկել՝ ${scriptPath}`);
+
+    exec(`python3 "${scriptPath}"`, { maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`⛔ Exec error: ${error.message}`);
+            return res.status(500).json({ error: error.message });
+        }
+        if (stderr) {
+            console.error(`⚠️ Վերադարձված սխալ՝ ${stderr}`);
+        }
+        console.log(`✅ Դասացուցակը կազմված է:\n${stdout}`);
+        res.json({ message: "Դասացուցակը հաջողությամբ կազմվեց", output: stdout });
+    });
+});
+
+
+
 // Подключение к MSSQL
 app.use(async (req, res, next) => {
     try {
@@ -56,6 +79,8 @@ app.get('/admin-register', (req, res) => {
 app.get('/schedule-approval', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/schedule-approval.html'));
 });
+
+app.use('/schedule_approval', require('./routes/scheduleApprovalRoutes'));
 
 
 app.get('/admin-dashboard', (req, res) => {

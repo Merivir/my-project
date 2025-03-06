@@ -22,3 +22,6 @@ CREATE TABLE BackupAvailability (
 
 select * from PrimaryAvailability
 SELECT * FROM BackupAvailability
+
+DROP TABLE IF EXISTS PrimaryAvailability;
+DROP TABLE IF EXISTS BackupAvailability;
