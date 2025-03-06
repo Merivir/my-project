@@ -44,14 +44,9 @@ CONFLICTS = {
 # 3. week_type-ի սահմանումը
 # ---------------------------
 def get_week_type(data):
-    """
-    Հաշվում է week_type-ը՝
-      - Եթե week_id-ի արժեքը հավասար է "1" (հայտնելով, որ առարկան ամեն շաբաթ է), ապա վերադարձնում է "երկուսն էլ".
-      - Հակառակ դեպքում՝ time_slot-ի զույգ/կենտության հիման վրա՝ even => "հայտարար", odd => "համարիչ".
-    """
     week_id = str(data.get("week_id", "")).strip()
     if week_id == "1":
-        return "երկուսն էլ" if "երկուսն էլ" in {"հայտարար", "համարիչ", "երկուսն էլ"} else "երկուսն էլ"
+        return "երկուսն էլ"
     else:
         time_slot = int(data.get("time_slot", 0))
         return "հայտարար" if time_slot % 2 == 0 else "համարիչ"
@@ -85,8 +80,8 @@ def load_schedule_data(cursor):
         c.code AS course,
         sub.name AS subject,
         ty.name AS type,
-        t.id AS teacher_id,
-        r.number AS room,
+        t.name AS teacher,   -- այստեղ օգտագործում ենք դասախոսի անունը
+        r.name AS room,      -- այստեղ կարող եք փոխարինել r.number-ի փոխարեն, եթե որն էլ գրված է որպես տեքստ
         s.week_id, s.day_id, s.time_slot_id
     FROM schedule_editable s
     JOIN Levels l ON s.level_id = l.id
@@ -111,17 +106,17 @@ def load_schedule_data(cursor):
 def build_conflict_graph(schedule_data, primary_avail, backup_avail):
     G = nx.Graph()
     for i, entry in enumerate(schedule_data):
-        teacher_id = str(entry["teacher_id"])
+        teacher_id = entry["teacher"]
         preferred_slots = set(primary_avail.get(teacher_id, []) + backup_avail.get(teacher_id, []))
         G.add_node(i, **entry, preferred_slots=list(preferred_slots))
-        print(f"[DEBUG build_conflict_graph] Node {i}: level={entry['level']}, course={entry['course']}, subject={entry['subject']}, type={entry['type']}, teacher_id={entry['teacher_id']}, room={entry['room']}")
+        print(f"[DEBUG build_conflict_graph] Node {i}: level={entry['level']}, course={entry['course']}, subject={entry['subject']}, type={entry['type']}, teacher={entry['teacher']}, room={entry['room']}")
     n = len(schedule_data)
     for i in range(n):
         for j in range(i + 1, n):
             node1 = G.nodes[i]
             node2 = G.nodes[j]
             conflict = False
-            if node1["teacher_id"] == node2["teacher_id"]:
+            if node1["teacher"] == node2["teacher"]:
                 conflict = True
             if node1["room"] == node2["room"]:
                 conflict = True
@@ -147,8 +142,6 @@ def assign_time_slots(G):
     coloring = nx.coloring.greedy_color(G, strategy="largest_first")
     for node, time_slot in coloring.items():
         G.nodes[node]["time_slot"] = time_slot
-        # Եթե արդեն սահմանված week_type կա "երկուսն էլ", ապա այդ արժեքն է պահվում,
-        # հակառակ դեպքում, վերանայվում է ըստ time_slot-ի զույգ/կենտության:
         if "week_type" in G.nodes[node] and G.nodes[node]["week_type"] == "երկուսն էլ":
             week_type = "երկուսն էլ"
         else:
@@ -158,13 +151,12 @@ def assign_time_slots(G):
     return G
 
 # ---------------------------
-# 8. Վերագործարկում ենք վերջնական դասացուցակի օբյեկտը տվյալների բազայի համար
+# 8. Վերագործարկում ենք վերջնական դասացուցակի օբյեկտը՝ տվյալների բազայի համար
 # ---------------------------
 def prepare_schedule_for_db(G):
     schedule = []
     allowed_week_types = {"հայտարար", "համարիչ", "երկուսն էլ"}
     for node, data in G.nodes(data=True):
-        # Հաշվել week_type-ը օգտագործելով get_week_type(), և մաքրել բացատները:
         week_type = get_week_type(data).strip()
         if week_type not in allowed_week_types:
             week_type = "համարիչ"
@@ -176,8 +168,8 @@ def prepare_schedule_for_db(G):
             "course": data["course"],
             "subject": data["subject"],
             "type": data["type"],
-            "teacher_id": data["teacher_id"],
-            "room": data["room"],
+            "teacher": data["teacher"],   # նոր դաշտ՝ դասախոս
+            "room": data["room"],         # նոր դաշտ՝ լսարան
             "day_of_week": day_of_week,
             "time_of_day": time_of_day,
             "week_type": week_type
@@ -230,7 +222,6 @@ def main():
     allowed_week_types = {"հայտարար", "համարիչ", "երկուսն էլ"}
     print("[DEBUG main] Inserting final schedule into created_schedule...")
     for row in final_schedule:
-        # Մաքրել week_type-ը և համոզվել, որ արժեքը թույլատրելի է:
         week_type = row["week_type"].strip() if row["week_type"] else ""
         if week_type not in allowed_week_types:
             print(f"[DEBUG main] Invalid week_type '{week_type}' found. Overriding to 'համարիչ'")
@@ -245,9 +236,9 @@ def main():
                 row["course"],
                 row["subject"],
                 row["type"],
-                "",  # mapped_type – կարող եք փոփոխել ըստ պահանջի
-                json.dumps([row["teacher_id"]], ensure_ascii=False),
-                json.dumps([row["room"]], ensure_ascii=False),
+                "",  # mapped_type – կարող եք փոխարկել ըստ պահանջի
+                json.dumps([row["teacher"]], ensure_ascii=False),  # օգտագործում ենք դասախոսի անունը
+                json.dumps([row["room"]], ensure_ascii=False),     # օգտագործում ենք լսարանի անունը
                 "[]",  # preferred_slots, եթե չկան տվյալներ
                 row["day_of_week"],
                 row["time_of_day"],

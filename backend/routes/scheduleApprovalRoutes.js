@@ -7,21 +7,22 @@ router.get('/', async (req, res) => {
     try {
         const pool = await poolPromise;
         const result = await pool.request().query(`
-            SELECT 
-                id,
-                level, 
-                course, 
-                subject, 
-                type, 
-                mapped_type, 
-                teachers, 
-                rooms, 
-                preferred_slots, 
-                day_of_week, 
-                time_of_day, 
-                week_type 
-            FROM created_schedule
-            ORDER BY day_of_week, time_of_day;
+       SELECT 
+    cs.id,
+    cs.course,
+    d.name AS day,
+    ts.slot AS time_slot,
+    cs.subject,
+    cs.type AS class_type,
+    t.name AS teacher,
+    cs.rooms AS room,
+    cs.week_type
+FROM created_schedule cs
+JOIN Days d ON cs.day_of_week = d.id
+JOIN TimeSlots ts ON cs.time_of_day = ts.id
+JOIN Teachers t ON CAST(JSON_VALUE(cs.teachers, '$[0]') AS INT) = t.id
+ORDER BY d.id, ts.id;
+
         `);
 
         console.log("📌 Query Result:", JSON.stringify(result.recordset, null, 2));
