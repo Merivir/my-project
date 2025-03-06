@@ -101,7 +101,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-
 router.post('/login', async (req, res) => {
     const { login, password } = req.body;
 
@@ -112,21 +111,27 @@ router.post('/login', async (req, res) => {
             .query('SELECT * FROM admins WHERE login = @login');
 
         if (result.recordset.length === 0) {
-            return res.status(401).json({ message: 'Invalid username or password' });
+            console.log("❌ Մուտքանունը սխալ է:", login);
+            return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
         }
 
         const admin = result.recordset[0];
 
-        // Проверка пароля с использованием bcrypt
+        console.log("📌 Բերված տվյալներ:", admin);
+
+        // ✅ Համեմատում ենք գաղտնաբառը bcrypt-ի միջոցով
         const passwordMatch = await bcrypt.compare(password, admin.password);
+        console.log("📌 Համեմատում ենք:", password, "հետ", admin.password, "| Արդյունք:", passwordMatch);
+
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid username or password' });
+            console.log("❌ Գաղտնաբառը սխալ է:", password);
+            return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
         }
 
-        res.json({ message: 'Login successful' });
+        res.json({ message: 'Մուտքը հաջողվեց!' });
     } catch (err) {
-        console.error('Login error:', err.message);
-        res.status(500).json({ message: 'Server error' });
+        console.error('⛔ Մուտքի սխալ:', err.message);
+        res.status(500).json({ message: 'Սերվերի սխալ' });
     }
 });
 
