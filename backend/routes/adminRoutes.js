@@ -31,32 +31,30 @@ router.get("/levels", async (req, res) => {
         const result = await pool.request().query("SELECT id, name FROM Levels");
         const levels = result.recordset;
         
-        console.log("✅ Levels fetched:", levels);
+        console.log("Levels fetched:", levels);
 
         res.json(levels);
     } catch (error) {
-        console.error("⛔ Database error:", error);
+        console.error("Database error:", error);
         res.status(500).json({ error: "Database error while fetching levels" });
     }
 });
 
 
 router.get('/teachers', async (req, res) => {
-    console.log("📌 API /api/teachers request received!");
+    console.log("API /api/teachers request received!");
     try {
         const result = await sql.query("SELECT id, name FROM Teachers");
-        console.log("✅ Data fetched:", result.recordset);
+        console.log("Data fetched:", result.recordset);
         res.json(result.recordset);
     } catch (err) {
-        console.error("⛔ Error fetching teachers:", err);
+        console.error("Error fetching teachers:", err);
         res.status(500).json({ error: "Server error" });
     }
 });
 
 
 
-
-// Пример защищённого маршрута
 router.get('/protected-route', verifyToken, (req, res) => {
     res.json({ message: 'Welcome to the protected route!', user: req.user });
 });
@@ -73,7 +71,6 @@ router.post('/register', async (req, res) => {
     try {
         const pool = await poolPromise;
 
-        // Проверка существующего логина
         const existingUser = await pool.request()
             .input('login', sql.NVarChar, login)
             .query('SELECT * FROM admins WHERE login = @login');
@@ -82,10 +79,8 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Login is already in use' });
         }
 
-        // Хэшируем пароль
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Сохраняем администратора
         await pool.request()
             .input('name', sql.NVarChar, name)
             .input('login', sql.NVarChar, login)
@@ -111,26 +106,26 @@ router.post('/login', async (req, res) => {
             .query('SELECT * FROM admins WHERE login = @login');
 
         if (result.recordset.length === 0) {
-            console.log("❌ Մուտքանունը սխալ է:", login);
+            console.log("Մուտքանունը սխալ է:", login);
             return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
         }
 
         const admin = result.recordset[0];
 
-        console.log("📌 Բերված տվյալներ:", admin);
+        console.log("Բերված տվյալներ:", admin);
 
-        // ✅ Համեմատում ենք գաղտնաբառը bcrypt-ի միջոցով
+        // Համեմատում ենք գաղտնաբառը bcrypt-ի միջոցով
         const passwordMatch = await bcrypt.compare(password, admin.password);
-        console.log("📌 Համեմատում ենք:", password, "հետ", admin.password, "| Արդյունք:", passwordMatch);
+        console.log("Համեմատում ենք:", password, "հետ", admin.password, "| Արդյունք:", passwordMatch);
 
         if (!passwordMatch) {
-            console.log("❌ Գաղտնաբառը սխալ է:", password);
+            console.log("Գաղտնաբառը սխալ է:", password);
             return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
         }
 
         res.json({ message: 'Մուտքը հաջողվեց!' });
     } catch (err) {
-        console.error('⛔ Մուտքի սխալ:', err.message);
+        console.error('Մուտքի սխալ:', err.message);
         res.status(500).json({ message: 'Սերվերի սխալ' });
     }
 });

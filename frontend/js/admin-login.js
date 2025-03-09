@@ -20,6 +20,6 @@ function submitAdminLoginForm(event) {
     })
     .catch(err => {
         document.getElementById('loginErrorMessage').innerText = 'Սերվերի խնդիր';
-        console.error("⛔ Error:", err);
+        console.error(" Error:", err);
     });
 }

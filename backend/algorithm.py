@@ -5,17 +5,13 @@ import pyodbc
 import json
 import networkx as nx
 
-# ---------------------------
 # 1. MSSQL Server–ի կապի մանրամասները
-# ---------------------------
 server = "localhost"
 database = "schedule"
 username = "admin"
 password = "mypassword"
 
-# ---------------------------
 # 2. Դասի տեսակների համաչափությունը (հայերենով) և կոնֆլիկտները
-# ---------------------------
 TYPE_MAP = {
     "Դաս": "Դաս",
     "Գործ": "Գործ",
@@ -40,9 +36,7 @@ CONFLICTS = {
     "Լաբ4": {"Գործ3", "Դաս"}
 }
 
-# ---------------------------
 # 3. week_type-ի սահմանումը
-# ---------------------------
 def get_week_type(data):
     week_id = str(data.get("week_id", "")).strip()
     if week_id == "1":
@@ -51,9 +45,7 @@ def get_week_type(data):
         time_slot = int(data.get("time_slot", 0))
         return "հայտարար" if time_slot % 2 == 0 else "համարիչ"
 
-# ---------------------------
 # 4. Ուսուցիչների հասանելիության տվյալների բեռնում
-# ---------------------------
 def load_availability_from_db(cursor, table_name):
     query = f"SELECT teacher_id, day_id, time_slot_id FROM {table_name}"
     try:
@@ -69,9 +61,7 @@ def load_availability_from_db(cursor, table_name):
         print(f"Error loading availability from {table_name}: {e}")
         return {}
 
-# ---------------------------
 # 5. Դասերի տվյալների բեռնում schedule_editable/subjects_editable-ից
-# ---------------------------
 def load_schedule_data(cursor):
     query = """
     SELECT
@@ -100,9 +90,7 @@ def load_schedule_data(cursor):
         print("Error loading schedule data:", e)
         return []
 
-# ---------------------------
 # 6. Կոնֆլիկտային գրաֆի կառուցում
-# ---------------------------
 def build_conflict_graph(schedule_data, primary_avail, backup_avail):
     G = nx.Graph()
     for i, entry in enumerate(schedule_data):
@@ -135,9 +123,7 @@ def build_conflict_graph(schedule_data, primary_avail, backup_avail):
     print(f"[DEBUG build_conflict_graph] Total edges in graph: {G.number_of_edges()}")
     return G
 
-# ---------------------------
 # 7. Գունավորում՝ ժամային սլոտների նշանակմամբ
-# ---------------------------
 def assign_time_slots(G):
     coloring = nx.coloring.greedy_color(G, strategy="largest_first")
     for node, time_slot in coloring.items():
@@ -150,9 +136,7 @@ def assign_time_slots(G):
     print(f"[DEBUG assign_time_slots] Used time_slots: {set(coloring.values())}")
     return G
 
-# ---------------------------
 # 8. Վերագործարկում ենք վերջնական դասացուցակի օբյեկտը՝ տվյալների բազայի համար
-# ---------------------------
 def prepare_schedule_for_db(G):
     schedule = []
     allowed_week_types = {"հայտարար", "համարիչ", "երկուսն էլ"}
@@ -176,9 +160,7 @@ def prepare_schedule_for_db(G):
         })
     return schedule
 
-# ---------------------------
 # 9. Հիմնական main() ֆունկցիա
-# ---------------------------
 def main():
     try:
         conn = pyodbc.connect(
@@ -284,7 +266,7 @@ def main():
 
     cursor.close()
     conn.close()
-    print("✅ Դասացուցակը և կոնֆլիկտները հաջողությամբ պահպանված են տվյալների բազայում։")
+    print("Դասացուցակը և կոնֆլիկտները հաջողությամբ պահպանված են տվյալների բազայում։")
 
 if __name__ == "__main__":
     main()

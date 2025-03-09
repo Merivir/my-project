@@ -3,7 +3,7 @@ const { sql, poolPromise } = require('../models/db');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    console.log("📌 API HIT: /schedule_approval");
+    console.log("API HIT: /schedule_approval");
     try {
         const pool = await poolPromise;
         const result = await pool.request().query(`
@@ -25,11 +25,11 @@ ORDER BY d.id, ts.id;
 
         `);
 
-        console.log("📌 Query Result:", JSON.stringify(result.recordset, null, 2));
+        console.log("Query Result:", JSON.stringify(result.recordset, null, 2));
         res.json(result.recordset);
     } catch (error) {
-        console.error("❌ Database error:", error);
-        res.status(500).send("❌ Error fetching schedule approval data");
+        console.error("Database error:", error);
+        res.status(500).send("Error fetching schedule approval data");
     }
 });
 

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const registerForm = document.getElementById("adminRegisterForm");
 
     if (!registerForm) {
-        console.error("⛔ Error: Registration form not found!");
+        console.error(" Error: Registration form not found!");
         return;
     }
 
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        console.log("📌 Sending data:", { name, login, email, password });
+        console.log(" Sending data:", { name, login, email, password });
 
         try {
             const response = await fetch('/api/register', {  
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await response.json();
 
-            console.log("📌 Server Response:", data);
+            console.log(" Server Response:", data);
 
             if (response.ok) {
                 alert('Գրանցումը բարեհաջող ավարտվեց, կարող եք մուտք գործել');
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (err) {
             document.getElementById('registerErrorMessage').innerText = 'Սերվերի խնդիր';
-            console.error("⛔ Registration error:", err);
+            console.error(" Registration error:", err);
         }
     });
 });

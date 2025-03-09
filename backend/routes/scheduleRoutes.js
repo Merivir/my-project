@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 router.get('/', async (req, res) => {
-    console.log("📌 API HIT: /schedule");
+    console.log("API HIT: /schedule");
     try {
         const pool = await poolPromise;
         const result = await pool.request().query(`
@@ -32,12 +32,12 @@ router.get('/', async (req, res) => {
             ORDER BY d.id, ts.id;
         `);
 
-        console.log("📌 Query Result:", JSON.stringify(result.recordset, null, 2));
+        console.log("Query Result:", JSON.stringify(result.recordset, null, 2));
 
         res.json(result.recordset);
     } catch (error) {
-        console.error("❌ Database error:", error);
-        res.status(500).send("❌ Error fetching schedule");
+        console.error("Database error:", error);
+        res.status(500).send("Error fetching schedule");
     }
 });
 
@@ -51,25 +51,25 @@ router.get('/available-timeslots', async (req, res) => {
     }
 
     try {
-        console.log(`📌 Fetching available timeslots for teacher_id=${teacher_id}`);
+        console.log(`Fetching available timeslots for teacher_id=${teacher_id}`);
         
         const pool = await poolPromise;
         const result = await pool.request()
             .input('teacher_id', sql.Int, teacher_id)
             .query("SELECT slot FROM AvailableTimeSlots WHERE teacher_id = @teacher_id");
 
-        console.log("✅ Available slots:", result.recordset);
+        console.log("Available slots:", result.recordset);
         res.json(result.recordset.map(row => row.slot)); // Վերադարձնում ենք միայն slot-երը
     } catch (err) {
-        console.error("⛔ Error fetching available timeslots:", err);
+        console.error("Error fetching available timeslots:", err);
         res.status(500).json({ error: "Server error" });
     }
 });
 
 
-// ✅ Ստանալ դասացուցակը ֆիլտրերով (եթե պետք լինի)
-router.get('/filtered-schedule', async (req, res) => {  // ✅ Փոխում ենք '/' -> '/filtered-schedule'
-    console.log("📌 API HIT: /filtered-schedule");
+// Ստանալ դասացուցակը ֆիլտրերով (եթե պետք լինի)
+router.get('/filtered-schedule', async (req, res) => {  // Փոխում ենք '/' -> '/filtered-schedule'
+    console.log("API HIT: /filtered-schedule");
 
     const { day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id } = req.query;
 
@@ -112,11 +112,11 @@ router.get('/filtered-schedule', async (req, res) => {  // ✅ Փոխում են
 
         const result = await request.query(query);
 
-        console.log("📌 Filtered Query Result:", JSON.stringify(result.recordset, null, 2));
+        console.log(" Filtered Query Result:", JSON.stringify(result.recordset, null, 2));
 
         res.json(result.recordset);
     } catch (err) {
-        console.error('❌ SQL Query Error:', err.message);
+        console.error('SQL Query Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
@@ -131,7 +131,7 @@ router.post('/save-availability', async (req, res) => {
     try {
         const pool = await poolPromise;
 
-        console.log("🟢 Սկսում ենք պահպանել հասանելիությունը՝ teacher_id:", teacher_id);
+        console.log("Սկսում ենք պահպանել հասանելիությունը՝ teacher_id:", teacher_id);
 
         // Ջնջում ենք նախորդ տվյալները, որ կրկնօրինակ չլինի
         await pool.request()
@@ -142,9 +142,9 @@ router.post('/save-availability', async (req, res) => {
             .input("teacher_id", sql.Int, teacher_id)
             .query("DELETE FROM BackupAvailability WHERE teacher_id = @teacher_id");
 
-        console.log("🟢 Նախորդ տվյալները ջնջվեցին");
+        console.log("Նախորդ տվյալները ջնջվեցին");
 
-        // ✅ Պատրաստում ենք SQL հարցումները՝ կրկնությունները բացառելու համար
+        // Պատրաստում ենք SQL հարցումները՝ կրկնությունները բացառելու համար
         const insertPrimary = `
             IF NOT EXISTS (
                 SELECT 1 FROM PrimaryAvailability 
@@ -163,7 +163,7 @@ router.post('/save-availability', async (req, res) => {
             VALUES (@teacher_id, @day_id, @time_slot_id)
         `;
 
-        // ✅ Ավելացնում ենք նոր տվյալները (առանց կրկնությունների)
+        // Ավելացնում ենք նոր տվյալները (առանց կրկնությունների)
         for (const slot of primary_slots) {
             const [day_id, time_slot_id] = slot.split('-').map(Number);
             await pool.request()
@@ -182,17 +182,17 @@ router.post('/save-availability', async (req, res) => {
                 .query(insertBackup);
         }
 
-        console.log("✅ Ժամերը հաջողությամբ ավելացվեցին");
-        res.json({ message: "✅ Ժամերը հաջողությամբ պահպանվեցին" });
+        console.log("Ժամերը հաջողությամբ ավելացվեցին");
+        res.json({ message: " Ժամերը հաջողությամբ պահպանվեցին" });
 
     } catch (error) {
-        console.error("❌ SQL Query Error:", error);
+        console.error(" SQL Query Error:", error);
         res.status(500).json({ error: error.message });
     }
 });
 
 
-// ✅ Ստանալ ֆիլտրերի տարբերակները
+//  Ստանալ ֆիլտրերի տարբերակները
 router.get('/filters', async (req, res) => {
     try {
         const pool = await poolPromise;
@@ -207,13 +207,13 @@ router.get('/filters', async (req, res) => {
         `);
         res.json(result.recordset);
     } catch (err) {
-        console.error("❌ SQL Query Error:", err);
-        res.status(500).send("❌ Server Error: SQL սխալ");
+        console.error(" SQL Query Error:", err);
+        res.status(500).send("Server Error: SQL սխալ");
     }
 });
 
 
-// ✅ Ավելացնել նոր գրառում
+// Ավելացնել նոր գրառում
 router.post('/', async (req, res) => {
     const { day_id, week_id, time_slot_id, room_id, subject_id, teacher_id, type_id } = req.body;
 
@@ -234,13 +234,13 @@ router.post('/', async (req, res) => {
 
         res.status(201).json({ message: 'Դասացուցակի գրառումը հաջողությամբ ավելացվեց!' });
     } catch (err) {
-        console.error('❌ SQL Query Error:', err.message);
+        console.error('SQL Query Error:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
 
 
-// ✅ Հաշվել տարբեր կուրսերի քանակը
+// Հաշվել տարբեր կուրսերի քանակը
 router.get('/courses-count', async (req, res) => {
     try {
         const pool = await poolPromise;
@@ -249,7 +249,7 @@ router.get('/courses-count', async (req, res) => {
         `);
         res.json({ courseCount: result.recordset[0].courseCount });
     } catch (err) {
-        console.error('❌ Error fetching course count:', err.message);
+        console.error(' Error fetching course count:', err.message);
         res.status(500).json({ error: err.message });
     }
 });
@@ -277,7 +277,7 @@ router.get('/teacher/:teacherId', async (req, res) => {
 
         res.json(result.recordset[0]);
     } catch (error) {
-        console.error("⛔ Error fetching teacher schedule:", error);
+        console.error(" Error fetching teacher schedule:", error);
         res.status(500).json({ error: "Server error" });
     }
 });

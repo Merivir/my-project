@@ -1,26 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("/schedule_approval")  // ✅ Ստուգել, որ API-ի ուղղությունը ճիշտ է
+    fetch("/schedule_approval")  //  Ստուգել, որ API-ի ուղղությունը ճիշտ է
         .then(response => response.json())
         .then(data => {
-            console.log("📌 API-ից ստացված տվյալները:", data); // ✅ Debugging համար
+            console.log(" API-ից ստացված տվյալները:", data); //  Debugging համար
             
             if (!Array.isArray(data) || data.length === 0) {
-                console.warn("⚠️ API-ից տվյալներ չկան կամ սխալ ֆորմատ է");
+                console.warn(" API-ից տվյալներ չկան կամ սխալ ֆորմատ է");
                 document.querySelector("#scheduleBody").innerHTML = "<tr><td colspan='8' style='text-align:center;'>📢 Տվյալներ չկան</td></tr>";
                 return;
             }
 
             renderSchedule(data);
         })
-        .catch(error => console.error("⚠️ Error fetching schedule approval data:", error));
+        .catch(error => console.error(" Error fetching schedule approval data:", error));
 
-    // ✅ Հաստատելու կոճակը սեղմելիս տանում է դեպի guest.html
+    //  Հաստատելու կոճակը սեղմելիս տանում է դեպի guest.html
     document.getElementById("confirmBtn").addEventListener("click", function () {
-        alert("✅ Դասացուցակը հաստատված է!");
+        alert(" Դասացուցակը հաստատված է!");
         window.location.href = "/guest";
     });
 
-    // ❌ Հրաժարվելու կոճակը սեղմելիս վերադարձնում է admin-dashboard.html
+    //  Հրաժարվելու կոճակը սեղմելիս վերադարձնում է admin-dashboard.html
     document.getElementById("rejectBtn").addEventListener("click", function () {
         const confirmReject = confirm("Համոզվա՞ծ եք, որ ցանկանում եք հրաժարվել։");
         if (confirmReject) {
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function renderSchedule(data) {
     const tableBody = document.querySelector("#scheduleBody");
-    tableBody.innerHTML = ""; // ✅ Մաքրում ենք հին տվյալները
+    tableBody.innerHTML = ""; //  Մաքրում ենք հին տվյալները
 
     data.forEach(item => {
         const row = document.createElement("tr");
@@ -48,5 +48,5 @@ function renderSchedule(data) {
         tableBody.appendChild(row);
     });
 
-    console.log("✅ Աղյուսակը հաջողությամբ լցվեց");
+    console.log(" Աղյուսակը հաջողությամբ լցվեց");
 }

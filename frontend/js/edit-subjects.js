@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 throw new Error(`Server error: ${response.status}`);
             }
             const levels = await response.json();
-            console.log("✅ Levels loaded:", levels);
+            console.log("Levels loaded:", levels);
             courseSelect.innerHTML = `<option value="">Ընտրել կուրս...</option>` +
                 levels.map(level => `<option value="${level.id}">${level.name}</option>`).join("");
         } catch (error) {
-            console.error("⛔ Error loading levels:", error);
+            console.error(" Error loading levels:", error);
         }
     }
 
@@ -32,46 +32,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             console.log(`📡 Fetching courses for levelId: ${levelId}`);
             if (!levelId || isNaN(levelId)) {
-                console.error("⛔ Invalid levelId:", levelId);
+                console.error(" Invalid levelId:", levelId);
                 return;
             }
             const response = await fetch(`/api/courses?levelId=${levelId}`);
             if (!response.ok) throw new Error(`Server error: ${response.status}`);
             const courses = await response.json();
-            console.log("✅ Courses fetched:", courses);
+            console.log(" Courses fetched:", courses);
             if (!Array.isArray(courses)) throw new Error("Returned data is not an array");
             courseCodeSelect.innerHTML = `<option value="">Ընտրել կուրսի կոդ...</option>` +
                 courses.map(course => `<option value="${course.id}">${course.code}</option>`).join("");
             courseCodeSelect.disabled = false;
         } catch (error) {
-            console.error("⛔ Error loading course codes:", error);
+            console.error(" Error loading course codes:", error);
         }
     }
 
     // Բեռնում ենք առարկաները՝ ընտրված Courses-ի կոդի հիման վրա
     async function loadSubjects(courseCode) {
         try {
-            console.log(`📡 Fetching subjects for courseCode: ${courseCode}`);
+            console.log(` Fetching subjects for courseCode: ${courseCode}`);
             const response = await fetch(`/api/subjects/${courseCode}`);
             if (!response.ok) {
                 throw new Error(`Server error: ${response.status}`);
             }
             const subjects = await response.json();
-            console.log("📦 Received subjects (Updated List from schedule_editable):", subjects);
+            console.log(" Received subjects (Updated List from schedule_editable):", subjects);
             if (!Array.isArray(subjects) || subjects.length === 0) {
-                console.warn("⚠️ No subjects received or data is not an array!");
+                console.warn(" No subjects received or data is not an array!");
                 subjectsContainer.innerHTML = `<p style="color: red;">📢 Առարկաներ չեն գտնվել!</p>`;
                 return;
             }
             renderSubjects(subjects); // Թարմացնում ենք UI-ն
         } catch (error) {
-            console.error("⛔ Error loading subjects:", error);
+            console.error(" Error loading subjects:", error);
         }
     }
 
     // Ստեղծում ենք առարկաների ցուցադրության card-երը
     function renderSubjects(subjects) {
-        console.log("📦 Rendering subjects:", subjects);
+        console.log(" Rendering subjects:", subjects);
         subjectsContainer.innerHTML = ""; // Մաքրում ենք հին տվյալները
 
         subjects.forEach(subject => {
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             subjectsContainer.appendChild(subjectElement);
         });
-        console.log("✅ Rendered subjects successfully!");
+        console.log(" Rendered subjects successfully!");
     }
 
     // Ավելացնում ենք loadSubjects-ը գլոբալ, որպեսզի այն հասանելի լինի window-ի միջոցով
@@ -146,10 +146,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (confirm("Դուք համոզվա՞ծ եք, որ ցանկանում եք ջնջել այս առարկան?")) {
                 try {
                     await fetch(`/api/schedule/${subjectId}`, { method: "DELETE" });
-                    alert("✅ Առարկան հաջողությամբ ջնջվեց");
+                    alert(" Առարկան հաջողությամբ ջնջվեց");
                     loadSubjects(courseCodeSelect.value); // Թարմացնում ենք ցուցակը
                 } catch (error) {
-                    console.error("⛔ Error deleting subject:", error);
+                    console.error("Error deleting subject:", error);
                 }
             }
         }
@@ -172,13 +172,13 @@ function openEditPopup(subjectCard) {
     const frequencySelect = document.getElementById("editFrequency");
 
     if (!subjectInput || !teacherSelect || !roomSelect || !typeSelect || !frequencySelect) {
-        console.error("⛔ Error: One of the form elements is missing in openEditPopup!");
+        console.error(" Error: One of the form elements is missing in openEditPopup!");
         return;
     }
 
     // Պահպանում ենք edit pop-up-ի վրա schedule_editable-ի id-ը
     const scheduleId = subjectCard.getAttribute("data-schedule-id");
-    console.log("📌 Setting schedule_id:", scheduleId);
+    console.log(" Setting schedule_id:", scheduleId);
     subjectInput.setAttribute("data-schedule-id", scheduleId);
     subjectInput.value = subjectCard.querySelector("h3").textContent.trim();
     subjectInput.setAttribute("readonly", true);
@@ -199,7 +199,7 @@ function openEditPopup(subjectCard) {
                 teacherSelect.value = matchedTeacher.id;
             }
         })
-        .catch(error => console.error("❌ Դասախոսների բեռնման սխալ:", error));
+        .catch(error => console.error("Դասախոսների բեռնման սխալ:", error));
 
     // Բեռնվում ենք լսարանների տվյալները
     fetch("/api/rooms")
@@ -217,7 +217,7 @@ function openEditPopup(subjectCard) {
                 roomSelect.value = matchedRoom.id;
             }
         })
-        .catch(error => console.error("❌ Լսարանների բեռնման սխալ:", error));
+        .catch(error => console.error(" Լսարանների բեռնման սխալ:", error));
 
     // Բեռնվում ենք դասի տեսակների տվյալները
     fetch("/api/types")
@@ -235,7 +235,7 @@ function openEditPopup(subjectCard) {
                 typeSelect.value = matchedType.id;
             }
         })
-        .catch(error => console.error("❌ Դասի տեսակների բեռնման սխալ:", error));
+        .catch(error => console.error(" Դասի տեսակների բեռնման սխալ:", error));
 
     frequencySelect.innerHTML = `
         <option value="weekly">Ամեն շաբաթ</option>
@@ -277,22 +277,22 @@ async function saveEditedSchedule() {
             body: JSON.stringify(updatedSchedule)
         });
         const responseData = await response.json();
-        console.log("📌 Server Response:", responseData);
+        console.log(" Server Response:", responseData);
         if (response.ok) {
-            alert("✅ Փոփոխությունը պահպանվեց!");
+            alert(" Փոփոխությունը պահպանվեց!");
             closeEditPopup();
             // Թարմացնում ենք subjects-ի ցուցակը
             if (typeof window.loadSubjects === "function") {
                 await window.loadSubjects(document.getElementById("courseCodeSelect").value);
             } else {
-                console.error("⛔ Error: loadSubjects is not defined.");
+                console.error(" Error: loadSubjects is not defined.");
             }
         } else {
-            console.error("❌ Error response:", responseData);
-            alert(`❌ Սխալ փոփոխման ժամանակ: ${responseData.error}`);
+            console.error(" Error response:", responseData);
+            alert(` Սխալ փոփոխման ժամանակ: ${responseData.error}`);
         }
     } catch (error) {
-        console.error("⛔ Error saving changes:", error);
+        console.error(" Error saving changes:", error);
     }
 }
 
@@ -301,18 +301,18 @@ async function loadDropdownData(elementId, apiEndpoint) {
         console.log(`📡 Fetching ${elementId} from ${apiEndpoint}...`);
         const response = await fetch(apiEndpoint);
         if (!response.ok) {
-            throw new Error(`❌ Failed to fetch ${elementId}: ${response.status} ${response.statusText}`);
+            throw new Error(` Failed to fetch ${elementId}: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         if (!Array.isArray(data)) {
-            throw new Error(`❌ Invalid data format for ${elementId}`);
+            throw new Error(` Invalid data format for ${elementId}`);
         }
         const select = document.getElementById(elementId);
         select.innerHTML = `<option value="">Ընտրել...</option>` + 
             data.map(item => `<option value="${item.id}">${item.name || item.number}</option>`).join("");
-        console.log(`✅ Loaded ${elementId} successfully`);
+        console.log(` Loaded ${elementId} successfully`);
     } catch (error) {
-        console.error(`⛔ Error fetching ${elementId}:`, error);
+        console.error(` Error fetching ${elementId}:`, error);
     }
 }
 
@@ -324,6 +324,6 @@ async function fetchData(url, elementId) {
         select.innerHTML = `<option value="">Ընտրել...</option>` + 
             data.map(item => `<option value="${item.id}">${item.name || item.number}</option>`).join("");
     } catch (error) {
-        console.error(`⛔ Error fetching ${elementId}:`, error);
+        console.error(` Error fetching ${elementId}:`, error);
     }
 }

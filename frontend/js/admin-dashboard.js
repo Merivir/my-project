@@ -23,11 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ✅ Բեռնում ենք դասախոսների ցանկը
+// Բեռնում ենք դասախոսների ցանկը
 async function loadTeachers() {
     try {
         const response = await fetch('/api/teachers');
-        if (!response.ok) throw new Error("⚠️ Server Error: " + response.status);
+        if (!response.ok) throw new Error("Server Error: " + response.status);
 
         const teachers = await response.json();
         const teacherSelect = document.getElementById("teacherSelect");
@@ -41,7 +41,7 @@ async function loadTeachers() {
         });
 
     } catch (error) {
-        console.error("⛔ Error loading teachers:", error);
+        console.error("Error loading teachers:", error);
     }
 }
 
@@ -55,7 +55,7 @@ async function updateTeacherInfo(teacherId) {
         const response = await fetch(`/api/schedule/teacher/${teacherId}`);
 
         if (!response.ok) {
-            console.error(`❌ Server Error: ${response.status}`);
+            console.error(`Server Error: ${response.status}`);
             document.getElementById("teacher-info").innerHTML = "Տվյալներ չեն գտնվել";
             return;
         }
@@ -65,7 +65,7 @@ async function updateTeacherInfo(teacherId) {
             <strong>${data.teacherName}</strong> ունի <strong>${data.subjectCount}</strong> դասաժամ:
         `;
     } catch (error) {
-        console.error("⛔ Error fetching teacher schedule:", error);
+        console.error("Error fetching teacher schedule:", error);
         document.getElementById("teacher-info").innerHTML = "Տվյալներ չեն գտնվել";
     }
 }
@@ -73,7 +73,7 @@ async function updateTeacherInfo(teacherId) {
 async function saveAvailability() {
     const teacherId = document.getElementById("teacherSelect").value;
     if (!teacherId) {
-        alert("⚠️ Խնդրում ենք ընտրել դասախոս");
+        alert(" Խնդրում ենք ընտրել դասախոս");
         return;
     }
 
@@ -83,7 +83,7 @@ async function saveAvailability() {
                              .map(checkbox => checkbox.value);
 
     if (!primarySlots.length && !backupSlots.length) {
-        alert("⚠️ Խնդրում ենք նշել առնվազն մեկ դասաժամ");
+        alert(" Խնդրում ենք նշել առնվազն մեկ դասաժամ");
         return;
     }
 
@@ -102,18 +102,18 @@ async function saveAvailability() {
 
         const data = await response.json();
         if (response.ok) {
-            alert("✅ Ժամերը հաջողությամբ պահպանվեցին!");
+            alert(" Ժամերը հաջողությամբ պահպանվեցին!");
         } else {
-            alert(`⛔ Սխալ: ${data.error}`);
+            alert(` Սխալ: ${data.error}`);
         }
     } catch (error) {
-        console.error("⛔ Error saving availability:", error);
-        alert("❌ Սերվերի սխալ");
+        console.error("Error saving availability:", error);
+        alert("Սերվերի սխալ");
     }
 }
 
 
-// ✅ Ստեղծում ենք checkbox-ները
+// Ստեղծում ենք checkbox-ները
 function generateTimeSlotCheckboxes(containerId) {
     const container = document.getElementById(containerId);
     
@@ -165,14 +165,14 @@ function generateTimeSlotCheckboxes(containerId) {
 }
 
 
-// ✅ Թույլատրում կամ անջատում ենք checkbox-ները
+// Թույլատրում կամ անջատում ենք checkbox-ները
 function toggleCheckboxes(enable) {
     document.querySelectorAll(".time-slot-checkbox").forEach(checkbox => {
         checkbox.disabled = !enable;
     });
 }
 
-// ✅ Թարմացնում ենք "Հաստատել ժամերը" կոճակը
+// Թարմացնում ենք "Հաստատել ժամերը" կոճակը
 function updateConfirmButton() {
     const anyChecked = document.querySelectorAll(".time-slot-checkbox:checked").length > 0;
     document.getElementById("confirmAvailability").disabled = !anyChecked; 
@@ -181,7 +181,7 @@ function updateConfirmButton() {
 async function confirmAvailability() {
     const teacherId = document.getElementById("teacherSelect").value;
     if (!teacherId) {
-        alert("⚠️ Խնդրում ենք ընտրել դասախոս");
+        alert(" Խնդրում ենք ընտրել դասախոս");
         return;
     }
 
@@ -191,12 +191,12 @@ async function confirmAvailability() {
                              .map(checkbox => checkbox.value);
 
     if (!primarySlots.length && !backupSlots.length) {
-        alert("⚠️ Խնդրում ենք նշել առնվազն մեկ դասաժամ");
+        alert("Խնդրում ենք նշել առնվազն մեկ դասաժամ");
         return;
     }
 
     try {
-        console.log("📡 Ուղարկում ենք API-ին՝ /api/schedule/save-availability");
+        console.log(" Ուղարկում ենք API-ին՝ /api/schedule/save-availability");
 
         const response = await fetch('/api/schedule/save-availability', {
             method: "POST",
@@ -210,36 +210,36 @@ async function confirmAvailability() {
             })
         });
 
-        console.log("📡 Պատասխան ստացանք:", response);
+        console.log(" Պատասխան ստացանք:", response);
 
         const data = await response.json();
         if (response.ok) {
-            alert("✅ Ժամերը հաջողությամբ հաստատվեցին և պահվեցին բազայում!");
-            isConfirmed = true; // ✅ Ավելացվել է, որ հաստատումը ճանաչվի
+            alert(" Ժամերը հաջողությամբ հաստատվեցին և պահվեցին բազայում!");
+            isConfirmed = true; //  Ավելացվել է, որ հաստատումը ճանաչվի
             document.getElementById("generateSchedule").disabled = false; // Թույլատրում ենք հաջորդ քայլը
         } else {
-            alert(`⛔ Սխալ: ${data.error}`);
+            alert(` Սխալ: ${data.error}`);
         }
     } catch (error) {
-        console.error("⛔ Error saving availability:", error);
-        alert("❌ Սերվերի սխալ");
+        console.error(" Error saving availability:", error);
+        alert(" Սերվերի սխալ");
     }
 }
 
 
 
-// ✅ Ստեղծում ենք դասացուցակը
+//  Ստեղծում ենք դասացուցակը
 async function generateSchedule() {
     if (!isConfirmed) {
-        alert("⚠️ Խնդրում ենք նախ հաստատել ժամերը:");
+        alert(" Խնդրում ենք նախ հաստատել ժամերը:");
         return;
     }
 
-    // 1️⃣ Ցույց ենք տալիս բեռնման նշանը
+    //  Ցույց ենք տալիս բեռնման նշանը
     document.getElementById("loadingSpinner").style.display = "block";
 
     try {
-        // 2️⃣ Կանչում ենք backend-ի ալգորիթմը
+        //  Կանչում ենք backend-ի ալգորիթմը
         const response = await fetch("/api/generate-schedule", { method: "POST" });
 
         if (!response.ok) {
@@ -247,17 +247,17 @@ async function generateSchedule() {
         }
 
         const data = await response.json();
-        console.log("📌 Սերվերի պատասխանը:", data);
+        console.log(" Սերվերի պատասխանը:", data);
 
-        // 3️⃣ Եթե ամեն ինչ հաջող է, տեղափոխվում ենք `schedule-approval.html`
-        alert("✅ Դասացուցակը կազմվել է հաջողությամբ!");
+        //  Եթե ամեն ինչ հաջող է, տեղափոխվում ենք `schedule-approval.html`
+        alert(" Դասացուցակը կազմվել է հաջողությամբ!");
         window.location.href = "/schedule-approval.html";
 
     } catch (error) {
-        console.error("⛔ Սխալ դասացուցակ կազմելիս:", error);
-        alert("❌ Սխալ՝ դասացուցակը կազմելու ժամանակ");
+        console.error(" Սխալ դասացուցակ կազմելիս:", error);
+        alert(" Սխալ՝ դասացուցակը կազմելու ժամանակ");
     } finally {
-        // 4️⃣ Հանում ենք բեռնման նշանը, եթե ինչ-որ բան սխալ գնաց
+        // Հանում ենք բեռնման նշանը, եթե ինչ-որ բան սխալ գնաց
         document.getElementById("loadingSpinner").style.display = "none";
     }
 }

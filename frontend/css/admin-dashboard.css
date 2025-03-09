@@ -284,3 +284,7 @@ button:disabled {
 button:hover:enabled {
     background-color: #10324e;
 }
+
+#loadingSpinner p {
+    color: #10324e;;
+}

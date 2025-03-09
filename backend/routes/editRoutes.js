@@ -2,7 +2,7 @@ const express = require("express");
 const { sql, poolPromise } = require("../models/db");
 const router = express.Router();
 
-// ✅ Բերում ենք առարկաները
+// Բերում ենք առարկաները
 router.get("/subjects", async (req, res) => {
     try {
         const pool = await poolPromise;
@@ -13,7 +13,7 @@ router.get("/subjects", async (req, res) => {
     }
 });
 
-// ✅ Բերում ենք լսարանները
+// Բերում ենք լսարանները
 router.get("/rooms", async (req, res) => {
     try {
         const pool = await poolPromise;
@@ -24,7 +24,7 @@ router.get("/rooms", async (req, res) => {
     }
 });
 
-// ✅ Բերում ենք դասի տեսակները
+// Բերում ենք դասի տեսակները
 router.get("/types", async (req, res) => {
     try {
         const pool = await poolPromise;
@@ -40,7 +40,7 @@ router.put('/edit/:id', async (req, res) => {
     const { id } = req.params;
     let { teacher_id, room_id, type_id, frequency } = req.body;
 
-    console.log("📡 Received update request:", { id, teacher_id, room_id, type_id, frequency });
+    console.log("Received update request:", { id, teacher_id, room_id, type_id, frequency });
 
     try {
         const pool = await poolPromise;
@@ -51,13 +51,13 @@ router.put('/edit/:id', async (req, res) => {
             .query('SELECT * FROM schedule_editable WHERE id = @id');
 
         if (!existing.recordset.length) {
-            console.log("❌ Գրառումը չի գտնվել schedule_editable-ում");
-            return res.status(404).json({ error: "❌ Գրառումը չի գտնվել schedule_editable-ում" });
+            console.log("Գրառումը չի գտնվել schedule_editable-ում");
+            return res.status(404).json({ error: "Գրառումը չի գտնվել schedule_editable-ում" });
         }
 
         console.log("🔍 Existing record in schedule_editable:", existing.recordset[0]);
 
-        // ✅ Թարմացնում ենք միայն schedule_editable աղյուսակը
+        // Թարմացնում ենք միայն schedule_editable աղյուսակը
         const updateResult = await pool.request()
             .input('id', sql.Int, id)
             .input('teacher_id', sql.Int, teacher_id || null)
@@ -74,7 +74,7 @@ router.put('/edit/:id', async (req, res) => {
                 WHERE id = @id;
             `);
 
-        console.log("✅ Update success in schedule_editable, rows affected:", updateResult.rowsAffected);
+        console.log("Update success in schedule_editable, rows affected:", updateResult.rowsAffected);
 
         // Ստուգում ենք փոփոխությունը
         const checkUpdated = await pool.request()
@@ -83,9 +83,9 @@ router.put('/edit/:id', async (req, res) => {
 
         console.log("🔎 Updated record in schedule_editable:", checkUpdated.recordset[0]);
 
-        res.json({ message: "✅ Փոփոխությունը հաջողությամբ կատարվեց", updatedData: checkUpdated.recordset[0] });
+        res.json({ message: "Փոփոխությունը հաջողությամբ կատարվեց", updatedData: checkUpdated.recordset[0] });
     } catch (error) {
-        console.error("⛔ Error updating schedule_editable record:", error);
+        console.error("Error updating schedule_editable record:", error);
         res.status(500).json({ error: "Database update error", details: error.message });
     }
 });
@@ -102,7 +102,7 @@ router.delete("/schedule/:id", async (req, res) => {
             .query("SELECT id FROM schedule_editable WHERE id = @id");
 
         if (!existing.recordset.length) {
-            return res.status(404).json({ error: "❌ Գրառումը չի գտնվել schedule_editable-ում" });
+            return res.status(404).json({ error: "Գրառումը չի գտնվել schedule_editable-ում" });
         }
 
         // Հիմնական DELETE հարցում՝ ճիշտ id-ի համաձայն
@@ -110,9 +110,9 @@ router.delete("/schedule/:id", async (req, res) => {
             .input("id", sql.Int, id)
             .query("DELETE FROM schedule_editable WHERE id = @id");
 
-        res.json({ message: "✅ Դասացուցակից տվյալը հաջողությամբ ջնջվեց" });
+        res.json({ message: "Դասացուցակից տվյալը հաջողությամբ ջնջվեց" });
     } catch (error) {
-        console.error("⛔ Error deleting schedule record:", error);
+        console.error("Error deleting schedule record:", error);
         res.status(500).json({ error: "Server error while deleting from schedule_editable" });
     }
 });
