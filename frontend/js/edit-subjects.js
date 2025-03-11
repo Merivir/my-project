@@ -10,6 +10,137 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.history.back();
     });
 
+    // ➕ Ավելացնել առարկա popup-ի մաս
+    const addSubjectBtn = document.getElementById("addSubjectBtn");
+    const addSubjectPopup = document.getElementById("addSubjectPopup");
+    const addSubjectPopupOverlay = document.getElementById("addSubjectPopupOverlay");
+    const closePopupBtn = document.getElementById("closeAddSubjectPopup");
+
+    // 📌 Երբ կուրսի կոդն ընտրվում է, "➕ Ավելացնել առարկա" կոճակը ակտիվանում է
+    courseCodeSelect.addEventListener("change", () => {
+        addSubjectBtn.disabled = !courseCodeSelect.value;
+    });
+
+    // 🔓 Popup բացել
+    addSubjectBtn.addEventListener("click", function () {
+        addSubjectPopup.classList.add("visible");
+        addSubjectPopupOverlay.style.display = "block";
+    });
+
+    // ❌ Popup փակել (X կոճակ)
+    closePopupBtn.addEventListener("click", function () {
+        addSubjectPopup.classList.remove("visible");
+        addSubjectPopupOverlay.style.display = "none";
+    });
+
+    // ❌ Overlay սեղմելիս popup-ը փակվի
+    addSubjectPopupOverlay.addEventListener("click", function () {
+        addSubjectPopup.classList.remove("visible");
+        addSubjectPopupOverlay.style.display = "none";
+    });
+
+
+    // 📡 API-ից բեռնում ենք դասախոսներին
+    loadTeachers("newTeacher", "/api/lecture-teachers");
+    loadTeachers("practicalTeacher", "/api/practical-teachers");
+    loadTeachers("labTeacher", "/api/lab-teachers");
+
+    // 📌 Գործնական & Լաբորատոր checkbox-ների աշխատեցում
+    document.getElementById("enablePractical").addEventListener("change", function () {
+        const practicalSection = document.getElementById("practicalSection");
+        const practicalTeacher = document.getElementById("practicalTeacher");
+        const practicalCount = document.getElementById("practicalCount");
+        const practicalFrequency = document.getElementById("practicalFrequency");
+
+        practicalSection.classList.toggle("hidden", !this.checked);
+        practicalTeacher.disabled = !this.checked;
+        practicalCount.disabled = !this.checked;
+        practicalFrequency.disabled = !this.checked;
+    });
+
+    document.getElementById("enableLab").addEventListener("change", function () {
+        const labSection = document.getElementById("labSection");
+        const labTeacher = document.getElementById("labTeacher");
+        const labCount = document.getElementById("labCount");
+        const labFrequency = document.getElementById("labFrequency");
+
+        labSection.classList.toggle("hidden", !this.checked);
+        labTeacher.disabled = !this.checked;
+        labCount.disabled = !this.checked;
+        labFrequency.disabled = !this.checked;
+    });
+
+    async function loadTeachers(selectId, apiUrl) {
+        try {
+            console.log(`📡 Fetching teachers for ${selectId} from ${apiUrl}...`);
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`❌ Server error: ${response.status}`);
+            }
+    
+            const teachers = await response.json();
+            console.log(`✅ Received teachers for ${selectId}:`, teachers);
+    
+            const selectElement = document.getElementById(selectId);
+            
+            if (!selectElement) {
+                console.error(`❌ Select element with ID ${selectId} not found!`);
+                return;
+            }
+    
+            // 🆕 Clear old options
+            selectElement.innerHTML = "";
+    
+            // ➕ Add default "Select a teacher" option
+            const defaultOption = document.createElement("option");
+            defaultOption.value = "";
+            defaultOption.textContent = "Ընտրել դասախոս...";
+            selectElement.appendChild(defaultOption);
+    
+            // 🔄 Populate the dropdown
+            teachers.forEach(teacher => {
+                const option = document.createElement("option");
+                option.value = teacher.id;
+                option.textContent = teacher.name;
+                selectElement.appendChild(option);
+            });
+    
+            console.log(`🎉 Updated select ${selectId} successfully!`);
+    
+        } catch (error) {
+            console.error(`❌ Error loading teachers from ${apiUrl}:`, error);
+        }
+    }    
+    
+
+    // ➕ Ավելացնել լրացուցիչ դասախոս
+    document.getElementById("addAnotherTeacher").addEventListener("click", function () {
+        const container = document.getElementById("teacherContainer");
+        const newSelect = document.createElement("select");
+        newSelect.classList.add("teacherSelect");
+        container.appendChild(newSelect);
+        loadTeachers("teacherSelect");
+    });
+
+    // ➕ Ավելացնել լրացուցիչ գործնական դասախոս
+    document.getElementById("addPracticalTeacher").addEventListener("click", function () {
+        const container = document.getElementById("practicalTeacherContainer");
+        const newSelect = document.createElement("select");
+        newSelect.classList.add("practicalTeacherSelect");
+        container.appendChild(newSelect);
+        loadTeachers("practicalTeacherSelect");
+    });
+
+    // ➕ Ավելացնել լրացուցիչ լաբորատոր դասախոս
+    document.getElementById("addLabTeacher").addEventListener("click", function () {
+        const container = document.getElementById("labTeacherContainer");
+        const newSelect = document.createElement("select");
+        newSelect.classList.add("labTeacherSelect");
+        container.appendChild(newSelect);
+        loadTeachers("labTeacherSelect");
+    });
+
     // Բեռնում ենք կուրսերը Levels աղյուսակից
     async function loadCourses() {
         try {
@@ -158,6 +289,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Բեռնում ենք կուրսերը առաջին անգամ
     loadCourses();
 });
+
+
+// ➕ Popup բացելու ֆունկցիա (Ավելացնել առարկա)
+function openAddSubjectPopup() {
+    const popup = document.getElementById("addSubjectPopup");
+    const overlay = document.getElementById("addSubjectPopupOverlay");
+    popup.classList.add("visible");
+    overlay.style.display = "block";
+
+    // 🔄 Մաքրում ենք հին տվյալները (հնարավոր է՝ նախորդ սխալից մնացած լինեն)
+    document.getElementById("newTeacher").innerHTML = "<option value=''>Ընտրել դասախոս...</option>";
+    document.getElementById("practicalTeacher").innerHTML = "<option value=''>Ընտրել դասախոս...</option>";
+    document.getElementById("labTeacher").innerHTML = "<option value=''>Ընտրել դասախոս...</option>";
+}
+
+// ❌ Popup փակելու ֆունկցիա (Ավելացնել առարկա)
+function closeAddSubjectPopup() {
+    const popup = document.getElementById("addSubjectPopup");
+    const overlay = document.getElementById("addSubjectPopupOverlay");
+    popup.classList.remove("visible");
+    overlay.style.display = "none";
+}
 
 // Edit pop-up-ի բացման ֆունկցիա
 function openEditPopup(subjectCard) {
@@ -327,3 +480,6 @@ async function fetchData(url, elementId) {
         console.error(` Error fetching ${elementId}:`, error);
     }
 }
+
+
+

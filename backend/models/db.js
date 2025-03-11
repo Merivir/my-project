@@ -22,4 +22,7 @@ const poolPromise = sql.connect(config)
         throw err;
     });
 
-module.exports = { sql, poolPromise };
+module.exports = { 
+    sql, 
+    poolPromise,
+};

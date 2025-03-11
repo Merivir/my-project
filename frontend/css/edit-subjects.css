@@ -299,3 +299,72 @@ header {
     }
 }
 
+
+/* Փոփափի հիմնական ոճ */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+
+/* Հավասարեցում ձախ կողմ */
+.popup-content label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.popup-content select,
+.popup-content input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Checkbox-ները թող լինեն inline տեքստի կողքին */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* ✅ Սքրոլ ավելացնենք popup-ի համար */
+.popup::-webkit-scrollbar {
+    width: 8px;
+}
+
+.popup::-webkit-scrollbar-thumb {
+    background: #0A2540;
+    border-radius: 4px;
+}
+
+.popup::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Երբ դաշտերը արգելափակված են */
+.popup-content select:disabled, 
+.popup-content input:disabled {
+    background: #f0f0f0;
+    cursor: not-allowed;
+}

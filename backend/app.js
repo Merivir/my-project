@@ -52,7 +52,6 @@ app.post("/api/generate-schedule", (req, res) => {
 
 
 
-// Подключение к MSSQL
 app.use(async (req, res, next) => {
     try {
         req.dbPool = await sql.connect(config);
@@ -63,7 +62,6 @@ app.use(async (req, res, next) => {
     }
 });
 
-// Обработчики HTML-страниц
 app.get('/guest', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/guest.html'));
 });
@@ -87,7 +85,6 @@ app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/admin-dashboard.html'));
 });
 
-// Подключение маршрутов
 app.use("/api", require("./routes/editRoutes"));
 app.use('/guest', require('./routes/guestRoutes'));
 app.use('/schedule', require('./routes/scheduleRoutes'));
@@ -101,13 +98,12 @@ app.get('/edit-subjects', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/edit-subjects.html'));
 });
 
-// Маршрут для корневого пути "/"
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
 
-// Запуск сервера
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+

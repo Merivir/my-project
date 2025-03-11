@@ -1,5 +1,6 @@
 const express = require("express");
 const { sql, poolPromise } = require("../models/db");
+
 const router = express.Router();
 
 // Բերում ենք առարկաները
@@ -114,6 +115,42 @@ router.delete("/schedule/:id", async (req, res) => {
     } catch (error) {
         console.error("Error deleting schedule record:", error);
         res.status(500).json({ error: "Server error while deleting from schedule_editable" });
+    }
+});
+
+// 📌 Լեկցիա անցկացնող դասախոսներ
+router.get("/lecture-teachers", async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT id, name FROM Teachers");
+        res.json(result.recordset);
+    } catch (error) {
+        console.error("❌ Error fetching lecture teachers:", error);
+        res.status(500).json({ error: "Server error while fetching lecture teachers", details: error.message });
+    }
+});
+
+// 📌 Գործնական դասեր անցկացնող դասախոսներ
+router.get("/practical-teachers", async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT id, name FROM Teachers");
+        res.json(result.recordset);
+    } catch (error) {
+        console.error("❌ Error fetching practical teachers:", error);
+        res.status(500).json({ error: "Server error while fetching practical teachers", details: error.message });
+    }
+});
+
+// 📌 Լաբորատոր դասեր անցկացնող դասախոսներ
+router.get("/lab-teachers", async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT id, name FROM Teachers");
+        res.json(result.recordset);
+    } catch (error) {
+        console.error("❌ Error fetching lab teachers:", error);
+        res.status(500).json({ error: "Server error while fetching lab teachers", details: error.message });
     }
 });
 
