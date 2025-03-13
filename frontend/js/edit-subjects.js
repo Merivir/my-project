@@ -5,7 +5,54 @@ document.addEventListener("DOMContentLoaded", async () => {
     const saveChangesBtn = document.getElementById("saveChangesBtn");
     const container = document.getElementById("teacherContainer");
 
+    const practicalCheckbox = document.getElementById("enablePractical");
+    const labCheckbox = document.getElementById("enableLab");
+    const addPracticalTeacherBtn = document.getElementById("addPracticalTeacher");
+    const addLabTeacherBtn = document.getElementById("addLabTeacher");
 
+    // Սկզբում անջատում ենք "➕" կոճակները, եթե checkbox-ները չեն ընտրվել
+    if (addPracticalTeacherBtn) addPracticalTeacherBtn.disabled = true;
+    if (addLabTeacherBtn) addLabTeacherBtn.disabled = true;
+
+    // Ստուգում ենք, արդյոք checkbox-ները նշված են, թե ոչ, և կարգավորում կոճակները
+    function toggleTeacherButtons() {
+        if (addPracticalTeacherBtn && practicalCheckbox) {
+            addPracticalTeacherBtn.disabled = !practicalCheckbox.checked;
+        }
+        if (addLabTeacherBtn && labCheckbox) {
+            addLabTeacherBtn.disabled = !labCheckbox.checked;
+        }
+    }
+
+    // Երբ "Գործնական" կամ "Լաբորատոր" checkbox-ները փոխվեն, կոճակների վիճակը կփոխվի
+    if (practicalCheckbox) {
+        practicalCheckbox.addEventListener("change", toggleTeacherButtons);
+    }
+    if (labCheckbox) {
+        labCheckbox.addEventListener("change", toggleTeacherButtons);
+    }
+
+    // "➕" կոճակների վրա էլ ավելացնում ենք ստուգում, որ չաշխատի, եթե checkbox-ը նշված չէ
+    if (addPracticalTeacherBtn) {
+        addPracticalTeacherBtn.addEventListener("click", function (event) {
+            if (!practicalCheckbox.checked) {
+                event.preventDefault(); // Կանգնեցնում ենք գործողությունը
+                return;
+            }
+            addTeacherDropdown("practicalTeacher", "/api/practical-teachers");
+        });
+    }
+
+    if (addLabTeacherBtn) {
+        addLabTeacherBtn.addEventListener("click", function (event) {
+            if (!labCheckbox.checked) {
+                event.preventDefault(); // Կանգնեցնում ենք գործողությունը
+                return;
+            }
+            addTeacherDropdown("labTeacher", "/api/lab-teachers");
+        });
+    }
+    
     // Վերադառնալ նախորդ էջին
     document.querySelector(".back-arrow").addEventListener("click", (event) => {
         event.preventDefault();
@@ -459,60 +506,34 @@ async function fetchData(url, elementId) {
  * @param {string} containerId - The ID of the container where new dropdowns should be added
  * @param {string} apiUrl - The API endpoint to fetch teachers from
  */
+
 function addTeacherDropdown(baseSelectId, apiUrl) {
-    const baseSelect = document.getElementById(baseSelectId);
+    const baseContainer = document.getElementById(baseSelectId).parentNode;
 
-    if (!baseSelect) {
-        console.error(`❌ Base select with ID ${baseSelectId} not found!`);
-        return;
-    }
+    // Ստեղծում ենք նոր կոնտեյներ, որպեսզի նոր դաշտերը լինեն նույն տողի վրա
+    const teacherRow = document.createElement("div");
+    teacherRow.classList.add("teacher-row");
 
-    // Ստեղծում ենք նոր <select> էլեմենտ
+    // Ստեղծում ենք նոր <select>
     const newSelect = document.createElement("select");
     newSelect.classList.add("teacherSelect");
     newSelect.disabled = false;
     const newSelectId = `${baseSelectId}-${Date.now()}`;
     newSelect.id = newSelectId;
 
-    // Ստեղծում ենք ջնջելու կոճակ
+    // Ջնջելու կոճակ
     const removeBtn = document.createElement("button");
     removeBtn.textContent = "❌";
     removeBtn.classList.add("remove-teacher-btn");
     removeBtn.addEventListener("click", () => {
-        newSelect.remove();
-        removeBtn.remove();
+        teacherRow.remove();
     });
 
-    // Հաշվում ենք, թե որ կոճակի տակ պետք է ավելացնել
-    const addButton = document.getElementById(
-        baseSelectId === "practicalTeacher"
-            ? "addPracticalTeacher"
-            : "addLabTeacher"
-    );
+    // Ավելացնում ենք նոր դաշտն ու կոճակը նույն տողի վրա
+    teacherRow.appendChild(newSelect);
+    teacherRow.appendChild(removeBtn);
+    baseContainer.parentNode.insertBefore(teacherRow, baseContainer.nextSibling);
 
-    if (addButton) {
-        // ✅ **Ավելացնում ենք հենց "+" կոճակի ներքևում**
-        addButton.insertAdjacentElement("afterend", newSelect);
-        newSelect.insertAdjacentElement("afterend", removeBtn);
-    } else {
-        console.error(`❌ Add button for ${baseSelectId} not found!`);
-    }
-
-    // Բեռնում ենք դասախոսների ցանկը նոր select-ի համար
+    // Բեռնում ենք դասախոսների ցուցակը նոր select-ի համար
     loadTeachers(newSelectId, apiUrl);
-
-    console.log(`➕ Added new teacher dropdown: ${newSelectId} after ${addButton.id}`);
 }
-
-// 📌 DOM-ի ամբողջական բեռնման դեպքում (անհրաժեշտ է, որ կոճակները գտնվեն)
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("addPracticalTeacher").addEventListener("click", function () {
-        addTeacherDropdown("practicalTeacher", "/api/practical-teachers");
-    });
-
-    document.getElementById("addLabTeacher").addEventListener("click", function () {
-        addTeacherDropdown("labTeacher", "/api/lab-teachers");
-    });
-});
-
-

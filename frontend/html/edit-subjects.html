@@ -60,11 +60,12 @@
                 <input type="checkbox" id="enablePractical">
                 <label for="enablePractical">Գործնական</label>
             </div>
-            
             <div id="practicalSection" class="hidden">
                 <label for="practicalTeacher">Գործնական դասախոս(ներ):</label>
-                <select id="practicalTeacher" disabled></select>
-                <button type="button" id="addPracticalTeacher">➕</button>
+                <div class="teacher-container">
+                    <select id="practicalTeacher" disabled></select>
+                    <button type="button" id="addPracticalTeacher" class="add-teacher-btn">➕</button>
+                </div>
             
                 <label for="practicalFrequency">Պարբերականություն:</label>
                 <select id="practicalFrequency" disabled>
@@ -83,8 +84,10 @@
             
             <div id="labSection" class="hidden">
                 <label for="labTeacher">Լաբորատոր դասախոս(ներ):</label>
-                <select id="labTeacher" disabled></select>
-                <button type="button" id="addLabTeacher">➕</button>
+                <div class="teacher-container">
+                    <select id="labTeacher" disabled></select>
+                    <button type="button" id="addLabTeacher" class="add-teacher-btn">➕</button>
+                </div>
             
                 <label for="labFrequency">Պարբերականություն:</label>
                 <select id="labFrequency" disabled>
