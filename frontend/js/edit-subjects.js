@@ -81,63 +81,38 @@ document.addEventListener("DOMContentLoaded", async () => {
  * @param {string} selectId - The ID of the dropdown element
  * @param {string} apiUrl - The API endpoint
  */
-async function loadTeachers(selectId, apiUrl) {
-    try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error(`❌ Server error: ${response.status}`);
-
-        const teachers = await response.json();
-
-        // Wait for the element to be available in the DOM
-        setTimeout(() => {
+    async function loadTeachers(selectId, apiUrl) {
+        try {
+            console.log(`📡 Fetching teachers for ${selectId} from ${apiUrl}...`);
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error(`❌ Server error: ${response.status}`);
+    
+            const teachers = await response.json();
+    
             const selectElement = document.getElementById(selectId);
-
             if (!selectElement) {
                 console.error(`❌ Select element with ID ${selectId} not found!`);
                 return;
             }
-
-            // Clear old options
-            selectElement.innerHTML = "";
-
-            // Add default option
-            const defaultOption = document.createElement("option");
-            defaultOption.value = "";
-            defaultOption.textContent = "Ընտրել դասախոս...";
-            selectElement.appendChild(defaultOption);
-
-            // Populate dropdown
+    
+            // Очистка старых опций и добавление нового значения по умолчанию
+            selectElement.innerHTML = `<option value="">Ընտրել դասախոսին </option>`;
             teachers.forEach(teacher => {
                 const option = document.createElement("option");
                 option.value = teacher.id;
                 option.textContent = teacher.name;
                 selectElement.appendChild(option);
             });
-
-            console.log(`🎉 Updated ${selectId} successfully!`);
-        }, 50); // Small delay to ensure the new select exists
-    } catch (error) {
-        console.error(`❌ Error loading teachers for ${selectId}:`, error);
-    }
-}
-
     
-
-// ➕ Add another lecture teacher
-    document.getElementById("addAnotherTeacher").addEventListener("click", function () {
-        addTeacherDropdown("newTeacher", "teacherContainer", "/api/lecture-teachers");
-    });
-
-    // ➕ Add another practical teacher
-    document.getElementById("addPracticalTeacher").addEventListener("click", function () {
-        addTeacherDropdown("practicalTeacher", "practicalSection", "/api/practical-teachers");
-    });
-
-    // ➕ Add another lab teacher
-    document.getElementById("addLabTeacher").addEventListener("click", function () {
-        addTeacherDropdown("labTeacher", "labSection", "/api/lab-teachers");
-    });
-
+            console.log(`🎉 Updated ${selectId} successfully!`);
+        } catch (error) {
+            console.error(`❌ Error loading teachers from ${apiUrl}:`, error);
+        }
+    }
+    
+    // Сделать функцию глобальной
+    window.loadTeachers = loadTeachers;
+    
     // Բեռնում ենք կուրսերը Levels աղյուսակից
     async function loadCourses() {
         try {
@@ -484,95 +459,60 @@ async function fetchData(url, elementId) {
  * @param {string} containerId - The ID of the container where new dropdowns should be added
  * @param {string} apiUrl - The API endpoint to fetch teachers from
  */
-function addTeacherDropdown(baseSelectId, containerId, apiUrl) {
-    const container = document.getElementById(containerId);
+function addTeacherDropdown(baseSelectId, apiUrl) {
+    const baseSelect = document.getElementById(baseSelectId);
 
-    if (!container) {
-        console.error(`❌ Container with ID ${containerId} not found!`);
+    if (!baseSelect) {
+        console.error(`❌ Base select with ID ${baseSelectId} not found!`);
         return;
     }
 
-    // Create a new <div> wrapper for layout
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("teacher-wrapper");
-
-    // Create a new <select> element
+    // Ստեղծում ենք նոր <select> էլեմենտ
     const newSelect = document.createElement("select");
     newSelect.classList.add("teacherSelect");
-
-    // Generate a unique ID for the new dropdown
+    newSelect.disabled = false;
     const newSelectId = `${baseSelectId}-${Date.now()}`;
     newSelect.id = newSelectId;
 
-    // Create a remove button
+    // Ստեղծում ենք ջնջելու կոճակ
     const removeBtn = document.createElement("button");
     removeBtn.textContent = "❌";
     removeBtn.classList.add("remove-teacher-btn");
     removeBtn.addEventListener("click", () => {
-        wrapper.remove(); // Remove the select element when clicking ❌
+        newSelect.remove();
+        removeBtn.remove();
     });
 
-    // Append select and remove button to wrapper
-    wrapper.appendChild(newSelect);
-    wrapper.appendChild(removeBtn);
-    container.appendChild(wrapper);
+    // Հաշվում ենք, թե որ կոճակի տակ պետք է ավելացնել
+    const addButton = document.getElementById(
+        baseSelectId === "practicalTeacher"
+            ? "addPracticalTeacher"
+            : "addLabTeacher"
+    );
 
-    // Load teachers into the new dropdown
-    loadTeachers(newSelectId, apiUrl);
-
-    console.log(`➕ Added new teacher dropdown: ${newSelectId}`);
-}
-
-/**
- * 📌 Add a new teacher dropdown dynamically **with a remove button next to it**
- * @param {string} baseSelectId - The ID of the base teacher dropdown to copy
- * @param {string} containerId - The ID of the container where new dropdowns should be added
- * @param {string} apiUrl - The API endpoint to fetch teachers from
- */
-function addTeacherDropdown(baseSelectId, containerId, apiUrl) {
-    const container = document.getElementById(containerId);
-
-    if (!container) {
-        console.error(`❌ Container with ID ${containerId} not found!`);
-        return;
+    if (addButton) {
+        // ✅ **Ավելացնում ենք հենց "+" կոճակի ներքևում**
+        addButton.insertAdjacentElement("afterend", newSelect);
+        newSelect.insertAdjacentElement("afterend", removeBtn);
+    } else {
+        console.error(`❌ Add button for ${baseSelectId} not found!`);
     }
 
-    // Create a new <div> wrapper with flex display
-    const wrapper = document.createElement("div");
-    wrapper.classList.add("teacher-wrapper");
-
-    // Create a new <select> element
-    const newSelect = document.createElement("select");
-    newSelect.classList.add("teacherSelect");
-
-    // Generate a unique ID for the new dropdown
-    const newSelectId = `${baseSelectId}-${Date.now()}`;
-    newSelect.id = newSelectId;
-
-    // Create a remove button
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "❌";
-    removeBtn.classList.add("remove-teacher-btn");
-    removeBtn.addEventListener("click", () => {
-        wrapper.remove(); // Remove the select element when clicking ❌
-    });
-
-    // Apply flex display to align items properly
-    wrapper.style.display = "flex";
-    wrapper.style.flexDirection = "row";
-    wrapper.style.alignItems = "center";
-    wrapper.style.gap = "10px"; // Space between dropdown and ❌ button
-    wrapper.style.marginBottom = "5px"; // Space between rows
-
-    // Append select and remove button
-    wrapper.appendChild(newSelect);
-    wrapper.appendChild(removeBtn);
-
-    // **Insert the new dropdown BELOW the last existing one**
-    container.appendChild(wrapper);
-
-    // Load teachers into the new dropdown
+    // Բեռնում ենք դասախոսների ցանկը նոր select-ի համար
     loadTeachers(newSelectId, apiUrl);
 
-    console.log(`➕ Added new teacher dropdown: ${newSelectId}`);
+    console.log(`➕ Added new teacher dropdown: ${newSelectId} after ${addButton.id}`);
 }
+
+// 📌 DOM-ի ամբողջական բեռնման դեպքում (անհրաժեշտ է, որ կոճակները գտնվեն)
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("addPracticalTeacher").addEventListener("click", function () {
+        addTeacherDropdown("practicalTeacher", "/api/practical-teachers");
+    });
+
+    document.getElementById("addLabTeacher").addEventListener("click", function () {
+        addTeacherDropdown("labTeacher", "/api/lab-teachers");
+    });
+});
+
+
