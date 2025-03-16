@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const labCheckbox = document.getElementById("enableLab");
     const addPracticalTeacherBtn = document.getElementById("addPracticalTeacher");
     const addLabTeacherBtn = document.getElementById("addLabTeacher");
+    const practicalRoomInput = document.getElementById("practicalRoomInput");
+    const labRoomInput = document.getElementById("labRoomInput");
 
     // Սկզբում անջատում ենք "➕" կոճակները, եթե checkbox-ները չեն ընտրվել
     if (addPracticalTeacherBtn) addPracticalTeacherBtn.disabled = true;
@@ -52,6 +54,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             addTeacherDropdown("labTeacher", "/api/lab-teachers");
         });
     }
+    
+    function toggleRoomInput() {
+        practicalRoomInput.classList.toggle("hidden", !practicalCheckbox.checked);
+        practicalRoomInput.disabled = !practicalCheckbox.checked;
+
+        labRoomInput.classList.toggle("hidden", !labCheckbox.checked);
+        labRoomInput.disabled = !labCheckbox.checked;
+    }
+
+    // Երբ checkbox-երը փոփոխվում են, ստուգում ենք:
+    practicalCheckbox.addEventListener("change", toggleRoomInput);
+    labCheckbox.addEventListener("change", toggleRoomInput);
+
+    // Սկզբում կանչում ենք, որ ճիշտ ստատուսը ստանա
+    toggleRoomInput();
     
     // Վերադառնալ նախորդ էջին
     document.querySelector(".back-arrow").addEventListener("click", (event) => {
@@ -98,30 +115,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadTeachers("practicalTeacher", "/api/practical-teachers");
     loadTeachers("labTeacher", "/api/lab-teachers");
 
-    // 📌 Գործնական & Լաբորատոր checkbox-ների աշխատեցում
     document.getElementById("enablePractical").addEventListener("change", function () {
         const practicalSection = document.getElementById("practicalSection");
         const practicalTeacher = document.getElementById("practicalTeacher");
         const practicalCount = document.getElementById("practicalCount");
         const practicalFrequency = document.getElementById("practicalFrequency");
-
-        practicalSection.classList.toggle("hidden", !this.checked);
-        practicalTeacher.disabled = !this.checked;
-        practicalCount.disabled = !this.checked;
-        practicalFrequency.disabled = !this.checked;
+        const practicalRoomInput = document.getElementById("practicalRoomInput");
+    
+        const isChecked = this.checked; // Ստուգում ենք, ակտիվացված է checkbox-ը, թե ոչ
+    
+        practicalSection.classList.toggle("hidden", !isChecked);
+        practicalTeacher.disabled = !isChecked;
+        practicalCount.disabled = !isChecked;
+        practicalFrequency.disabled = !isChecked;
+        practicalRoomInput.disabled = !isChecked; // ✅ Արդեն ճիշտ կաշխատի
     });
-
+    
     document.getElementById("enableLab").addEventListener("change", function () {
         const labSection = document.getElementById("labSection");
         const labTeacher = document.getElementById("labTeacher");
         const labCount = document.getElementById("labCount");
         const labFrequency = document.getElementById("labFrequency");
-
-        labSection.classList.toggle("hidden", !this.checked);
-        labTeacher.disabled = !this.checked;
-        labCount.disabled = !this.checked;
-        labFrequency.disabled = !this.checked;
+        const labRoomInput = document.getElementById("labRoomInput");
+    
+        const isChecked = this.checked; // Ստուգում ենք, checkbox-ը ակտիվ է, թե ոչ
+    
+        labSection.classList.toggle("hidden", !isChecked);
+        labTeacher.disabled = !isChecked;
+        labCount.disabled = !isChecked;
+        labFrequency.disabled = !isChecked;
+        labRoomInput.disabled = !isChecked; // ✅ Արդեն ճիշտ կաշխատի
     });
+    
+    
 
     /**
  * 📡 Fetch teachers from API and populate a given <select> dropdown
@@ -314,14 +340,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 function openAddSubjectPopup() {
     const popup = document.getElementById("addSubjectPopup");
     const overlay = document.getElementById("addSubjectPopupOverlay");
+    const courseSelectPopup = document.getElementById("courseSelectPopup");
+
+    // Ստուգում ենք՝ եթե dropdown-ը արդեն ունի արժեքներ, նորից չենք բեռնում
+    if (courseSelectPopup.options.length <= 1) {
+        loadCourses(["courseSelectPopup"]);
+    }
+
     popup.classList.add("visible");
     overlay.style.display = "block";
 
-    // 🔄 Մաքրում ենք հին տվյալները (հնարավոր է՝ նախորդ սխալից մնացած լինեն)
+    // 🔄 Մաքրում ենք հին տվյալները
     document.getElementById("newTeacher").innerHTML = "<option value=''>Ընտրել դասախոս...</option>";
     document.getElementById("practicalTeacher").innerHTML = "<option value=''>Ընտրել դասախոս...</option>";
     document.getElementById("labTeacher").innerHTML = "<option value=''>Ընտրել դասախոս...</option>";
 }
+
 
 // ❌ Popup փակելու ֆունկցիա (Ավելացնել առարկա)
 function closeAddSubjectPopup() {
@@ -537,3 +571,56 @@ function addTeacherDropdown(baseSelectId, apiUrl) {
     // Բեռնում ենք դասախոսների ցուցակը նոր select-ի համար
     loadTeachers(newSelectId, apiUrl);
 }
+
+
+document.getElementById("saveChangesBtn").addEventListener("click", function () {
+    // Հիմնական տվյալներ
+    let subjectName = document.getElementById("newSubjectName").value;
+    let teacherIds = Array.from(document.querySelectorAll("#newTeacher")).map(t => t.value);
+    let roomId = document.getElementById("roomSelect").value;
+    let frequency = document.getElementById("newFrequency").value;
+
+    // Գործնականի տվյալներ
+    let practicalEnabled = document.getElementById("enablePractical").checked;
+    let practicalTeachers = Array.from(document.querySelectorAll("#practicalTeacher")).map(t => t.value);
+    let practicalRoomId = document.getElementById("practicalRoom").value;
+    let practicalFrequency = document.getElementById("practicalFrequency").value;
+    let practicalCount = document.getElementById("practicalCount").value;
+
+    // Լաբորատոր տվյալներ
+    let labEnabled = document.getElementById("enableLab").checked;
+    let labTeachers = Array.from(document.querySelectorAll("#labTeacher")).map(t => t.value);
+    let labRoomId = document.getElementById("labRoom").value;
+    let labFrequency = document.getElementById("labFrequency").value;
+    let labCount = document.getElementById("labCount").value;
+
+    let data = {
+        subjectName: subjectName,
+        teacherIds: teacherIds,
+        roomId: roomId,
+        frequency: frequency,
+        practical: practicalEnabled ? {
+            teachers: practicalTeachers,
+            roomId: practicalRoomId,
+            frequency: practicalFrequency,
+            count: practicalCount
+        } : null,
+        lab: labEnabled ? {
+            teachers: labTeachers,
+            roomId: labRoomId,
+            frequency: labFrequency,
+            count: labCount
+        } : null
+    };
+
+    fetch("/api/addSchedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        alert("Տվյալները հաջողությամբ ավելացվեցին։");
+    })
+    .catch(error => console.error("Error:", error));
+});

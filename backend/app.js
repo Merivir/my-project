@@ -107,3 +107,69 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
+app.post("/api/addSchedule", async (req, res) => {
+    const { subjectName, teacherIds, roomId, frequency, practical, lab } = req.body;
+
+    try {
+        // 1. Ավելացնել առարկան բազայում, եթե դեռ չկա
+        let subject = await db.query(
+            "INSERT INTO subjects_editable (name, teacher_id, room_id) OUTPUT INSERTED.id VALUES (@name, @teacher_id, @room_id)",
+            {
+                name: subjectName,
+                teacher_id: teacherIds[0], // առաջինը հիմնական դասախոսն է
+                room_id: roomId
+            }
+        );
+
+        let subjectId = subject.recordset[0].id;
+
+        // 2. Ավելացնել դասացուցակի հիմնական մաս
+        await db.query(
+            `INSERT INTO schedule_editable (subject_id, teacher_id, room_id, weekly_id)
+            VALUES (@subject_id, @teacher_id, @room_id, @weekly_id)`,
+            {
+                subject_id: subjectId,
+                teacher_id: teacherIds[0],
+                room_id: roomId,
+                weekly_id: frequency
+            }
+        );
+
+        // 3. Ավելացնել գործնական դասերը
+        if (practical) {
+            for (let i = 0; i < practical.count; i++) {
+                await db.query(
+                    `INSERT INTO schedule_editable (subject_id, teacher_id, room_id, weekly_id, type_id)
+                    VALUES (@subject_id, @teacher_id, @room_id, @weekly_id, 2)`,
+                    {
+                        subject_id: subjectId,
+                        teacher_id: practical.teachers[i % practical.teachers.length], // Կլորավորել դասախոսներին
+                        room_id: practical.roomId,
+                        weekly_id: practical.frequency
+                    }
+                );
+            }
+        }
+
+        // 4. Ավելացնել լաբորատոր դասերը
+        if (lab) {
+            for (let i = 0; i < lab.count; i++) {
+                await db.query(
+                    `INSERT INTO schedule_editable (subject_id, teacher_id, room_id, weekly_id, type_id)
+                    VALUES (@subject_id, @teacher_id, @room_id, @weekly_id, 3)`,
+                    {
+                        subject_id: subjectId,
+                        teacher_id: lab.teachers[i % lab.teachers.length],
+                        room_id: lab.roomId,
+                        weekly_id: lab.frequency
+                    }
+                );
+            }
+        }
+
+        res.json({ success: true, message: "Տվյալները հաջողությամբ ավելացվեցին" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Սխալ տվյալների պահպանման ժամանակ" });
+    }
+});
