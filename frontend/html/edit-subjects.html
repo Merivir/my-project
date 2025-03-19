@@ -56,6 +56,9 @@
                 <option value="biweekly">2 շաբաթը մեկ</option>
             </select>
 
+            <label for="lectRoomInput">Դասախոսության լսարան:</label>
+            <input type="text" id="lectRoomInput" placeholder="Օրինակ՝ 5207, 51109">
+
             <div class="checkbox-container">
                 <input type="checkbox" id="enablePractical">
                 <label for="enablePractical">Գործնական</label>
@@ -66,7 +69,7 @@
                     <select id="practicalTeacher" disabled></select>
                     <button type="button" id="addPracticalTeacher" class="add-teacher-btn">➕</button>
                 </div>
-            
+                
                 <label for="practicalFrequency">Պարբերականություն:</label>
                 <select id="practicalFrequency" disabled>
                     <option value="weekly">Ամեն շաբաթ</option>
@@ -75,19 +78,16 @@
             
                 <label for="practicalCount">Գործնականների քանակ:</label>
                 <input type="number" id="practicalCount" min="1" max="4" value="1" disabled>
-
-                <div id="practicalSection" class="hidden">
-                    <label for="practicalRoomInput">Գործնական լսարան(ներ):</label>
-                    <input type="text" id="practicalRoomInput" placeholder="Օրինակ՝ 5207, 51109">
-                </div>
-                
+            
+                <label for="practicalRoomInput">Գործնական լսարան(ներ):</label>
+                <input type="text" id="practicalRoomInput" placeholder="Օրինակ՝ 5207, 51109">
             </div>
+            
             
             <div class="checkbox-container">
                 <input type="checkbox" id="enableLab">
                 <label for="enableLab">Լաբորատոր</label>
             </div>
-            
             <div id="labSection" class="hidden">
                 <label for="labTeacher">Լաբորատոր դասախոս(ներ):</label>
                 <div class="teacher-container">
@@ -103,12 +103,11 @@
             
                 <label for="labCount">Լաբորատորների քանակ:</label>
                 <input type="number" id="labCount" min="1" max="4" value="1" disabled>
-
-                <div id="labSection" class="hidden">
-                    <label for="labRoomInput">Լաբորատոր լսարան(ներ):</label>
-                    <input type="text" id="labRoomInput" placeholder="Օրինակ՝ 5207, 51109">
-                </div>
+            
+                <label for="labRoomInput">Լաբորատոր լսարան(ներ):</label>
+                <input type="text" id="labRoomInput" placeholder="Օրինակ՝ 5207, 51109">
             </div>
+            
             
             
             <button id="saveNewSubject">✅ Ավելացնել</button>

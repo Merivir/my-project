@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const addLabTeacherBtn = document.getElementById("addLabTeacher");
     const practicalRoomInput = document.getElementById("practicalRoomInput");
     const labRoomInput = document.getElementById("labRoomInput");
+    const lectRoomInput = document.getElementById("lectRoomInput"); // ✅ Ավելացրել ենք լեկցիայի լսարանը
+
+    let selectedCourseCode;
 
     // Սկզբում անջատում ենք "➕" կոճակները, եթե checkbox-ները չեն ընտրվել
     if (addPracticalTeacherBtn) addPracticalTeacherBtn.disabled = true;
@@ -147,7 +150,89 @@ document.addEventListener("DOMContentLoaded", async () => {
         labRoomInput.disabled = !isChecked; // ✅ Արդեն ճիշտ կաշխատի
     });
     
+    document.getElementById("saveNewSubject").addEventListener("click", async function () {
+        let subjectName = document.getElementById("newSubjectName").value.trim();
+        let teacherId = document.getElementById("newTeacher").value;
+        let roomNumbers = document.getElementById("lectRoomInput").value.trim();  // Ստեղծեք string
+        let frequency = document.getElementById("newFrequency").value;
+        let courseCode = document.getElementById("courseCodeSelect").value;  // Կուրսի կոդ
+        let courseId = document.getElementById("courseSelect").value; // Կուրսի ID
     
+        // Ստուգում ենք՝ արդյոք բոլոր պարտադիր դաշտերը լրացված են
+        if (!subjectName || !teacherId || !roomNumbers || !frequency || !courseCode || !courseId) {
+            alert("Խնդրում ենք լրացնել բոլոր դաշտերը");
+            return;
+        }
+    
+        // Ստեղծենք `subject` տվյալներ
+        let data = {
+            subjectName,
+            teacherId,
+            roomNumbers,  // roomNumbers-ը string է
+            frequency,
+            courseCode,   // Կուրսի կոդը
+            courseId      // Կուրսի ID-ն
+        };
+    
+        // Ստուգում ենք՝ արդյոք մենք պետք է գործնականներ կամ լաբորատորներ ավելացնենք
+        let practicalData = [];
+        let labData = [];
+    
+        if (document.getElementById("enablePractical").checked) {
+            let practicalTeachers = document.getElementById("practicalTeacher").value.split(','); // Գործնականի դասախոսները
+            practicalTeachers.forEach((teacher, index) => {
+                practicalData.push({
+                    teacher: teacher,
+                    frequency: frequency, // Պարբերականություն
+                    room: roomNumbers[index % roomNumbers.length] // Հաշվարկում ենք լսարանի բաշխումը
+                });
+            });
+        }
+    
+        if (document.getElementById("enableLab").checked) {
+            let labTeachers = document.getElementById("labTeacher").value.split(','); // Լաբորատորների դասախոսները
+            labTeachers.forEach((teacher, index) => {
+                labData.push({
+                    teacher: teacher,
+                    frequency: frequency, // Պարբերականություն
+                    room: roomNumbers[index % roomNumbers.length] // Հաշվարկում ենք լսարանի բաշխումը
+                });
+            });
+        }
+    
+        // Տվյալների ուղարկում API-ին
+        try {
+            let response = await fetch("/api/subjects/add-subject", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    subjectName,
+                    teacherId,
+                    roomNumbers,  // roomNumbers-ը այժմ string է
+                    frequency,
+                    practicalData,
+                    labData,
+                    courseCode,   // Կուրսի կոդը
+                    courseId      // Կուրսի ID-ն
+                })
+            });
+    
+            let result = await response.json();
+            console.log("Server response:", result);
+    
+            if (response.ok) {
+                alert("Առարկան հաջողությամբ ավելացվեց։");
+                closeAddSubjectPopup();
+                loadSubjects(courseCode);  // Թարմացնում ենք տվյալները
+            } else {
+                alert("Սխալ առարկա ավելացնելիս: " + result.error);
+            }
+        } catch (error) {
+            console.error("Error saving subject:", error);
+            alert("Սերվերի սխալ");
+        }
+    });
+            
 
     /**
  * 📡 Fetch teachers from API and populate a given <select> dropdown
@@ -573,54 +658,27 @@ function addTeacherDropdown(baseSelectId, apiUrl) {
 }
 
 
-document.getElementById("saveChangesBtn").addEventListener("click", function () {
-    // Հիմնական տվյալներ
-    let subjectName = document.getElementById("newSubjectName").value;
-    let teacherIds = Array.from(document.querySelectorAll("#newTeacher")).map(t => t.value);
-    let roomId = document.getElementById("roomSelect").value;
-    let frequency = document.getElementById("newFrequency").value;
+async function saveSubjectToDatabase(subjectData) {
+    try {
+        const response = await fetch("/api/subjects/add-subject", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(subjectData)
+        });
 
-    // Գործնականի տվյալներ
-    let practicalEnabled = document.getElementById("enablePractical").checked;
-    let practicalTeachers = Array.from(document.querySelectorAll("#practicalTeacher")).map(t => t.value);
-    let practicalRoomId = document.getElementById("practicalRoom").value;
-    let practicalFrequency = document.getElementById("practicalFrequency").value;
-    let practicalCount = document.getElementById("practicalCount").value;
+        const result = await response.json();
+        if (response.ok) {
+            alert("Առարկան հաջողությամբ ավելացվեց։");
+            closeAddSubjectPopup();
+            loadSubjects(subjectData.courseId); // Թարմացնում ենք UI-ը
+        } else {
+            alert("Սխալ առարկա ավելացնելիս: " + result.error);
+        }
+    } catch (error) {
+        console.error("Error saving subject:", error);
+        alert("Սերվերի սխալ");
+    }
+}
 
-    // Լաբորատոր տվյալներ
-    let labEnabled = document.getElementById("enableLab").checked;
-    let labTeachers = Array.from(document.querySelectorAll("#labTeacher")).map(t => t.value);
-    let labRoomId = document.getElementById("labRoom").value;
-    let labFrequency = document.getElementById("labFrequency").value;
-    let labCount = document.getElementById("labCount").value;
-
-    let data = {
-        subjectName: subjectName,
-        teacherIds: teacherIds,
-        roomId: roomId,
-        frequency: frequency,
-        practical: practicalEnabled ? {
-            teachers: practicalTeachers,
-            roomId: practicalRoomId,
-            frequency: practicalFrequency,
-            count: practicalCount
-        } : null,
-        lab: labEnabled ? {
-            teachers: labTeachers,
-            roomId: labRoomId,
-            frequency: labFrequency,
-            count: labCount
-        } : null
-    };
-
-    fetch("/api/addSchedule", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        alert("Տվյալները հաջողությամբ ավելացվեցին։");
-    })
-    .catch(error => console.error("Error:", error));
-});
