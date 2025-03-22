@@ -152,9 +152,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     document.getElementById("saveNewSubject").addEventListener("click", async function () {
         const roomNumber = document.getElementById("lectRoomInput").value.trim();
+        const levelId = document.getElementById("courseSelect").value;
     
         if (!roomNumber) {
             alert("❌ Խնդրում ենք նշել սենյակի համարը!");
+            return;
+        }
+    
+        const practicals = [];
+        if (document.getElementById("enablePractical").checked) {
+            const practicalSelects = document.querySelectorAll("#practicalSection .teacherSelect");
+            practicalSelects.forEach((select) => {
+                const teacherId = select.value;
+                const roomNumber = document.getElementById("practicalRoomInput").value.trim();
+                const frequency = document.getElementById("practicalFrequency").value;
+                if (teacherId && roomNumber) {
+                    practicals.push({ teacherId, roomNumber, frequency });
+                }
+            });
+        }
+    
+        const labs = [];
+        if (document.getElementById("enableLab").checked) {
+            const labSelects = document.querySelectorAll("#labSection .teacherSelect");
+            labSelects.forEach((select) => {
+                const teacherId = select.value;
+                const roomNumber = document.getElementById("labRoomInput").value.trim();
+                const frequency = document.getElementById("labFrequency").value;
+                if (teacherId && roomNumber) {
+                    labs.push({ teacherId, roomNumber, frequency });
+                }
+            });
+        }
+    
+        // ✅ Վերցնում ենք կուրսի կոդը ըստ TEXT-ի, ոչ թե value
+        const courseCodeSelect = document.getElementById("courseCodeSelect");
+        const courseCode = courseCodeSelect.selectedOptions[0]?.textContent.trim();
+    
+        if (!courseCode) {
+            alert("❌ Խնդրում ենք ընտրել կուրսի կոդը!");
             return;
         }
     
@@ -163,11 +199,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    courseId: document.getElementById("popupCourseId").value,
+                    courseCode, // ✅ ուղարկում ենք կոդը, որը բազայում փնտրելու ենք
+                    levelId: levelId,
                     subjectName: document.getElementById("newSubjectName").value.trim(),
                     teacherId: document.getElementById("newTeacher").value,
                     roomNumbers: roomNumber,
-                    frequency: document.getElementById("newFrequency").value
+                    frequency: document.getElementById("newFrequency").value,
+                    practicals,
+                    labs
                 })
             });
     
@@ -175,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (response.ok) {
                 alert("✅ Առարկան հաջողությամբ ավելացվեց!");
                 closeAddSubjectPopup();
-                loadSubjects(document.getElementById("popupCourseCode").value);
+                loadSubjects(document.getElementById("courseCodeSelect").value);
             } else {
                 alert("❌ Սխալ: " + result.error);
             }
@@ -184,7 +223,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             alert("❌ Սերվերի սխալ");
         }
     });
-    
     
 
     /**

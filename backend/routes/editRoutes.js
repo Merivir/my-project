@@ -155,52 +155,154 @@ router.get("/lab-teachers", async (req, res) => {
 });
 
 router.post("/subjects/add-subject", async (req, res) => {
-  const { subjectName, teacherId, roomNumbers, frequency, courseId } = req.body;
+  const {
+    subjectName,
+    teacherId,
+    roomNumbers,
+    frequency,
+    courseCode,  // ✅ ստանում ենք code, ոչ թե id
+    levelId,
+    practicals,
+    labs
+  } = req.body;
+
+  console.log("🎯 Received subject creation data:", {
+    subjectName,
+    teacherId,
+    roomNumbers,
+    frequency,
+    courseCode,
+    levelId,
+    practicals,
+    labs
+  });
+
+  const pool = await poolPromise;
+  const transaction = new sql.Transaction(pool);
 
   try {
-      const pool = await poolPromise;
+    await transaction.begin();
 
-      // 1️⃣ Ստուգում ենք, արդյո՞ք նշված սենյակը կա `Rooms` աղյուսակում
-      const roomCheck = await pool.request()
-          .input("roomNumber", sql.NVarChar, roomNumbers)
+    // 1️⃣ Վերցնում ենք սենյակի id
+    const lectRoomRes = await transaction.request()
+      .input("roomNumber", sql.NVarChar, roomNumbers)
+      .query("SELECT id FROM Rooms WHERE number = @roomNumber");
+
+    if (!lectRoomRes.recordset.length)
+      return res.status(400).json({ error: `Սենյակ "${roomNumbers}" չի գտնվել Rooms-ում` });
+
+    const lectRoomId = lectRoomRes.recordset[0].id;
+
+    // 2️⃣ Վերցնում ենք իրական կուրսի ID-ն ըստ կուրսի code-ի
+    const courseRes = await transaction.request()
+      .input("code", sql.NVarChar, courseCode)
+      .query("SELECT id FROM Courses WHERE code = @code");
+
+    if (!courseRes.recordset.length) {
+      return res.status(400).json({ error: `❌ Կուրսի կոդ '${courseCode}' չի գտնվել Courses աղյուսակում` });
+    }
+
+    const realCourseId = courseRes.recordset[0].id;
+
+    // 3️⃣ Ավելացնում ենք առարկան
+    const subjectInsert = await transaction.request()
+      .input("subjectName", sql.NVarChar, subjectName)
+      .input("teacherId", sql.Int, teacherId)
+      .input("roomId", sql.Int, lectRoomId)
+      .query(`
+        INSERT INTO subjects_editable (name, teacher_id, room_id)
+        OUTPUT INSERTED.id
+        VALUES (@subjectName, @teacherId, @roomId)
+      `);
+
+    const subjectId = subjectInsert.recordset[0].id;
+
+    // 4️⃣ Լեկցիա
+    await transaction.request()
+      .input("levelId", sql.Int, levelId)
+      .input("courseId", sql.Int, realCourseId)
+      .input("subjectId", sql.Int, subjectId)
+      .input("typeId", sql.Int, 7)
+      .input("teacherId", sql.Int, teacherId)
+      .input("roomId", sql.Int, lectRoomId)
+      .input("weeklyId", sql.Int, frequency === "weekly" ? 1 : 2)
+      .input("details", sql.NVarChar, frequency)
+      .query(`
+        INSERT INTO schedule_editable 
+        (level_id, course_id, subject_id, type_id, teacher_id, room_id, weekly_id, details)
+        VALUES 
+        (@levelId, @courseId, @subjectId, @typeId, @teacherId, @roomId, @weeklyId, @details)
+      `);
+
+    // 5️⃣ Գործնական
+    if (Array.isArray(practicals)) {
+      for (let i = 0; i < practicals.length; i++) {
+        const { teacherId: ptId, roomNumber, frequency: freq } = practicals[i];
+        const roomRes = await transaction.request()
+          .input("roomNumber", sql.NVarChar, roomNumber)
           .query("SELECT id FROM Rooms WHERE number = @roomNumber");
 
-      if (roomCheck.recordset.length === 0) {
-          return res.status(400).json({ error: `❌ Սխալ: Սենյակի համարը "${roomNumbers}" չի գտնվել Rooms աղյուսակում` });
-      }
+        if (!roomRes.recordset.length)
+          throw new Error(`Գործնականի սենյակ "${roomNumber}" չի գտնվել`);
 
-      const roomId = roomCheck.recordset[0].id;
+        const roomId = roomRes.recordset[0].id;
 
-      // 2️⃣ Ավելացնում ենք նոր առարկա `subjects_editable` աղյուսակում
-      const subjectInsert = await pool.request()
-          .input("subjectName", sql.NVarChar, subjectName)
-          .input("teacherId", sql.Int, teacherId)
-          .input("roomId", sql.Int, roomId)
-          .query(`
-              INSERT INTO subjects_editable (name, teacher_id, room_id)
-              OUTPUT INSERTED.id
-              VALUES (@subjectName, @teacherId, @roomId)
-          `);
-
-      const subjectId = subjectInsert.recordset[0].id;
-
-      // 3️⃣ Ավելացնում ենք համապատասխան գրառում `schedule_editable` աղյուսակում
-      await pool.request()
-          .input("courseId", sql.Int, courseId)
+        await transaction.request()
+          .input("levelId", sql.Int, levelId)
+          .input("courseId", sql.Int, realCourseId)
           .input("subjectId", sql.Int, subjectId)
-          .input("teacherId", sql.Int, teacherId)
+          .input("typeId", sql.Int, 1 + i)
+          .input("teacherId", sql.Int, ptId)
           .input("roomId", sql.Int, roomId)
-          .input("weeklyId", sql.Int, frequency === "weekly" ? 1 : 2)
+          .input("weeklyId", sql.Int, freq === "weekly" ? 1 : 2)
+          .input("details", sql.NVarChar, freq)
           .query(`
-              INSERT INTO schedule_editable (course_id, subject_id, teacher_id, room_id, weekly_id)
-              VALUES (@courseId, @subjectId, @teacherId, @roomId, @weeklyId)
+            INSERT INTO schedule_editable 
+            (level_id, course_id, subject_id, type_id, teacher_id, room_id, weekly_id, details)
+            VALUES 
+            (@levelId, @courseId, @subjectId, @typeId, @teacherId, @roomId, @weeklyId, @details)
           `);
+      }
+    }
 
-      res.status(201).json({ message: "✅ Առարկան հաջողությամբ ավելացվեց!" });
+    // 6️⃣ Լաբորատոր
+    if (Array.isArray(labs)) {
+      for (let i = 0; i < labs.length; i++) {
+        const { teacherId: ltId, roomNumber, frequency: freq } = labs[i];
+        const roomRes = await transaction.request()
+          .input("roomNumber", sql.NVarChar, roomNumber)
+          .query("SELECT id FROM Rooms WHERE number = @roomNumber");
+
+        if (!roomRes.recordset.length)
+          throw new Error(`Լաբորատոր սենյակ "${roomNumber}" չի գտնվել`);
+
+        const roomId = roomRes.recordset[0].id;
+
+        await transaction.request()
+          .input("levelId", sql.Int, levelId)
+          .input("courseId", sql.Int, realCourseId)
+          .input("subjectId", sql.Int, subjectId)
+          .input("typeId", sql.Int, 8 + i)
+          .input("teacherId", sql.Int, ltId)
+          .input("roomId", sql.Int, roomId)
+          .input("weeklyId", sql.Int, freq === "weekly" ? 1 : 2)
+          .input("details", sql.NVarChar, freq)
+          .query(`
+            INSERT INTO schedule_editable 
+            (level_id, course_id, subject_id, type_id, teacher_id, room_id, weekly_id, details)
+            VALUES 
+            (@levelId, @courseId, @subjectId, @typeId, @teacherId, @roomId, @weeklyId, @details)
+          `);
+      }
+    }
+
+    await transaction.commit();
+    res.status(201).json({ message: "✅ Առարկան՝ իր բոլոր բաղադրիչներով հաջողությամբ ավելացվեց!" });
 
   } catch (err) {
-      console.error("❌ Server error:", err);
-      res.status(500).json({ error: "Սերվերի սխալ", details: err.message });
+    console.error("❌ Error in subject creation:", err);
+    await transaction.rollback();
+    res.status(500).json({ error: "❌ Սերվերի սխալ", details: err.message });
   }
 });
 
