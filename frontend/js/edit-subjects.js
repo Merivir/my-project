@@ -151,56 +151,98 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     
     document.getElementById("saveNewSubject").addEventListener("click", async function () {
+        console.log("🟢 Save button clicked!");
+    
         const roomNumber = document.getElementById("lectRoomInput").value.trim();
         const levelId = document.getElementById("courseSelect").value;
     
         if (!roomNumber) {
-            alert("❌ Խնդրում ենք նշել սենյակի համարը!");
+            alert("❌ Խնդրում ենք նշել դասախոսության լսարանը");
+            return;
+        }
+    
+        const courseCodeSelect = document.getElementById("courseCodeSelect");
+        const courseCode = courseCodeSelect.selectedOptions[0]?.textContent.trim();
+    
+        if (!courseCode) {
+            alert("❌ Խնդրում ենք ընտրել կուրսի կոդը");
             return;
         }
     
         const practicals = [];
         if (document.getElementById("enablePractical").checked) {
-            const practicalSelects = document.querySelectorAll("#practicalSection .teacherSelect");
-            practicalSelects.forEach((select) => {
-                const teacherId = select.value;
-                const roomNumber = document.getElementById("practicalRoomInput").value.trim();
-                const frequency = document.getElementById("practicalFrequency").value;
+            // 👉 Նախ առաջին ստատիկ ուսուցիչը
+            const firstTeacher = document.getElementById("practicalTeacher");
+            const practicalRoom = document.getElementById("practicalRoomInput");
+            const practicalFrequency = document.getElementById("practicalFrequency");
+
+            if (firstTeacher && practicalRoom && practicalFrequency) {
+                const teacherId = firstTeacher.value;
+                const roomNumber = practicalRoom.value.trim();
+                const frequency = practicalFrequency.value;
+
                 if (teacherId && roomNumber) {
                     practicals.push({ teacherId, roomNumber, frequency });
                 }
-            });
-        }
-    
-        const labs = [];
-        if (document.getElementById("enableLab").checked) {
-            const labSelects = document.querySelectorAll("#labSection .teacherSelect");
-            labSelects.forEach((select) => {
-                const teacherId = select.value;
-                const roomNumber = document.getElementById("labRoomInput").value.trim();
-                const frequency = document.getElementById("labFrequency").value;
-                if (teacherId && roomNumber) {
-                    labs.push({ teacherId, roomNumber, frequency });
+            }
+
+            // 👉 Հետո դինամիկ ավելացվածները
+            const practicalRows = document.querySelectorAll("#practicalSection .teacher-row");
+            practicalRows.forEach((row) => {
+                const teacherSelect = row.querySelector("select");
+                if (teacherSelect) {
+                    const teacherId = teacherSelect.value;
+                    const roomNumber = practicalRoom.value.trim();
+                    const frequency = practicalFrequency.value;
+
+                    if (teacherId && roomNumber) {
+                        practicals.push({ teacherId, roomNumber, frequency });
+                    }
                 }
             });
         }
-    
-        // ✅ Վերցնում ենք կուրսի կոդը ըստ TEXT-ի, ոչ թե value
-        const courseCodeSelect = document.getElementById("courseCodeSelect");
-        const courseCode = courseCodeSelect.selectedOptions[0]?.textContent.trim();
-    
-        if (!courseCode) {
-            alert("❌ Խնդրում ենք ընտրել կուրսի կոդը!");
-            return;
+
+        const labs = [];
+        if (document.getElementById("enableLab").checked) {
+            const firstTeacher = document.getElementById("labTeacher");
+            const labRoom = document.getElementById("labRoomInput");
+            const labFrequency = document.getElementById("labFrequency");
+        
+            if (firstTeacher && labRoom && labFrequency) {
+                const teacherId = firstTeacher.value;
+                const roomNumber = labRoom.value.trim();
+                const frequency = labFrequency.value;
+        
+                if (teacherId && roomNumber) {
+                    labs.push({ teacherId, roomNumber, frequency });
+                }
+            }
+        
+            const labRows = document.querySelectorAll("#labSection .teacher-row");
+            labRows.forEach((row) => {
+                const teacherSelect = row.querySelector("select");
+                if (teacherSelect) {
+                    const teacherId = teacherSelect.value;
+                    const roomNumber = labRoom.value.trim();
+                    const frequency = labFrequency.value;
+        
+                    if (teacherId && roomNumber) {
+                        labs.push({ teacherId, roomNumber, frequency });
+                    }
+                }
+            });
         }
+        
+        console.log("🔍 Collected practicals:", practicals);
+        console.log("🔍 Collected labs:", labs);
     
         try {
             const response = await fetch("/api/subjects/add-subject", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    courseCode, // ✅ ուղարկում ենք կոդը, որը բազայում փնտրելու ենք
-                    levelId: levelId,
+                    courseCode,
+                    levelId,
                     subjectName: document.getElementById("newSubjectName").value.trim(),
                     teacherId: document.getElementById("newTeacher").value,
                     roomNumbers: roomNumber,
@@ -217,14 +259,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 loadSubjects(document.getElementById("courseCodeSelect").value);
             } else {
                 alert("❌ Սխալ: " + result.error);
+                console.error("❌ Սերվերից ստացվել է սխալ:", result.details || result);
             }
         } catch (error) {
-            console.error("Error saving subject:", error);
+            console.error("❌ Error saving subject:", error);
             alert("❌ Սերվերի սխալ");
         }
     });
     
-
+    
     /**
  * 📡 Fetch teachers from API and populate a given <select> dropdown
  * @param {string} selectId - The ID of the dropdown element
@@ -617,15 +660,13 @@ async function fetchData(url, elementId) {
  * @param {string} containerId - The ID of the container where new dropdowns should be added
  * @param {string} apiUrl - The API endpoint to fetch teachers from
  */
-
 function addTeacherDropdown(baseSelectId, apiUrl) {
     const baseContainer = document.getElementById(baseSelectId).parentNode;
 
-    // Ստեղծում ենք նոր կոնտեյներ, որպեսզի նոր դաշտերը լինեն նույն տողի վրա
     const teacherRow = document.createElement("div");
     teacherRow.classList.add("teacher-row");
 
-    // Ստեղծում ենք նոր <select>
+    // Ուսուցիչի select only
     const newSelect = document.createElement("select");
     newSelect.classList.add("teacherSelect");
     newSelect.disabled = false;
@@ -640,12 +681,10 @@ function addTeacherDropdown(baseSelectId, apiUrl) {
         teacherRow.remove();
     });
 
-    // Ավելացնում ենք նոր դաշտն ու կոճակը նույն տողի վրա
     teacherRow.appendChild(newSelect);
     teacherRow.appendChild(removeBtn);
     baseContainer.parentNode.insertBefore(teacherRow, baseContainer.nextSibling);
 
-    // Բեռնում ենք դասախոսների ցուցակը նոր select-ի համար
     loadTeachers(newSelectId, apiUrl);
 }
 
