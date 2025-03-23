@@ -155,86 +155,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     
         const roomNumber = document.getElementById("lectRoomInput").value.trim();
         const levelId = document.getElementById("courseSelect").value;
+        const subjectName = document.getElementById("newSubjectName").value.trim();
+        const teacherId = document.getElementById("newTeacher").value;
+        const frequency = document.getElementById("newFrequency").value;
+        const courseCode = document.getElementById("courseCodeSelect").selectedOptions[0]?.textContent.trim();
     
-        if (!roomNumber) {
-            alert("❌ Խնդրում ենք նշել դասախոսության լսարանը");
+        if (!roomNumber || !subjectName || !teacherId || !frequency || !courseCode || !levelId) {
+            alert("❗ Խնդրում ենք լրացնել բոլոր պարտադիր դաշտերը:");
             return;
         }
     
-        const courseCodeSelect = document.getElementById("courseCodeSelect");
-        const courseCode = courseCodeSelect.selectedOptions[0]?.textContent.trim();
-    
-        if (!courseCode) {
-            alert("❌ Խնդրում ենք ընտրել կուրսի կոդը");
-            return;
-        }
-    
+        // 🔁 Գործնականների հավաքում
         const practicals = [];
         if (document.getElementById("enablePractical").checked) {
-            // 👉 Նախ առաջին ստատիկ ուսուցիչը
-            const firstTeacher = document.getElementById("practicalTeacher");
-            const practicalRoom = document.getElementById("practicalRoomInput");
-            const practicalFrequency = document.getElementById("practicalFrequency");
-
-            if (firstTeacher && practicalRoom && practicalFrequency) {
-                const teacherId = firstTeacher.value;
-                const roomNumber = practicalRoom.value.trim();
-                const frequency = practicalFrequency.value;
-
-                if (teacherId && roomNumber) {
-                    practicals.push({ teacherId, roomNumber, frequency });
-                }
+            const teacherIds = Array.from(document.querySelectorAll("#practicalSection select.teacherSelect"))
+                .map(s => s.value)
+                .filter(Boolean);
+            const roomNumbers = document.getElementById("practicalRoomInput").value.split(",").map(r => r.trim()).filter(Boolean);
+            const freq = document.getElementById("practicalFrequency").value;
+            const count = parseInt(document.getElementById("practicalCount").value);
+    
+            for (let i = 0; i < count; i++) {
+                practicals.push({
+                    teacherId: teacherIds[i % teacherIds.length],
+                    roomNumber: roomNumbers[i % roomNumbers.length],
+                    frequency: freq
+                });
             }
-
-            // 👉 Հետո դինամիկ ավելացվածները
-            const practicalRows = document.querySelectorAll("#practicalSection .teacher-row");
-            practicalRows.forEach((row) => {
-                const teacherSelect = row.querySelector("select");
-                if (teacherSelect) {
-                    const teacherId = teacherSelect.value;
-                    const roomNumber = practicalRoom.value.trim();
-                    const frequency = practicalFrequency.value;
-
-                    if (teacherId && roomNumber) {
-                        practicals.push({ teacherId, roomNumber, frequency });
-                    }
-                }
-            });
         }
-
+    
+        // 🔁 Լաբորատորների հավաքում
         const labs = [];
         if (document.getElementById("enableLab").checked) {
-            const firstTeacher = document.getElementById("labTeacher");
-            const labRoom = document.getElementById("labRoomInput");
-            const labFrequency = document.getElementById("labFrequency");
-        
-            if (firstTeacher && labRoom && labFrequency) {
-                const teacherId = firstTeacher.value;
-                const roomNumber = labRoom.value.trim();
-                const frequency = labFrequency.value;
-        
-                if (teacherId && roomNumber) {
-                    labs.push({ teacherId, roomNumber, frequency });
-                }
+            const teacherIds = Array.from(document.querySelectorAll("#labSection select.teacherSelect"))
+                .map(s => s.value)
+                .filter(Boolean);
+            const roomNumbers = document.getElementById("labRoomInput").value.split(",").map(r => r.trim()).filter(Boolean);
+            const freq = document.getElementById("labFrequency").value;
+            const count = parseInt(document.getElementById("labCount").value);
+    
+            for (let i = 0; i < count; i++) {
+                labs.push({
+                    teacherId: teacherIds[i % teacherIds.length],
+                    roomNumber: roomNumbers[i % roomNumbers.length],
+                    frequency: freq
+                });
             }
-        
-            const labRows = document.querySelectorAll("#labSection .teacher-row");
-            labRows.forEach((row) => {
-                const teacherSelect = row.querySelector("select");
-                if (teacherSelect) {
-                    const teacherId = teacherSelect.value;
-                    const roomNumber = labRoom.value.trim();
-                    const frequency = labFrequency.value;
-        
-                    if (teacherId && roomNumber) {
-                        labs.push({ teacherId, roomNumber, frequency });
-                    }
-                }
-            });
         }
-        
-        console.log("🔍 Collected practicals:", practicals);
-        console.log("🔍 Collected labs:", labs);
+    
+        console.log("📦 Final Practical Sessions:", practicals);
+        console.log("📦 Final Lab Sessions:", labs);
     
         try {
             const response = await fetch("/api/subjects/add-subject", {
@@ -243,10 +213,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 body: JSON.stringify({
                     courseCode,
                     levelId,
-                    subjectName: document.getElementById("newSubjectName").value.trim(),
-                    teacherId: document.getElementById("newTeacher").value,
+                    subjectName,
+                    teacherId,
                     roomNumbers: roomNumber,
-                    frequency: document.getElementById("newFrequency").value,
+                    frequency,
                     practicals,
                     labs
                 })
@@ -259,13 +229,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 loadSubjects(document.getElementById("courseCodeSelect").value);
             } else {
                 alert("❌ Սխալ: " + result.error);
-                console.error("❌ Սերվերից ստացվել է սխալ:", result.details || result);
+                console.error("🛑 Server responded with error:", result.details || result);
             }
         } catch (error) {
             console.error("❌ Error saving subject:", error);
             alert("❌ Սերվերի սխալ");
         }
     });
+    
     
     
     /**
