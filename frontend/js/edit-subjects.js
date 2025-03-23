@@ -155,68 +155,88 @@ document.addEventListener("DOMContentLoaded", async () => {
     
         const roomNumber = document.getElementById("lectRoomInput").value.trim();
         const levelId = document.getElementById("courseSelect").value;
+        const courseCode = document.getElementById("courseCodeSelect").selectedOptions[0]?.textContent.trim();
+        const frequency = document.getElementById("newFrequency").value;
         const subjectName = document.getElementById("newSubjectName").value.trim();
         const teacherId = document.getElementById("newTeacher").value;
-        const frequency = document.getElementById("newFrequency").value;
-        const courseCode = document.getElementById("courseCodeSelect").selectedOptions[0]?.textContent.trim();
     
-        if (!roomNumber || !subjectName || !teacherId || !frequency || !courseCode || !levelId) {
-            alert("❗ Խնդրում ենք լրացնել բոլոր պարտադիր դաշտերը:");
+        if (!courseCode || !roomNumber || !subjectName || !teacherId || !levelId) {
+            alert("❌ Խնդրում ենք լրացնել բոլոր պարտադիր դաշտերը");
             return;
         }
     
-        // 🔁 Գործնականների հավաքում
         const practicals = [];
         if (document.getElementById("enablePractical").checked) {
-            const teacherIds = Array.from(document.querySelectorAll("#practicalSection select.teacherSelect"))
-                .map(s => s.value)
-                .filter(Boolean);
+            const count = parseInt(document.getElementById("practicalCount").value);
+            const mainTeacher = document.getElementById("practicalTeacher").value;
+            const dynamicTeachers = Array.from(document.querySelectorAll("#practicalSection .teacherSelect"))
+                .map(el => el.value)
+                .filter(val => val);
+            const allTeachers = [mainTeacher, ...dynamicTeachers].filter(Boolean);
+    
+            if (allTeachers.length > count) {
+                alert("❌ Գործնական դասերի քանակը պակաս է ընտրված դասախոսների քանակից։ Խնդրում ենք ավելացնել գործնականների քանակը կամ նվազեցնել դասախոսների քանակը։");
+                return;
+            }
+    
             const roomNumbers = document.getElementById("practicalRoomInput").value.split(",").map(r => r.trim()).filter(Boolean);
             const freq = document.getElementById("practicalFrequency").value;
-            const count = parseInt(document.getElementById("practicalCount").value);
     
             for (let i = 0; i < count; i++) {
+                const teacher = allTeachers[i % allTeachers.length];
+                const room = roomNumbers[i % roomNumbers.length];
                 practicals.push({
-                    teacherId: teacherIds[i % teacherIds.length],
-                    roomNumber: roomNumbers[i % roomNumbers.length],
-                    frequency: freq
+                    teacherId: teacher,
+                    roomNumber: room,
+                    frequency: freq,
+                    type: `գործ${i + 1}`
                 });
             }
         }
     
-        // 🔁 Լաբորատորների հավաքում
         const labs = [];
         if (document.getElementById("enableLab").checked) {
-            const teacherIds = Array.from(document.querySelectorAll("#labSection select.teacherSelect"))
-                .map(s => s.value)
-                .filter(Boolean);
+            const count = parseInt(document.getElementById("labCount").value);
+            const mainTeacher = document.getElementById("labTeacher").value;
+            const dynamicTeachers = Array.from(document.querySelectorAll("#labSection .teacherSelect"))
+                .map(el => el.value)
+                .filter(val => val);
+            const allTeachers = [mainTeacher, ...dynamicTeachers].filter(Boolean);
+    
+            if (allTeachers.length > count) {
+                alert("❌ Լաբորատոր դասերի քանակը պակաս է ընտրված դասախոսների քանակից։ Խնդրում ենք ավելացնել լաբորատորների քանակը կամ նվազեցնել դասախոսների քանակը։");
+                return;
+            }
+    
             const roomNumbers = document.getElementById("labRoomInput").value.split(",").map(r => r.trim()).filter(Boolean);
             const freq = document.getElementById("labFrequency").value;
-            const count = parseInt(document.getElementById("labCount").value);
     
             for (let i = 0; i < count; i++) {
+                const teacher = allTeachers[i % allTeachers.length];
+                const room = roomNumbers[i % roomNumbers.length];
                 labs.push({
-                    teacherId: teacherIds[i % teacherIds.length],
-                    roomNumber: roomNumbers[i % roomNumbers.length],
-                    frequency: freq
+                    teacherId: teacher,
+                    roomNumber: room,
+                    frequency: freq,
+                    type: `լաբ${i + 1}`
                 });
             }
         }
     
-        console.log("📦 Final Practical Sessions:", practicals);
-        console.log("📦 Final Lab Sessions:", labs);
+        console.log("🔍 Final practicals:", practicals);
+        console.log("🔍 Final labs:", labs);
     
         try {
             const response = await fetch("/api/subjects/add-subject", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    courseCode,
-                    levelId,
                     subjectName,
                     teacherId,
                     roomNumbers: roomNumber,
                     frequency,
+                    courseCode,
+                    levelId,
                     practicals,
                     labs
                 })
@@ -229,15 +249,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                 loadSubjects(document.getElementById("courseCodeSelect").value);
             } else {
                 alert("❌ Սխալ: " + result.error);
-                console.error("🛑 Server responded with error:", result.details || result);
+                console.error("❌ Սերվերից ստացվել է սխալ:", result.details || result);
             }
         } catch (error) {
             console.error("❌ Error saving subject:", error);
             alert("❌ Սերվերի սխալ");
         }
     });
-    
-    
     
     /**
  * 📡 Fetch teachers from API and populate a given <select> dropdown
