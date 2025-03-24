@@ -168,20 +168,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         const practicals = [];
         if (document.getElementById("enablePractical").checked) {
             const count = parseInt(document.getElementById("practicalCount").value);
-            const mainTeacher = document.getElementById("practicalTeacher").value;
-            const dynamicTeachers = Array.from(document.querySelectorAll("#practicalSection .teacherSelect"))
-                .map(el => el.value)
-                .filter(val => val);
-            const allTeachers = [mainTeacher, ...dynamicTeachers].filter(Boolean);
-    
+
+            // Վերցնում ենք static/dynamic ուսուցիչների բոլոր select-ները
+            const teacherSelects = [
+                document.getElementById("practicalTeacher"),
+                ...document.querySelectorAll("#practicalSection .teacherSelect")
+            ];
+
+            const allTeachers = teacherSelects.map(el => el.value).filter(Boolean);
+
             if (allTeachers.length > count) {
-                alert("❌ Գործնական դասերի քանակը պակաս է ընտրված դասախոսների քանակից։ Խնդրում ենք ավելացնել գործնականների քանակը կամ նվազեցնել դասախոսների քանակը։");
+                alert("❌ Գործնականների քանակը պակաս է, քան դասախոսների քանակը։");
                 return;
             }
-    
+
             const roomNumbers = document.getElementById("practicalRoomInput").value.split(",").map(r => r.trim()).filter(Boolean);
             const freq = document.getElementById("practicalFrequency").value;
-    
+
             for (let i = 0; i < count; i++) {
                 const teacher = allTeachers[i % allTeachers.length];
                 const room = roomNumbers[i % roomNumbers.length];
@@ -189,10 +192,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     teacherId: teacher,
                     roomNumber: room,
                     frequency: freq,
-                    type: `գործ${i + 1}`
+                    type: `գործ${i + 1}` // ✅ միշտ սկսում է գործ1
                 });
             }
         }
+
     
         const labs = [];
         if (document.getElementById("enableLab").checked) {

@@ -4,7 +4,7 @@ CREATE TABLE schedule_editable (
     id INT PRIMARY KEY IDENTITY(1,1),
     level_id INT FOREIGN KEY REFERENCES Levels(id),
     course_id INT FOREIGN KEY REFERENCES Courses(id),
-    subject_id INT FOREIGN KEY REFERENCES Subjects(id),
+    subject_id INT FOREIGN KEY REFERENCES subjects_editable(id),
     type_id INT FOREIGN KEY REFERENCES Types(id),
     teacher_id INT FOREIGN KEY REFERENCES Teachers(id),
     room_id INT FOREIGN KEY REFERENCES Rooms(id),

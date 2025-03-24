@@ -155,6 +155,9 @@ router.get("/lab-teachers", async (req, res) => {
 });
 
 router.post("/subjects/add-subject", async (req, res) => {
+  console.log("📦 POST /add-subject got this body:");
+  console.log(JSON.stringify(req.body, null, 2));
+
   const {
     subjectName,
     teacherId,
