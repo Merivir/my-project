@@ -1,51 +1,95 @@
 /* Աղյուսակի ընդհանուր ձևավորում */
 .schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 30px; /* Մի փոքր տարածություն աղյուսակների միջև */
-  }
-  
-  /* Աղյուսակի վերնագրի ոճ */
-  .schedule-table thead {
-    background-color: #002047; /* Կամ ցանկացած մուգ երանգ */
-    color: #ffffff;
-  }
-  
-  /* Աղյուսակի գծեր եւ բջիջներ */
-  .schedule-table th,
-  .schedule-table td {
-    border: 1px solid #ccc;
-    padding: 8px 12px;
-    text-align: center; /* Կենտրոնացնում է գրությունը */
-  }
-  
-  /* Եթե ուզում ես alternate row coloring, կարող ես ավելացնել */
-  .schedule-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  /* Վերնագրեր («Դասացուցակ - Համարիչ շաբաթ» տեքստը) */
-  .schedule-title, .schedule-table h2 {
-    margin: 20px 0 10px;
-    font-size: 1.3rem;
-    color: #fff; /* Եթե ունես մուգ background */
-    background: #001030; /* Կամ ուրիշ գույն */
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 4px;
-  }
-  
-  /* Այս style-ն կարելի է հարմարեցնել */
-  h2 {
-    margin-top: 20px;
-    font-size: 1.4em;
-    color: #002047;
-  }
-  
-  .schedule-table td {
-    white-space: normal; /* թույլ է տալիս բազմատող տեքստ */
-    vertical-align: top; /* տեքստը վերևից սկսելու համար */
-    max-width: 200px; /* կամ ըստ քո ցանկության */
-    word-wrap: break-word; /* եթե շատ երկար բառ լինի, կտրում է */
-  }
-  
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px; /* Մի փոքր տարածություն աղյուսակների միջև */
+}
+
+/* Աղյուսակի վերնագրի ոճ */
+.schedule-table thead {
+  background-color: #002047; /* Կամ ցանկացած մուգ երանգ */
+  color: #ffffff;
+}
+
+/* Աղյուսակի գծեր եւ բջիջներ */
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: center; /* Կենտրոնացնում է գրությունը */
+}
+
+/* Եթե ուզում ես alternate row coloring */
+.schedule-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Վերնագրեր («Դասացուցակ - Համարիչ շաբաթ» տեքստը) */
+.schedule-title, .schedule-table h2 {
+  margin: 20px 0 10px;
+  font-size: 1.3rem;
+  color: #fff;        /* Եթե ունես մուգ background */
+  background: #001030; /* Կամ ուրիշ գույն */
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+/* Եթե ուզում ես h2-ի ընդհանուր գույնը փոխել */
+h2 {
+  margin-top: 20px;
+  font-size: 1.4em;
+  color: #002047;
+}
+
+/* Աղյուսակի բջիջները multiline */
+.schedule-table td {
+  white-space: normal; /* թույլ է տալիս բազմատող տեքստ */
+  vertical-align: top; /* տեքստը վերևից սկսելու համար */
+  max-width: 200px;    /* կամ ըստ քո ցանկության */
+  word-wrap: break-word; 
+}
+
+/* ------ HEADER / NAV Part ------ */
+
+/* Header overall style */
+header {
+  display: flex;             
+  align-items: center;       /* Ուղղահայաց կենտրոնացում */
+  justify-content: space-between; /* Ձախ կողմում h1, աջ կողմում nav */
+  background-color: #002047;
+  color: #fff;
+  padding: 15px;
+}
+
+/* Nav container */
+.teacher-nav {
+  display: flex;
+  gap: 10px;     /* տարածություն item-ների միջև */
+  margin-top: 0; /* կարելի է կամ हटाना */
+}
+
+/* Հիմնական link-երի տեսք (button-like) */
+.teacher-nav .nav-link {
+  text-decoration: none;
+  color: #fff;
+  background-color: #444;
+  padding: 8px 14px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+  font-weight: 500;
+}
+
+.teacher-nav .nav-link:hover {
+  background-color: #666;
+}
+.teacher-nav .nav-link:active {
+  background-color: #222;
+  box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
