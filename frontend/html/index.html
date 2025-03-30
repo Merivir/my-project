@@ -9,7 +9,8 @@
 <body>
     <h1>Բարի գալուստ</h1>
     <p>Ընտրեք, թե ինչպես եք ցանկանում շարունակել</p>
-    <button id="guestButton">Շարունակել որպես հյուր</button>
+    <button id="guestButton">Շարունակել որպես ուսանող</button>
+    <button id="teacherButton">Շարունակել որպես դասախոս</button>
     <button id="adminButton">Շարունակել որպես ադմինիստրատոր</button>
 
     <script>
@@ -20,6 +21,12 @@
         document.getElementById('adminButton').addEventListener('click', () => {
             window.location.href = '/admin-login'; 
         });
-    </script>    
+
+        // Նոր ավելացված կոճակ դասախոսի համար
+        document.getElementById('teacherButton').addEventListener('click', () => {
+            // Այս ռոութը պետք է ապահովես app.js-ում (կամ այլ router-ում)
+            window.location.href = '/teacher-login'; 
+        });
+    </script> 
 </body>
 </html>
