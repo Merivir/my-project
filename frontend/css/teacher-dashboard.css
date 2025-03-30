@@ -1,290 +1,51 @@
-body {
-    font-family: Arial, sans-serif;
+/* Աղյուսակի ընդհանուր ձևավորում */
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px; /* Մի փոքր տարածություն աղյուսակների միջև */
+  }
+  
+  /* Աղյուսակի վերնագրի ոճ */
+  .schedule-table thead {
+    background-color: #002047; /* Կամ ցանկացած մուգ երանգ */
+    color: #ffffff;
+  }
+  
+  /* Աղյուսակի գծեր եւ բջիջներ */
+  .schedule-table th,
+  .schedule-table td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: center; /* Կենտրոնացնում է գրությունը */
+  }
+  
+  /* Եթե ուզում ես alternate row coloring, կարող ես ավելացնել */
+  .schedule-table tbody tr:nth-child(even) {
     background-color: #f9f9f9;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-/* Մեծացնում ենք քառակուսին (card) */
-.container {
-    max-width: 750px; /* Ավելի լայն */
-    width: 90%;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    text-align: center;
-}
-
-/* Վերնագիրը տեղափոխվում է վերև */
-h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
-h2 {
-    font-size: 28px;
-    margin: 10px;
-    color: black;
-}
-
-
-/* Լինքերը նույնպես տեղափոխում ենք դուրս */
-nav {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-nav a {
-    margin: 0 15px;
-    color: #007BFF;
-    text-decoration: none;
-    font-size: 16px;
-}
-
-nav a:hover {
-    text-decoration: underline;
-}
-
-/* Ընտրության դաշտի գեղեցիկ ձևավորում */
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-/* Ստեղծում ենք դասավորություն կողք կողքի */
-.time-slot-container {
-    display: flex;
-    justify-content: space-between; /* Ձախ ու աջ */
-    gap: 20px;
-    width: 100%;
-    align-items: flex-start;
-}
-
-/* Ամեն աղյուսակը ունի իր բաժինը */
-.schedule-table-container {
-    flex: 1;
-    text-align: center;
-}
-
-/* Աղյուսակի դիզայն */
-.schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-.schedule-table th, .schedule-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-}
-
-/* Checkbox-ների չափ */
-.time-slot-checkbox {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-/* Կոճակների փոքրացում և կողք-կողքի դասավորում */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Տարածություն կոճակների միջև */
+  }
+  
+  /* Վերնագրեր («Դասացուցակ - Համարիչ շաբաթ» տեքստը) */
+  .schedule-title, .schedule-table h2 {
+    margin: 20px 0 10px;
+    font-size: 1.3rem;
+    color: #fff; /* Եթե ունես մուգ background */
+    background: #001030; /* Կամ ուրիշ գույն */
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+  }
+  
+  /* Այս style-ն կարելի է հարմարեցնել */
+  h2 {
     margin-top: 20px;
-}
-
-.button-container button {
-    width: auto;
-    padding: 8px 15px;
-    font-size: 14px;
-}
-
-/* Կոճակների ձևավորում */
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 15px;
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-button:hover:enabled {
-    background-color: #0056b3;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #0C2D48; /* 🔵 Կապույտ ֆոն */
-    color: white; /* Տեքստը դարձնում ենք սպիտակ */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-/* Մեծացնում ենք քառակուսին (card) */
-.container {
-    max-width: 750px; /* Ավելի լայն */
-    width: 90%;
-    background-color: white; /* Փաստաթղթի հիմնական բովանդակությունը սպիտակ է մնում */
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    padding: 40px;
-    text-align: center;
-}
-
-.teacher-info-box {
-    margin-top: 10px;
-    padding: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.2); /* Կարմիր եզրագիծ */
-    border-radius: 5px;
-    background-color: white;
-    font-weight: bold; 
-    color: rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-    text-align: center;
-}
-
-
-/* Վերնագիրը տեղափոխվում է վերև */
-h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: white; /* Վերնագիրը դարձնում ենք սպիտակ, որ համապատասխանի ֆոնին */
-}
-
-/* Լինքերը նույնպես տեղափոխում ենք դուրս */
-nav {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-nav a {
-    margin: 0 15px;
-    color: white; /* 🔆 Ոսկեգույն, որպեսզի ավելի տեսանելի լինի կապույտ ֆոնի վրա */
-    text-decoration: none;
-    font-size: 16px;
-}
-
-nav a:hover {
-    text-decoration: underline;
-}
-
-/* Ընտրության դաշտի գեղեցիկ ձևավորում */
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-/* Ստեղծում ենք դասավորություն կողք կողքի */
-.time-slot-container {
-    display: flex;
-    justify-content: space-between; /* Ձախ ու աջ */
-    gap: 20px;
-    width: 100%;
-    align-items: flex-start;
-}
-
-.schedule-table-container h2 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #000000; /* Եթե ֆոնը բաց է, փոխիր #333 */
-    text-align: center;
-    margin-bottom: 10px; /* Տարածություն ավելացրու աղյուսակից */
-    padding: 15px 0; /* Ավելացրած padding */
-    display: block; /* Ստիպում է, որ մնա իր տեղում */
-    position: relative; /* Խուսափում ենք հնարավոր վերև տեղափոխումից */
-    z-index: 5; /* Վերաբերում ենք վերևի շերտին */
-}
-
-.schedule-title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #0C2D48; /* Փոխիր #333, եթե ֆոնը բաց է */
-    text-align: center;
-    margin-bottom: 15px;
-    padding-top: 10px;
-}
-
-
-/* Աղյուսակի դիզայն */
-.schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: white; /* Աղյուսակները թողնում ենք սպիտակ */
-    color: black;
-}
-
-.schedule-table th, .schedule-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-}
-
-/* Checkbox-ների չափ */
-.time-slot-checkbox {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-/* Կոճակների փոքրացում և կողք-կողքի դասավորում */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Տարածություն կոճակների միջև */
-    margin-top: 20px;
-}
-
-/* Կոճակների ձևավորում */
-button {
-    width: auto;
-    padding: 12px 20px;
-    background-color: #10324e;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 15px;
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-button:hover:enabled {
-    background-color: #10324e;
-}
-
-#loadingSpinner p {
-    color: #10324e;;
-}
+    font-size: 1.4em;
+    color: #002047;
+  }
+  
+  .schedule-table td {
+    white-space: normal; /* թույլ է տալիս բազմատող տեքստ */
+    vertical-align: top; /* տեքստը վերևից սկսելու համար */
+    max-width: 200px; /* կամ ըստ քո ցանկության */
+    word-wrap: break-word; /* եթե շատ երկար բառ լինի, կտրում է */
+  }
+  

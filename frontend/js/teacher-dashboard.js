@@ -86,8 +86,6 @@ function renderTeacherSchedule(scheduleData) {
   }
 }
 
-
-// ✅ Օգնական ֆունկցիա՝ աղյուսակի կառուցման համար
 function buildScheduleTable(data, label) {
   const wrapper = document.createElement("div");
 
@@ -96,14 +94,8 @@ function buildScheduleTable(data, label) {
   title.textContent = `Դասացուցակ - ${label} շաբաթ`;
   wrapper.appendChild(title);
 
-  // Օրերն ու ժամերը
   const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
-  const timeSlots = [
-    "09:30-10:50",
-    "11:00-12:20",
-    "12:50-14:10",
-    "14:20-15:40"
-  ];
+  const timeSlots = ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"];
 
   // Կառուցում ենք դատարկ grid
   const grid = Array.from({ length: timeSlots.length }, () => Array(days.length).fill(""));
@@ -112,10 +104,20 @@ function buildScheduleTable(data, label) {
   data.forEach(item => {
     const dayIndex = days.indexOf(item.day_name);
     const timeIndex = timeSlots.indexOf(item.time_slot);
+
     if (dayIndex !== -1 && timeIndex !== -1) {
-      const subject = item.subject_name || "";
-      const teacher = item.teacher_name || "";
-      grid[timeIndex][dayIndex] = `${subject} (${teacher})`;
+      const subject = item.subject_name || "N/A";
+      const courseCode = item.course_code || "N/A";
+      const type = item.type_name || "N/A";
+      const room = item.room_number || "N/A";
+
+      // Բջիջի info
+      const lessonInfo = `
+        <div><strong>${subject}</strong></div>
+        <div>(${courseCode})</div>
+        <div>${type} (${room})</div>
+      `;
+      grid[timeIndex][dayIndex] = lessonInfo;
     }
   });
 
@@ -134,13 +136,16 @@ function buildScheduleTable(data, label) {
   const tbody = document.createElement("tbody");
   timeSlots.forEach((slot, i) => {
     const row = document.createElement("tr");
+    // Ժամի սյունակ
     const timeCell = document.createElement("td");
     timeCell.textContent = slot;
     row.appendChild(timeCell);
 
+    // Օրերի բջիջներ
     days.forEach((day, j) => {
       const cell = document.createElement("td");
-      cell.textContent = grid[i][j] || "-";
+      // ❗ Շրջանցում ենք textContent, քցում ենք innerHTML
+      cell.innerHTML = grid[i][j] || "-";
       row.appendChild(cell);
     });
 

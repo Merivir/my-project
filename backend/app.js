@@ -106,18 +106,26 @@ app.get('/teacher-dashboard', (req, res) => {
             .input('teacher_id', sql.Int, teacherId)
             .query(`
                 SELECT 
-                    d.name AS day_name,
-                    ts.slot AS time_slot,
-                    sub.name AS subject_name,
-                    t.name AS teacher_name,
-                    w.type AS week_type
-                FROM Schedule s
-                JOIN Days d ON s.day_id = d.id
-                JOIN TimeSlots ts ON s.time_slot_id = ts.id
-                JOIN Subjects sub ON s.subject_id = sub.id
-                JOIN Teachers t ON s.teacher_id = t.id
-                JOIN Weeks w ON s.week_id = w.id
-                WHERE t.id = @teacher_id
+                d.name AS day_name,
+                ts.slot AS time_slot,
+                sub.name AS subject_name,
+                t.name AS teacher_name,
+                w.type AS week_type,
+                c.code AS course_code,     
+                r.number AS room_number,   
+                ty.name AS type_name       
+            FROM Schedule s
+            JOIN Days d ON s.day_id = d.id
+            JOIN TimeSlots ts ON s.time_slot_id = ts.id
+            JOIN Subjects sub ON s.subject_id = sub.id
+            JOIN Teachers t ON s.teacher_id = t.id
+            JOIN Weeks w ON s.week_id = w.id
+            JOIN Courses c ON s.course_id = c.id
+            JOIN Rooms r ON s.room_id = r.id
+            JOIN Types ty ON s.type_id = ty.id
+
+            WHERE t.id = @teacher_id;
+
             `);
 
         res.json(result.recordset);
