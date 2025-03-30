@@ -85,11 +85,65 @@ app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/admin-dashboard.html'));
 });
 
+app.get('/teacher-login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/teacher-login.html'));
+});
+
+app.get('/teacher-dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/teacher-dashboard.html'));
+  });
+  
+  const verifyTeacherToken = require('./middleware/verifyTeacherToken');
+
+  
+  app.get('/api/teacher/schedule', verifyTeacherToken, async (req, res) => {
+    try {
+        const teacherId = req.user.id;
+        console.log("➡️ Բերում ենք դասացուցակ teacherId-ով:", teacherId);
+
+        const pool = await req.dbPool;
+        const result = await pool.request()
+            .input('teacher_id', sql.Int, teacherId)
+            .query(`
+                SELECT 
+                d.name AS day_name,
+                ts.slot AS time_slot,
+                sub.name AS subject_name,
+                t.name AS teacher_name,
+                w.type AS week_type,
+                c.code AS course_code,     
+                r.number AS room_number,   
+                ty.name AS type_name       
+            FROM Schedule s
+            JOIN Days d ON s.day_id = d.id
+            JOIN TimeSlots ts ON s.time_slot_id = ts.id
+            JOIN Subjects sub ON s.subject_id = sub.id
+            JOIN Teachers t ON s.teacher_id = t.id
+            JOIN Weeks w ON s.week_id = w.id
+            JOIN Courses c ON s.course_id = c.id
+            JOIN Rooms r ON s.room_id = r.id
+            JOIN Types ty ON s.type_id = ty.id
+
+            WHERE t.id = @teacher_id;
+
+            `);
+
+        res.json(result.recordset);
+    } catch (error) {
+        console.error("❌ Error fetching teacher schedule:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+  
+
 app.use("/api", require("./routes/editRoutes"));
 app.use('/guest', require('./routes/guestRoutes'));
 app.use('/schedule', require('./routes/scheduleRoutes'));
 app.use('/api/schedule', require('./routes/scheduleRoutes'));
 app.use('/api', require('./routes/adminRoutes'));
+app.use('/api/teacher', require('./routes/teacherRoutes'));
+app.use('/teacher-dashboard', require('./routes/teacherRoutes'));
 
 const subjectsRoutes = require('./routes/subjectsRoutes');
 app.use('/api', subjectsRoutes);
@@ -101,6 +155,11 @@ app.get('/edit-subjects', (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
+
+app.get('/teacher-availability', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/teacher-availability.html'));
+});
+
 
 const PORT = 3000;
 app.listen(PORT, () => {

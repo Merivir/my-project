@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ժամերի նախընտրություն</title>
+  <link rel="stylesheet" href="/css/teacher-availability.css">
+</head>
+<body>
+
+  <header>
+    <h1>Դասաժամերի ընտրություն</h1>
+    <p id="teacherName" class="teacher-name">Ուսուցիչ</p>
+  </header>
+
+  <main class="container">
+    <div class="time-slot-container">
+      <div class="schedule-table-container">
+        <h2>Առաջնային դասաժամեր</h2>
+        <div id="primarySlotsContainer"></div>
+      </div>
+
+      <div class="schedule-table-container">
+        <h2>Երկրորդային դասաժամեր</h2>
+        <div id="backupSlotsContainer"></div>
+      </div>
+    </div>
+
+    <div class="button-container">
+      <button id="confirmAvailability">✅ Հաստատել ժամերը</button>
+    </div>
+  </main>
+
+  <script src="/js/teacher-availability.js"></script>
+</body>
+</html>

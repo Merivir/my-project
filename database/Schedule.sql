@@ -24,6 +24,29 @@ CREATE TABLE Teachers (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) UNIQUE NOT NULL
 );
+-- Ավելացնում ենք սյունակները առանց կոնստրեյնթից
+ALTER TABLE Teachers
+ADD 
+  login NVARCHAR(100),
+  password NVARCHAR(255),
+  email NVARCHAR(255),
+  verification_code NVARCHAR(6);
+
+-- Թարմացնում ենք բոլոր ուսուցիչների համար հատուկ login արժեքներ,
+-- օրինակ՝ polytech_teacher_001, polytech_teacher_002, ...
+UPDATE Teachers
+SET login = CONCAT('polytech_teacher_', RIGHT('000' + CAST(id AS VARCHAR(3)), 3))
+WHERE login IS NULL;
+
+-- Թարմացնում ենք email-ը բոլոր ուսուցիչների համար, եթե չի իսկապես մուտքագրվել:
+UPDATE Teachers
+SET email = 'meri.virabyan121@gmail.com'
+WHERE email IS NULL;
+
+-- Հավելում ենք UNIQUE ինդեքսը login-ի համար միայն այն գրառումների վրա, որտեղ login-ը !== NULL
+CREATE UNIQUE INDEX IX_Teachers_login ON Teachers(login) WHERE login IS NOT NULL;
+
+
 
 -- 🔹 6. Ստեղծում ենք Rooms (սենյակները)
 CREATE TABLE Rooms (
