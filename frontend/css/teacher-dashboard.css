@@ -93,3 +93,9 @@ html, body {
   padding: 0;
 }
 
+/* Այս style-ը կիրառվում է միայն #mainScheduleTitle-ին */
+#mainScheduleTitle {
+  text-align: center;
+  font-size: 2rem; /* Անհրաժեշտ չափով, օրինակ */
+  margin: 20px 0;
+}
