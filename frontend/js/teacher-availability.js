@@ -66,6 +66,7 @@ function generateTimeSlotCheckboxes(containerId) {
   container.appendChild(table);
 }
 
+
 async function saveAvailability() {
     const primary_slots = Array.from(document.querySelectorAll("#primarySlotsContainer .time-slot-checkbox:checked"))
       .map(cb => cb.value);
@@ -78,8 +79,8 @@ async function saveAvailability() {
     }
   
     try {
-        const response = await fetch("/api/teacher/schedule/save-availability", {
-            method: "POST",
+      const response = await fetch("/api/teacher/schedule/save-availability", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + localStorage.getItem("teacherToken")
@@ -95,16 +96,20 @@ async function saveAvailability() {
         alert("Սերվերի սխալ կամ դատարկ պատասխան");
         return;
       }
-      
+  
       if (response.ok) {
         alert("✅ Ժամերը հաջողությամբ պահպանվեցին");
-        toggleAvailabilityView();
+  
+        // ✅ update UI after save
+        toggleCheckboxes(false);
+        isConfirmed = true;
+        document.getElementById("confirmAvailability").textContent = "✏️ Փոփոխել ժամերը";
+  
       } else {
         console.error("❌ Server responded with error:", data);
         alert("❌ Պահպանման սխալ: " + (data?.error || "Անհայտ սխալ"));
       }
-      
-
+  
     } catch (err) {
       console.error("❌ Save error:", err);
       alert("Սերվերի սխալ");
