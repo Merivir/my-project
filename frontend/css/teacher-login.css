@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
     padding: 0;
-    background-color: #082033;;
+    background-color: #0C2d48;;
 }
 
 h1 {
@@ -39,7 +39,7 @@ input {
 button {
     width: 100%;
     padding: 10px;
-    background-color: #10324e;
+    background-color: #0C2d48;
     color: white;
     border: none;
     border-radius: 4px;
@@ -48,7 +48,7 @@ button {
 }
 
 button:hover {
-    background-color: #10324e;
+    background-color: #0C2d48;
 }
 
 #loginErrorMessage {

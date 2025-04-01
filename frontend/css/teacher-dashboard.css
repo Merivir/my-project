@@ -7,7 +7,7 @@
 
 /* Աղյուսակի վերնագրի ոճ */
 .schedule-table thead {
-  background-color: #002047; /* Կամ ցանկացած մուգ երանգ */
+  background-color: #0C2d48; /* Կամ ցանկացած մուգ երանգ */
   color: #ffffff;
 }
 
@@ -39,7 +39,7 @@
 h2 {
   margin-top: 20px;
   font-size: 1.4em;
-  color: #002047;
+  color: #0C2d48;
 }
 
 /* Աղյուսակի բջիջները multiline */
@@ -57,7 +57,7 @@ header {
   display: flex;             
   align-items: center;       /* Ուղղահայաց կենտրոնացում */
   justify-content: space-between; /* Ձախ կողմում h1, աջ կողմում nav */
-  background-color: #002047;
+  background-color: #0C2d48;
   color: #fff;
   padding: 15px;
 }

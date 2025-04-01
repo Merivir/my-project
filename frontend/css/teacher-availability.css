@@ -3,13 +3,13 @@ body {
     margin: 0;
     padding: 0;
     font-family: "Arial", sans-serif;
-    background-color: #002047;
+    background-color: #0C2d48;
     color: #fff;
   }
   
   /* Վերնագիր և ուսուցչի անուն */
   header {
-    background-color: #002047;
+    background-color: #0C2d48;
     padding: 20px;
     text-align: center;
   }
@@ -81,7 +81,7 @@ body {
   }
   
   .button-container button {
-    background-color: #002047;
+    background-color: #0C2d48;
     color: white;
     border: none
   }
