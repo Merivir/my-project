@@ -29,6 +29,8 @@ app.use("/css", express.static(path.join(__dirname, "../frontend/css")));
 app.use("/js", express.static(path.join(__dirname, "../frontend/js")));
 app.use("/assets", express.static(path.join(__dirname, "../frontend/assets")));
 
+
+
 const { exec } = require("child_process");
 
 app.post("/api/generate-schedule", (req, res) => {
@@ -93,7 +95,11 @@ app.get('/teacher-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/teacher-dashboard.html'));
   });
   
-  const verifyTeacherToken = require('./middleware/verifyTeacherToken');
+app.get('/teacher-dashboard/settingsMenu', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/settingsMenu.html'));
+});
+
+const verifyTeacherToken = require('./middleware/verifyTeacherToken');
 
   
   app.get('/api/teacher/schedule', verifyTeacherToken, async (req, res) => {

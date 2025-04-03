@@ -4,19 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ուսուցչի Անձնական Էջ</title>
+
+  
+  <!-- Էջի դիզայն -->
   <link rel="stylesheet" href="/css/teacher-dashboard.css">
+
+  <link rel="stylesheet" href="/css/settingsMenu.css">
+  <script src="/js/settingsMenu.js" defer></script>
 </head>
 <body>
+
+  <!-- ⚙️ Settings menu կգեներացվի JS-ով -->
+
   <header>
     <div class="header-left">
       <h1>Բարի գալուստ, <span id="teacherName">Ուսուցիչ</span>!</h1>
     </div>
-    <nav class="teacher-nav">
-      <a href="/teacher-availability" class="nav-link">Ժամերի նշում</a>
-      <a href="/teacher-live-schedule" class="nav-link">Ռեալ-տայմ դիտում</a>
-    </nav>
+
+    <div id="settings-container">
+      <img 
+        id="user-avatar"
+        src="/assets/user.png"
+        alt="Իմ էջը"
+        title="Իմ էջը"
+      />
+      <div id="settings-dropdown" class="hidden">
   </header>
-  
 
   <section id="personalSchedule">
     <h2 id="mainScheduleTitle">Իմ Դասացուցակը</h2>
@@ -24,8 +37,6 @@
       <!-- Դասացուցակի աղյուսակը կգեներանա այստեղ -->
     </div>
   </section>
-
-  <!-- Այստեղ կարող ես ունենալ footer կամ այլ մասեր -->
 
   <!-- JavaScript -->
   <script src="/js/teacher-dashboard.js"></script>
