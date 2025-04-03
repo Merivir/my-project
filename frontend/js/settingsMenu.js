@@ -1,33 +1,36 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    if (window.location.pathname.includes("teacher-login")) return;
-  
+    console.log("📌 DOM Loaded, trying to fetch /teacher-dashboard/settingsMenu...");
+    
     try {
       const response = await fetch("/teacher-dashboard/settingsMenu");
-      if (!response.ok) throw new Error("❌ settingsMenu not found");
-  
+      console.log("🔎 Fetch status:", response.status);
+      
       const html = await response.text();
+      console.log("📝 Got HTML:", html);
+      
+      if (!response.ok || !html) {
+        throw new Error("❌ settingsMenu not found or empty");
+      }
+  
       const container = document.createElement("div");
       container.innerHTML = html;
       document.body.appendChild(container);
   
-      // 💤 Սպասում ենք DOM-ի render-ին
-      await new Promise(resolve => setTimeout(resolve, 0));
-  
       const avatar = document.querySelector("#user-avatar");
       const dropdown = document.querySelector("#settings-dropdown");
+      console.log("👀 avatar =", avatar, "| dropdown =", dropdown);
   
       if (!avatar || !dropdown) {
         console.error("⚠️ Avatar or dropdown not found!");
         return;
       }
   
-      // ✅ Քլիք՝ toggle dropdown
+      // click events
       avatar.addEventListener("click", (e) => {
-        e.stopPropagation(); // prevents closing immediately
+        e.stopPropagation();
         dropdown.classList.toggle("hidden");
       });
   
-      // ✅ Սեղմում դրսից → փակում dropdown
       document.addEventListener("click", (e) => {
         if (!avatar.contains(e.target) && !dropdown.contains(e.target)) {
           dropdown.classList.add("hidden");
