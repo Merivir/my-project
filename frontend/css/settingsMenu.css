@@ -1,23 +1,35 @@
-#settings-container {
-    position: fixed;
-    top: 20px;
-    right: 30px;
-    z-index: 1000;
-  }
-  
+
   #settings-icon {
     cursor: pointer;
     font-size: 24px;
   }
   
+/* header-ը դիրքավորում ենք որպես համեմատական «որին» կկապենք settings-container-ը */
+#page-header {
+  position: relative;
+  /* եթե ուզում եք, որ header-ը ֆիքսված մնա viewport-ի վերին հատվածում՝ օգտագործեք position: fixed; top:0; left:0; right:0; */
+}
+
+/* հանեք այստեղ position: fixed; */
+#settings-container {
+  position: absolute;       /* հարաբերական է header-ի նկատմամբ */
+  top: 10%;                 /* վերեւի 50% */
+  right: 20px;              /* աջից 20px */
+  transform: translateY(-50%); /* վերադարձրեք ճիշտ վերևի կենտրոն */
+  z-index: 100;             /* կամ ինչ հարկավոր է */
+}
+
+
   #settings-dropdown {
     position: absolute;
     right: 0;
-    top: 35px;
+    top: 60px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 8px 12px;
+    /* Լայնության կարգավորում */
+    min-width: 220px; /* կամ ավելի մեծ, ասենք 250px */
+    padding: 10px 14px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   

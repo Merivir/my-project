@@ -99,6 +99,10 @@ app.get('/teacher-dashboard/settingsMenu', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/settingsMenu.html'));
 });
 
+app.get('/teacher-change-password', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/teacher-change-password.html'));
+  });
+  
 const verifyTeacherToken = require('./middleware/verifyTeacherToken');
 
   
@@ -141,7 +145,7 @@ const verifyTeacherToken = require('./middleware/verifyTeacherToken');
     }
 });
 
-  
+
 
 app.use("/api", require("./routes/editRoutes"));
 app.use('/guest', require('./routes/guestRoutes'));

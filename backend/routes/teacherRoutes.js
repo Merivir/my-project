@@ -1,12 +1,36 @@
+
 const express = require("express");
 const router = express.Router();
 const { sql, poolPromise } = require("../models/db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const nodemailer = require("nodemailer");
 const verifyTeacherToken = require("../middleware/verifyTeacherToken");
 
 const SECRET_KEY = "teacher_secret_key_2024";
+
+// Gmail SMTP կոնֆիգ (App Password–ով, 16 նիշ, առանց բացատների)
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: "myschedulepolytech@gmail.com",
+    pass: "xcshvlnrzqqsugpa"
+  }
+});
+
+// Օգնության ֆունկցիա՝ կոդ ուղարկելու համար
+async function sendVerificationCode(to, code) {
+  await transporter.sendMail({
+    from: '"MySchedule App" <myschedulepolytech@gmail.com>',
+    to,
+    subject: "Ձեր հաստատման կոդը",
+    html: `
+      <p>Խնդրում ենք մուտքագրել հաստատման կոդը (գործում է 2 րոպե):</p>
+      <h2 style="font-size:2rem; color:#2a9d8f;">${code}</h2>
+      <p>Եթե Դուք չեք արել այս խնդրանքը, կարող եք անտեսել այս նամակը:</p>
+    `
+  });
+}
 
 // ✅ Մուտք
 router.post("/login", async (req, res) => {
@@ -88,35 +112,58 @@ router.get('/schedule', verifyTeacherToken, async (req, res) => {
   }
 });
 
-
-// Endpoint՝ գաղտնաբառի փոփոխման համար
-router.post('/change-password', verifyTeacherToken, async (req, res) => {
-  const { verificationCode, newPassword } = req.body;
+router.post("/request-password-reset", verifyTeacherToken, async (req, res) => {
   const teacherId = req.user.id;
+  // Գեներացրու 6-անիշ կոդ
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  // Ստեղծի՛ր resetToken՝ payload.id և payload.code, 2 րոպե ժամկետով
+  const resetToken = jwt.sign({ id: teacherId, code }, SECRET_KEY, { expiresIn: "2m" });
 
   try {
+    // Վերցրեք email-ը DB-ից
     const pool = await poolPromise;
-    const result = await pool.request()
-      .input("id", sql.Int, teacherId)
-      .query("SELECT verification_code FROM Teachers WHERE id = @id");
+    const emailRes = await pool.request()
+      .input("teacher_id", sql.Int, teacherId)
+      .query("SELECT email FROM Teachers WHERE id = @teacher_id");
+    const email = emailRes.recordset[0].email;
 
-    if (result.recordset.length === 0) {
-      return res.status(404).json({ message: "Ուսուցիչը չհայտնվեց" });
-    }
-    const teacher = result.recordset[0];
-    if (teacher.verification_code !== verificationCode) {
-      return res.status(400).json({ message: "Սխալ հաստատման կոդ" });
-    }
+    // Ուղարկեք միայն կոդով email
+    await sendVerificationCode(email, code);
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Վերադարձնում ենք resetToken (code-ը գնալու է email–ով)
+    res.json({ message: "Verification code sent", resetToken });
+  } catch (err) {
+    console.error("Error in request-password-reset:", err);
+    res.status(500).json({ message: "Սերվերի սխալ" });
+  }
+});
+
+// ✅ Փոխել գաղտնաբառը
+router.post("/change-password", async (req, res) => {
+  const { resetToken, verificationCode, newPassword } = req.body;
+  let payload;
+  try {
+    payload = jwt.verify(resetToken, SECRET_KEY);
+    console.log("✅ resetToken payload:", payload);
+  } catch (err) {
+    console.error("❌ JWT verify error:", err);
+    return res.status(400).json({ message: "Invalid or expired token" });
+  }
+  // Ստուգում ենք, որ կոդը համապատասխանում է
+  if (payload.code !== verificationCode) {
+    return res.status(400).json({ message: "Սխալ հաստատման կոդ" });
+  }
+  // Թարմացնում ենք գաղտնաբառը
+  try {
+    const hash = await bcrypt.hash(newPassword, 10);
+    const pool = await poolPromise;
     await pool.request()
-      .input("id", sql.Int, teacherId)
-      .input("password", sql.NVarChar, hashedPassword)
+      .input("id", sql.Int, payload.id)
+      .input("password", sql.NVarChar, hash)
       .query("UPDATE Teachers SET password = @password WHERE id = @id");
-
     res.json({ message: "Գաղտնաբառը հաջողությամբ փոխվեց" });
-  } catch (error) {
-    console.error("Error in change-password:", error);
+  } catch (err) {
+    console.error("Error in change-password:", err);
     res.status(500).json({ message: "Սերվերի սխալ" });
   }
 });
@@ -143,7 +190,7 @@ router.get('/profile', verifyTeacherToken, async (req, res) => {
 });
 
 
-router.post('/schedule/save-availability', verifyTeacherToken, async (req, res) => {
+router.post('/save-availability', verifyTeacherToken, async (req, res) => {
   const teacherId = req.user.id;
   const { primary_slots, backup_slots } = req.body;
 
@@ -202,6 +249,22 @@ router.get('/availability', verifyTeacherToken, async (req, res) => {
   } catch (err) {
     console.error("❌ Fetch availability error:", err);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post('/send-code', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Պահանջվում է email' });
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // պահիր կոդը DB-ում կամ session-ում ըստ կարիքի
+  try {
+    await sendVerificationCode(email, code);
+    res.json({ success: true, message: 'Կոդը ուղարկված է', code }); // code միայն debug-ի համար
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Սխալ եղավ կոդ ուղարկելիս' });
   }
 });
 

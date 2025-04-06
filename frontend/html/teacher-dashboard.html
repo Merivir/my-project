@@ -8,20 +8,28 @@
   
   <!-- Էջի դիզայն -->
   <link rel="stylesheet" href="/css/teacher-dashboard.css">
+  <link rel="stylesheet" href="/css/settingsMenu.css">
 
 </head>
 <body>
 
-  <!-- ⚙️ Settings menu կգեներացվի JS-ով -->
-
-  <header>
+  <header id="page-header">
     <div class="header-left">
       <h1>Բարի գալուստ, <span id="teacherName">Ուսուցիչ</span>!</h1>
     </div>
-
-    <link rel="stylesheet" href="/css/settingsMenu.css">
-    <script src="/js/settingsMenu.js" defer></script>  </header>
+  
+    <div id="settings-container">
+      <span id="settings-icon"></span>
+      <div id="settings-dropdown" class="hidden">
+        <a href="/teacher-availability.html">✅ Ժամերի նշում</a>
+        <a href="/schedule.html">🗓️ Իմ դասացուցակը</a>
+        <a href="/realtime.html">👀 Ռեալ‑թայմ դիտում</a>
+        <a href="/teacher-change-password.html">🔐 Փոխել գաղտնաբառը</a>
+        <a href="/logout">🚪 Ելք</a>
+      </div>
+    </div>
   </header>
+  
 
   <section id="personalSchedule">
     <h2 id="mainScheduleTitle">Իմ Դասացուցակը</h2>
@@ -31,6 +39,7 @@
   </section>
 
   <!-- JavaScript -->
+  <script src="/js/settingsMenu.js" defer></script>
   <script src="/js/teacher-dashboard.js"></script>
 </body>
 </html>
