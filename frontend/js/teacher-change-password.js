@@ -10,13 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Send or retry code
   async function requestCode() {
     try {
-      await fetch('/api/teacher/request-password-reset', {
+      const response = await fetch('/api/teacher/request-password-reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('teacherToken')}`
         }
       });
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data.message || 'Գոյացավ սխալ');
+        return;
+      }
+      // Եթե backend-ը վերադարձնում է { resetToken }, ապա
+      document.getElementById('resetToken').value = data.resetToken; // <-- ԱՅՍՏԵՂ
       sendHint.style.display = 'block';
       codeHint.style.display = 'block';
       retryLink.style.display = 'inline';
@@ -25,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Սխալ՝ չի հաջողվեց ուղարկել կոդը');
     }
   }
+  
 
   sendBtn.addEventListener('click', requestCode);
   retryLink.addEventListener('click', requestCode);
