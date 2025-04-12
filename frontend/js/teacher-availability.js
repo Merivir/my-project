@@ -73,13 +73,16 @@ async function saveAvailability() {
     const backup_slots = Array.from(document.querySelectorAll("#backupSlotsContainer .time-slot-checkbox:checked"))
       .map(cb => cb.value);
   
+      console.log("🧩 Primary:", primary_slots);
+      console.log("🧩 Backup:", backup_slots);
+
     if (!primary_slots.length && !backup_slots.length) {
       alert("Սխալ՝ անհրաժեշտ է նշել առնվազն մեկ ժամ");
       return;
     }
   
     try {
-      const response = await fetch("/api/teacher/schedule/save-availability", {
+      const response = await fetch("/api/teacher/save-availability", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

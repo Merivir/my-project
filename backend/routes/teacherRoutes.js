@@ -191,8 +191,13 @@ router.get('/profile', verifyTeacherToken, async (req, res) => {
 
 
 router.post('/save-availability', verifyTeacherToken, async (req, res) => {
+  console.log("🟡 Token decoded user:", req.user);
+
   const teacherId = req.user.id;
   const { primary_slots, backup_slots } = req.body;
+  console.log("🟢 teacherId:", teacherId);
+
+
 
   if (!Array.isArray(primary_slots) || !Array.isArray(backup_slots)) {
     return res.status(400).json({ error: "Invalid input" });
@@ -229,6 +234,9 @@ router.post('/save-availability', verifyTeacherToken, async (req, res) => {
 // Վերադարձնում է դասախոսի արդեն նշված ժամերը
 router.get('/availability', verifyTeacherToken, async (req, res) => {
   const teacherId = req.user.id;
+
+  console.log("📤 Returning availability for teacher ID:", teacherId);
+
 
   try {
     const pool = await poolPromise;
