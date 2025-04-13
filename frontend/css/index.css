@@ -1,19 +1,82 @@
-body {
-    font-family: Arial, sans-serif;
+/* Ընդհանուր reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Հիմնական ֆոն */
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #ebeef1 0%, #ebeef1 50%, #f2f6fa 100%); 
+    /* Կարող եք gradent-ը փոխել ձեր ճաշակով */
+    color: #333;
     text-align: center;
-    margin: 50px;
-}
+    padding: 2rem 1rem;
+  }
+  
+  /* Գլխավոր վերնագիր – «Բարի գալուստ» */
+  h1 {
+    font-size: 3rem;
+    color: #0C2D48; /* Մեր հիմնական գույնը */
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+    /* Ցանկության դեպքում կարող եք մեծացնել ստվերը */
+  }
+  
+  /* Ներածական պարբերություն */
+  p {
+    font-size: 1.2rem;
+    color: #0C2D48; /* Պահում ենք նույն գունային գամման */
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+  
+  /* Կոճակների զետեղում */
+  
 
 button {
-    background-color: #0C2d48;
-    color: white;
-    padding: 10px 20px;
+    display: inline-block;
+    padding: 20px 40px; /* Ավելի մեծ padding-ի համար կոճակը կլինի ավելի մեծ */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000;
+    background: linear-gradient(135deg, #ffffff, #0C2d48); /* Հեշտ և թխված գույնի գրաֆիկ */
     border: none;
+    border-radius: 50px; /* Լավ փափուկ կարճրեր */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Նուրբ խառնաշփոթ գուռ */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    font-size: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     margin: 10px;
 }
 
 button:hover {
-    background-color: #0C2d48;
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
+
+button:active {
+    transform: scale(0.98);
+}
+
+  
+  /* Ռեսպոնսիվ */
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 2.2rem;
+    }
+    p {
+      font-size: 1rem;
+    }
+    button {
+      font-size: 0.9rem;
+      padding: 0.8rem 1.5rem;
+    }
+  }
+  

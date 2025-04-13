@@ -1,278 +1,39 @@
-/* Հիմնական ոճերը */
-body {
-    font-family: Arial, sans-serif;
+/* Reset */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
-}
-
-/* Վերնագիր */
-header {
-    background-color: #0C2d48; /* Մուգ կապույտ */
-    color: white;
-    padding: 20px;
-    text-align: center;
-    font-size: 24px;
-}
-
-/* Վերադառնալ սլաք */
-.back-arrow {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-}
-
-.back-arrow-img {
-    width: 50px; /* ✅ Սլաքի չափ */
-    height: auto;
-    opacity: 0.9;
-    transition: 0.3s ease-in-out;
-}
-
-.back-arrow:hover .back-arrow-img {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-/* Աղյուսակի կարգավորումներ */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-table th, table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 16px;
-}
-
-table th {
-    background-color: #0C2d48;
-    color: white;
-}
-
-/* Հպման (hover) էֆեկտ */
-.schedule-cell {
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.schedule-cell:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.filter-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: flex-end; /* ✅ Ֆիլտրը աջ կողմում */
-    margin-bottom: 15px;
-}
-
-.filter-container label {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.filter-container select {
-    padding: 5px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-#applyFilter {
-    background-color: #0C2d48;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#applyFilter:hover {
-    background-color: #0C2d48;
-}
-
-.reset-icon {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: 0.2s;
-}
-
-.reset-icon:hover {
-    opacity: 1;
-}
-
-
-/* Popup-ի ձևավորում */
-.modal {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    width: 400px;
-    text-align: left;
-}
-
-.modal.hidden {
-    display: none;
-}
-
-.close-popup {
-    float: right;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-/* Ֆիլտրի popup-ի ոճավորում */
-#filterModal {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-}
-
-#filterModal.active {
-    display: block;
-}
-
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-
-.modal-buttons button {
-    flex: 1;
-    margin: 5px;
-}
-
-/* Կուրսի ընտրության կոճակներ */
-.course-buttons {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.course-btn {
-    font-size: 14px;
-    background-color: #0C2d48;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.course-btn:hover {
-    background-color: #0C2d48;
-}
-
-
-
-/* Աղյուսակի ավելի գեղեցիկ դիրքավորում */
-.dashboard-container {
-    max-width: 95%; /* ✅ Հարմարեցնում ենք լայնությունը */
-    margin: 40px auto; /* ✅ Կենտրոնացնում ենք */
-    padding: 30px; /* ✅ Ավելացնում ենք padding եզրերին */
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-
-/* 🔹 Փոփափ պատուհանի հիմնական ձևավորում */
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 25px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    border-radius: 12px;
-    width: 380px;
-    max-width: 90%;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-/* 🔹 Փոփափի բովանդակություն */
-.popup-content {
-    position: relative;
-    padding: 10px;
-}
-
-/* 🔹 Փակման կոճակ */
-.close-btn {
-    position: absolute;
-    top: 12px;
-    right: 15px;
-    cursor: pointer;
-    font-size: 22px;
-    color: #555;
-    font-weight: bold;
-    transition: 0.2s;
-}
-
-.close-btn:hover {
-    color: red;
-}
-
-/* 🔹 Վերնագիր */
-.popup h2 {
-    font-size: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Հիմնական ֆոն և տեքստ */
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f2f6fa; /* թեթև, քիչ թե շատ չեզոք ֆոն */
     color: #333;
-    margin-bottom: 15px;
-}
-
-/* 🔹 Բովանդակություն */
-.popup p {
-    font-size: 16px;
-    color: #444;
-    margin: 6px 0;
-}
-
-/* 🔹 Ավելացնում ենք սահուն բացվելու անիմացիա */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -55%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-}
-
-/* Տեղադրում ենք "Վերադառնալ" սլաքը ճիշտ դիրքում */
-.back-arrow {
+    text-align: center;
+    padding: 0; /* Էլ չենք օգտագործում մեծ padding, որովհետև դիզայնը հարմարեցնում ենք */
+  }
+  
+  /* Վերնագիր (header) */
+  header {
+    background-color: #0C2D48; /* Մուգ կապույտ */
+    padding: 20px;
+    position: relative;
+    text-align: center;
+  }
+  
+  /* Վերնագրի տեքստ */
+  header h1 {
+    font-size: 2.2rem;
+    color: #fff; /* Սպիտակ տեքստ */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    margin: 0;
+  }
+  
+  /* Վերադառնալ սլաք */
+  .back-arrow {
     position: absolute;
     top: 15px;
     left: 20px;
@@ -280,21 +41,280 @@ table th {
     align-items: center;
     padding: 10px;
     z-index: 1000;
-}
-
-.back-arrow-img {
-    width: 50px; /* ✅ Սլաքի չափ */
+  }
+  
+  .back-arrow-img {
+    width: 50px; 
     height: auto;
     opacity: 0.9;
-    transition: 0.3s ease-in-out;
-}
-
-.back-arrow:hover .back-arrow-img {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .back-arrow:hover .back-arrow-img {
     opacity: 1;
     transform: scale(1.1);
-}
+  }
+  
+  /* Աղյուսակ (դասացուցակ) */
+  /* Օրինակային snippet - մնում է նույն cấuքը, 
+   բայց աղյուսակին տալիս ենք փափուկ եզրեր և խունացած ստվեր */
 
-/* Թաքցնել նախնական վիճակում */
-.hidden {
+/* Աղյուսակի կարգավորումներ */
+table {
+    /* Կարևոր է առանձին տարածություններ տրամադրել, որպեսզի border-radius-ը աշխատի */
+    border-collapse: separate;  
+    border-spacing: 0;
+    
+    width: 100%;
+    margin: 20px 0;
+    
+    /* Վահանակի շրջանակ */
+    border: 1px solid #ddd;
+    border-radius: 12px;   /* Կլորացված եզրեր */
+    overflow: hidden;      /* Այնպես, որ եզրերը չհատվեն, այլ կլորանան */
+    
+    /* Փոքր ստվեր, որ «ամպ» զգացողություն տա */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Աղյուսակի վերնագիր (thead) */
+  table thead th {
+    background-color: #0C2D48; /* Ձեր հիմնական կապույտ գույնը */
+    color: #fff;
+    font-weight: bold;
+    padding: 12px 15px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  /* Թողնենք, որ «թագադիր» անկյունները նույնպես կլորանան */
+  table thead tr th:first-child {
+    border-top-left-radius: 12px;
+  }
+  table thead tr th:last-child {
+    border-top-right-radius: 12px;
+  }
+  
+  /* Աղյուսակի բջիջներ (td, th) */
+  table th, table td {
+    border: 1px solid #ddd; /* Քանի որ already table-ին տվեցինք border: 1px solid #ddd */
+    padding: 12px 15px;
+    text-align: center;        /* Կենտրոնացված տեքստ */
+    vertical-align: middle;
+    font-size: 16px;
+  }
+  
+  /* Վերջին տողի անկյունների կլորացում */
+  table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+  }
+  table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+  }
+  
+  /* Այլ hover-эффект (ըստ ցանկության) */
+  table tbody td:hover {
+    background-color: rgba(12, 45, 72, 0.05);
+    transition: background-color 0.3s ease;
+  }
+  
+  
+  /* Կուրսի կոդերը ձախից հավասարեցնելու համար */
+  .course-code-cell {
+    text-align: left !important;  /* !important ավելացնում ենք, եթե ինչ-որ տեղ override է լինում */
+  }
+  
+  /* Hover էֆեկտ աղյուսակում (ըստ ցանկության) */
+  .schedule-cell {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .schedule-cell:hover {
+    background-color: rgba(12, 45, 72, 0.1);
+  }
+  
+  /* Ֆիլտրի կոնտեյներ */
+  .filter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+    margin: 10px 20px;
+  }
+  
+  /* Լեյբլները */
+  .filter-container label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0C2D48;
+  }
+  
+  /* Dropdown ձևավորում (select) */
+  .filter-container select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    /* Եթե ցանկանում եք հեռացնել default աջ կողմի սլաքը որոշ browsers-ում */
+    /* -webkit-appearance: none;
+       background-image: url('path/to/arrow.png');
+       background-repeat: no-repeat;
+       background-position: right 10px center;
+       background-size: 16px auto; */
+  }
+  
+  .filter-container select:hover {
+    box-shadow: 0 0 3px rgba(0,0,0,0.15);
+  }
+  
+  .filter-container select:focus {
+    border-color: #0C2D48;
+    box-shadow: 0 0 5px rgba(12, 45, 72, 0.3);
+  }
+  
+  /* Apply Filter կոճակ */
+  #applyFilter {
+    background-color: #0C2D48;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  
+  #applyFilter:hover {
+    background-color: #103963;
+    transform: scale(1.05);
+  }
+  
+  .reset-icon {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  
+  .reset-icon:hover {
+    opacity: 1;
+  }
+  
+  /* Քոնթեյներ (dashboard-container) */
+/* Պատրանքային կոնտեյներ, որ համախմբում է էջի հիմնական բովանդակությունը */
+.page-wrapper {
+    max-width: 1500px;   /* Կամ 1000px, 90%, 80% և այլն */
+    margin: 20px auto;   /* Սա է հիմնական խորամանկությունը, auto σημαίνει կենտրոն */
+    padding: 0 20px;     /* Թեթև padding աջից և ձախից */
+  }
+  
+  /* Հնարավոր է նաև dashboard-container-ի փոխարինել այս .page-wrapper-ով */
+  /* Կամ, եթե արդեն ունեք dashboard-container, ուղղակի ավելացրեք */
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 10px auto;   /* 20px-ի փոխարեն 10px */
+    padding: 10px;       /* 20px-ի փոխարեն 10px */
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  
+  
+  /* Կուրսի ընտրության կոճակներ – առանց gradient */
+  .course-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .course-btn {
+    font-size: 14px;
+    background-color: #0C2D48; /* Չունենք gradient, միայն մեկ գույն */
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .course-btn:hover {
+    background-color: #103963;
+    transform: scale(1.05);
+    box-shadow: 0 8px 14px rgba(0,0,0,0.2);
+  }
+  
+  /* Փոփափ / Մոդալ պատուհաններ */
+  .popup, .modal, #filterModal {
     display: none;
-}
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    width: 380px;
+    max-width: 90%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .popup.active,
+  .modal.active,
+  #filterModal.active {
+    display: block;
+  }
+  
+  .close-popup, .close-btn {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s ease;
+  }
+  
+  .close-popup:hover,
+  .close-btn:hover {
+    color: red;
+  }
+  
+  .popup h2, .modal h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .popup p, .modal p {
+    font-size: 16px;
+    color: #444;
+    margin: 6px 0;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -55%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  /* Թաքնված (hidden) */
+  .hidden {
+    display: none;
+  }
+  

@@ -8,11 +8,11 @@ import random
 # 1) Գլոբալ պարամետրեր
 # ─────────────────────────────────────────────────────────────────────────
 
-GLOBAL_CONFLICT_SUBJECTS = {
-    "Խորացված անգլերեն",
-    "Օտար լեզու",
-    "Հայոց պատմություն"
-}
+# GLOBAL_CONFLICT_SUBJECTS = {
+#     "Խորացված անգլերեն",
+#     "Օտար լեզու",
+#     "Հայոց պատմություն"
+# }
 
 TYPE_CATEGORIES = {
     "Լաբ1": "Լաբ1",
@@ -149,8 +149,7 @@ def build_conflict_graph(entries):
                 conflict = False
 
             # Գլոբալ առարկաներ, նույն ուսուցիչ
-            if a["subject"] in GLOBAL_CONFLICT_SUBJECTS and b["subject"] == a["subject"] \
-               and a["teacher"] == b["teacher"]:
+            if b["subject"] == a["subject"] and a["teacher"] == b["teacher"]:
                 conflict = True
 
             # Դասի տեսակի կոնֆլիկտ
