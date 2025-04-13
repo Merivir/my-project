@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("confirmAvailability").addEventListener("click", confirmAvailability);
-    document.getElementById("generateSchedule").addEventListener("click", generateSchedule);
+   // document.getElementById("generateSchedule").addEventListener("click", generateSchedule);
 });
 
 
@@ -230,6 +230,8 @@ async function confirmAvailability() {
 
 //  Ստեղծում ենք դասացուցակը
 async function generateSchedule() {
+    console.log("📌 generateSchedule() ԿԱՆՉՎԵՑ");  // 👈 Սա կօգնի տեսնել քանի անգամ է կկանչվում
+
     if (!isConfirmed) {
         alert(" Խնդրում ենք նախ հաստատել ժամերը:");
         return;
