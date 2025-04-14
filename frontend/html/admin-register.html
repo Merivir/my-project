@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html lang="hy">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ադմինիստրատորի գրանցում</title>
-    <link rel="stylesheet" href="/css/admin-register.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ադմինիստրատորի գրանցում</title>
+  <!-- Հետևյալ ձևաչափը login-ի էջի ոճին համընկնում է -->
+  <link rel="stylesheet" href="/css/admin-register.css">
 </head>
 <body>
+  <header>
     <h1>Ադմինիստրատորի գրանցում</h1>
-    <form id="adminRegisterForm">
-        <label for="name">Անուն:</label>
-        <input type="text" id="name" name="name" required>
-        
-        <label for="login">Մուտքանուն:</label>
-        <input type="text" id="login" name="login" required>
-        
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        
-        <label for="password">Գաղտնաբառ:</label>
-        <input type="password" id="password" name="password" required>
-        
-        <button type="submit">Գրանցվել</button>
+  </header>
+  
+  <div class="register-page">
+    <form id="adminRegisterForm" class="register-form">
+      <label for="name">Անուն:</label>
+      <input type="text" id="name" name="name" required>
+      
+      <label for="login">Մուտքանուն:</label>
+      <input type="text" id="login" name="login" required>
+      
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+      
+      <label for="password">Գաղտնաբառ:</label>
+      <input type="password" id="password" name="password" required>
+      
+      <button type="submit">Գրանցվել</button>
+      <p id="registerErrorMessage"></p>
     </form>
-    <p id="registerErrorMessage"></p>
-    <p>Ունե՞ք էջ? <a href="/admin-login">Մուտք այստեղ</a>.</p>
-
-    <!-- Կապում ենք նոր admin-register.js ֆայլը -->
-    <script src="/js/admin-register.js"></script>
+  </div>
+  
+  <p class="footer-text">
+    Եթե արդեն ունեք ակաունտ, մուտք գործել կարող եք <a href="/admin-login">հետևյալ էջում</a>:
+  </p>
+  
+  <script src="/js/admin-register.js"></script>
 </body>
 </html>

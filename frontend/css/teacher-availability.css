@@ -52,12 +52,18 @@ header h1 {
 }
 
 /* Աղյուսակների block layout */
+/* Wrapper that holds both tables side by side */
 .time-slot-container {
-  display: block;
-  margin-bottom: 30px;
+  display: flex;        /* Turn on flex layout */
+  gap: 20px;            /* Spacing between the two tables */
+  flex-wrap: wrap;      /* Allows tables to stack if screen is too narrow */
+  margin-bottom: 30px;  /* Existing spacing */
 }
 
+/* Each table container can flex to fill space or wrap */
 .schedule-table-container {
+  flex: 1 1 45%;    /* Each table can take ~45% of the container's width */
+  min-width: 300px; /* Ensure a minimum width so they don’t get too narrow */
   margin-bottom: 20px;
 }
 

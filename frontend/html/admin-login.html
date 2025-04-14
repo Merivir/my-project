@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Մուտք ադմինիստրատորի համար</title>
-    <link rel="stylesheet" href="/css/admin-login.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Մուտք ադմինիստրատորի համար</title>
+  <link rel="stylesheet" href="/css/admin-login.css">
 </head>
 <body>
+  <!-- Header section -->
+  <header>
     <h1>Մուտք ադմինիստրատորի համար</h1>
-    <form id="adminLoginForm" onsubmit="submitAdminLoginForm(event)">
-        <label for="login">Մուտքանուն:</label>
-        <input type="text" id="login" name="login" required>
-        
-        <label for="password">Գաղտնաբառ:</label>
-        <input type="password" id="password" name="password" required>
-        
-        <button type="submit">Մուտք գործել</button>
+  </header>
+  
+  <!-- Container that centers the login form -->
+  <div class="login-page">
+    <form id="adminLoginForm" class="login-form" onsubmit="submitAdminLoginForm(event)">
+      <label for="login">Մուտքանուն:</label>
+      <input type="text" id="login" name="login" required>
+      
+      <label for="password">Գաղտնաբառ:</label>
+      <input type="password" id="password" name="password" required>
+      
+      <button type="submit">Մուտք գործել</button>
+      <p id="loginErrorMessage"></p>
     </form>
-    <p id="loginErrorMessage"></p>
-    <p>Եթե դեռ ակաունտ չունեք, ապա կարող եք գրանցվել <a href="/admin-register">Գրանցվել</a>.</p>
+  </div>
+  
+  <p style="text-align: center; color: #fff;">
+    Եթե դեռ ակաունտ չունեք, ապա կարող եք գրանցվել <a href="/admin-register" style="color: #fff; text-decoration: underline;">Գրանցվել</a>.
+  </p>
 
-    
-    <script src="/js/admin-login.js"></script>
+  <script src="/js/admin-login.js"></script>
 </body>
 </html>

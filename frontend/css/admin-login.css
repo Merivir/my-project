@@ -1,73 +1,145 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+/* Reset */
+html, body {
+    margin: 0;
     padding: 0;
-    background-color: #082033;;
-}
-
-h1 {
+    box-sizing: border-box;
+    height: 100%;
+  }
+  
+  /* Full-page gradient background */
+  body {
+    min-height: 100vh; /* ensures gradient covers the entire screen */
+    display: flex;
+    flex-direction: column; /* so header is on top, then the .login-page below */
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #818e9e, #002047);
+    color: #fff;
+  }
+  
+  /* Header styles */
+  header {
     text-align: center;
-    color: white;
-}
-
-form {
-    max-width: 400px;
-    margin: 0 auto;
     padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
+    background-color: #002047; /* Dark blue band at the top */
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+  }
+  
+  /* Container that occupies remaining space, 
+     ensuring the login form is centered vertically & horizontally */
+  .login-page {
+    flex: 1;               /* fills leftover space */
+    display: flex;
+    align-items: center;   /* vertical centering */
+    justify-content: center; /* horizontal centering */
+  }
+  
+  /* The login form: card style, centered, with box shadow */
+  .login-form {
+    width: 400px;
+    background-color: #fff;
     color: #333;
-}
-
-input {
-    width: calc(100% - 22px);
-    padding: 10px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.4s ease-out; /* slight entrance animation */
+    transition: transform 0.3s ease;
+    align-self: flex-start; /* form ինքն իրեն բարձր է պահում, ոչ թե exact vertical center */
+    margin-top: 30px;       /* ազատ տարածություն վերևից */
+  }
+  
+  /* Hover effect for the card */
+  .login-form:hover {
+    transform: translate(-4px, -4px);
+  }
+  
+  /* Fade-in animation keyframes */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Label styles */
+  .login-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+  }
+  
+  /* Make input fields consistent in sizing */
+  .login-form input,
+  .login-form button {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
     margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  /* Inputs */
+  .login-form input {
+    height: 45px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 14px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #10324e;
-    color: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .login-form input:focus {
+    border-color: #002047;
+    box-shadow: 0 0 4px rgba(0,0,0,0.15);
+    outline: none;
+  }
+  
+  /* Submit button */
+  .login-form button {
+    height: 45px;
+    background-color: #002047;
+    color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #10324e;
-}
-
-#loginErrorMessage {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .login-form button:hover {
+    background-color: #103963;
+    transform: scale(1.02);
+  }
+  
+  .login-form button:active {
+    transform: scale(0.98);
+  }
+  
+  /* Error message */
+  #loginErrorMessage {
     text-align: center;
     color: red;
     margin-top: 10px;
-}
-
-p {
-    text-align: center;
-    font-size: 14px;
-    color: white;
-}
-
-a {
-    color: #007BFF;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
+    font-size: 0.95rem;
+  }
+  
+  /* Responsive (small screens) */
+  @media (max-width: 600px) {
+    .login-form {
+      width: 90%;
+      padding: 20px;
+    }
+    header h1 {
+      font-size: 1.6rem;
+    }
+  }
+  

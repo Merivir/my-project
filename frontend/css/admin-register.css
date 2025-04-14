@@ -1,73 +1,161 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+/* Reset */
+html, body {
+    margin: 0;
     padding: 0;
-    background-color: #082033;;
-}
-
-h1 {
+    box-sizing: border-box;
+    height: 100%;
+  }
+  
+  /* Background and general font */
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #818e9e, #002047);
+    color: #fff;
+  }
+  
+  /* Header styling */
+  header {
     text-align: center;
-    color: white;
-}
-
-form {
-    max-width: 400px;
-    margin: 0 auto;
     padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
+    background-color: #002047;
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+  }
+  
+  /* Container for the register form */
+  .register-page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Register form card style */
+  .register-form {
+    width: 400px;
+    background-color: #fff;
     color: #333;
-}
-
-input {
-    width: calc(100% - 22px);
-    padding: 10px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.4s ease-out;
+    transition: transform 0.3s ease;
+    align-self: flex-start;
+    margin-top: 30px;
+  }
+  
+  .register-form:hover {
+    transform: translate(-4px, -4px);
+  }
+  
+  /* Fade-in keyframes */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Label styles */
+  .register-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+  }
+  
+  /* Inputs and button styling */
+  .register-form input,
+  .register-form button {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
     margin-bottom: 15px;
+    font-size: 16px;
+  }
+  
+  /* Input fields */
+  .register-form input {
+    height: 45px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 14px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #10324e;
-    color: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .register-form input:focus {
+    border-color: #002047;
+    box-shadow: 0 0 4px rgba(0,0,0,0.15);
+    outline: none;
+  }
+  
+  /* Submit button */
+  .register-form button {
+    height: 45px;
+    background-color: #002047;
+    color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #10324e;
-}
-
-#loginErrorMessage {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .register-form button:hover {
+    background-color: #103963;
+    transform: scale(1.02);
+  }
+  
+  .register-form button:active {
+    transform: scale(0.98);
+  }
+  
+  /* Error message styling */
+  #registerErrorMessage {
     text-align: center;
     color: red;
     margin-top: 10px;
-}
-
-p {
+    font-size: 0.95rem;
+  }
+  
+  /* Footer text for page links */
+  .footer-text {
     text-align: center;
     font-size: 14px;
-    color: white;
-}
-
-a {
+    margin: 15px 0;
+  }
+  
+  .footer-text a {
     color: #007BFF;
     text-decoration: none;
-}
-
-a:hover {
+    transition: text-decoration 0.2s ease;
+  }
+  
+  .footer-text a:hover {
     text-decoration: underline;
-}
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .register-form {
+      width: 90%;
+      padding: 20px;
+    }
+    
+    header h1 {
+      font-size: 1.6rem;
+    }
+  }
+  
