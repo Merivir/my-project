@@ -1,87 +1,196 @@
-/* Հիմնական reset-ներ */
+/* Հիմնական Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* 1) HTML ու body-ն կունենան առնվազն 100% բարձրություն */
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    padding: 0;
-    font-family: "Arial", sans-serif;
-    background-color: #0C2d48;
-    color: #fff;
-  }
-  
-  /* Վերնագիր և ուսուցչի անուն */
-  header {
-    background-color: #0C2d48;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  header h1 {
-    margin: 0;
-    font-size: 2rem;
-  }
-  
-  .teacher-name {
-    font-size: 1.2rem;
-    margin-top: 8px;
-    color: #bcdfff;
-  }
-  
-  /* Հիմնական կոնտեյներ */
-  .container {
-    max-width: 900px;
-    margin: 30px auto;
-    background-color: #fdfdfd;
-    color: #222;
-    padding: 25px 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Թվալարային աղյուսակի layout */
-  .time-slot-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-  }
-  
-  /* Աղյուսակային կոնտեյներ */
-  .schedule-table-container {
-    flex: 1 1 400px;
-  }
-  
-  /* Թվալարային աղյուսակ */
-  .schedule-table-container table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  
-  .schedule-table-container th,
-  .schedule-table-container td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-  }
-  
-  /* Շաբաթվա օրեր ու ժամեր */
-  .schedule-table-container th {
-    background-color: #002047;
-    color: white;
-  }
-  
-  /* Սպիտակ բջիջներ alternating row background */
-  .schedule-table-container tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  /* Կոճակների հատված */
-  .button-container {
-    margin-top: 30px;
-    text-align: center;
-  }
-  
-  .button-container button {
-    background-color: #0C2d48;
-    color: white;
-    border: none
-  }
+  font-family: "Arial", sans-serif;
+  /* 2) min-height: 100vh; որպեսզի gradient-ը տարածվի ամբողջ էկրանի վրա */
+  min-height: 100vh; 
+  background: linear-gradient(135deg, #818e9e, #002047);
+  color: #fff;
+}
+
+/* Header */
+header {
+  background-color: #031f41;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+header h1 {
+  font-size: 2.5rem;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  margin: 0;
+}
+
+.teacher-name {
+  font-size: 1.2rem;
+  margin-top: 8px;
+  color: #bcdfff;
+}
+
+/* Container (card-like) */
+.container {
+  max-width: 900px;
+  margin: 30px auto;
+  background-color: #fdfdfd;
+  color: #222;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+}
+
+/* Աղյուսակների block layout */
+.time-slot-container {
+  display: block;
+  margin-bottom: 30px;
+}
+
+.schedule-table-container {
+  margin-bottom: 20px;
+}
+
+/* Cloud-like աղյուսակ */
+.schedule-table-container table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0; 
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.schedule-table-container thead {
+  background-color: #002047;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+}
+
+.schedule-table-container th {
+  padding: 12px 16px;
+  border: none;
+  font-weight: 600;
+}
+
+.schedule-table-container td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  word-wrap: break-word;
+  max-width: 250px;
+}
+
+.schedule-table-container tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.schedule-table-container tbody tr:nth-child(even) td {
+  background-color: #f2f2f2;
+}
+
+.schedule-table-container tbody tr:hover td {
+  background-color: #e6f0fa;
+}
+
+/* Կլոր անկյուններ */
+.schedule-table-container thead tr th:first-child {
+  border-top-left-radius: 8px;
+}
+.schedule-table-container thead tr th:last-child {
+  border-top-right-radius: 8px;
+}
+.schedule-table-container tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+.schedule-table-container tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+/* Վերնագրեր / badge style */
+.schedule-title, .schedule-table h2 {
+  margin: 20px 0 10px;
+  font-size: 1.3rem;
+  color: #fff;
+  background: #001030;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+h2 {
+  font-size: 1.4rem;
+  color: #0C2d48;
+  margin: 20px 0 10px;
+}
+
+/* Կոճակ */
+.button-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.button-container button {
+  background-color: #0C2d48;
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 40px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.button-container button:hover {
+  background-color: #002047;
+  transform: scale(1.03);
+}
+
+.button-container button:active {
+  transform: scale(0.98);
+}
+
+/* Navigation and header/nav additional styling */
+.teacher-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 0;
+}
+
+.teacher-nav .nav-link {
+  text-decoration: none;
+  color: #fff;
+  background-color: #444;
+  padding: 8px 14px;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+  font-weight: 500;
+}
+
+.teacher-nav .nav-link:hover {
+  background-color: #666;
+}
+
+.teacher-nav .nav-link:active {
+  background-color: #222;
+  box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
+}
