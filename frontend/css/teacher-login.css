@@ -1,42 +1,95 @@
-body {
-    font-family: Arial, sans-serif;
+/* Ընդհանուր Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Հիմնական ֆոն և բազային տեքստ */
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     margin: 20px;
     padding: 0;
-    background-color: #0C2d48;;
-}
-
-h1 {
+    /* Հարմար gradient ֆոն՝ օգտագործելով մուգ կապույտ */
+    background: linear-gradient(135deg, #0C2d48, #0C2d48);
+    color: #333;
+  }
+  
+  /* Վերնագիր */
+  h1 {
     text-align: center;
-    color: white;
-}
-
-form {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    /* Անիմացիոն տեսք, տեքստի ստվեր */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Ինտերակտիվ պարագայում նաև paragraph-ները */
+  p {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #fff;
+    margin-top: 15px;
+    line-height: 1.6;
+  }
+  
+  /* Login Form-ի կոնտեյներ */
+  form {
     max-width: 400px;
     margin: 0 auto;
-    padding: 20px;
-    background-color: white;
+    padding: 30px 25px;
+    background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 8px;
+    /* Card-ի ոճի ստվեր */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-label {
+    /* Հեշտ slide-in անիմացիա */
+    animation: fadeInUp 0.3s ease-out;
+  }
+  
+  /* Slide-in անիմացիա */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Labels */
+  label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
     color: #333;
-}
-
-input {
-    width: calc(100% - 22px);
+    font-size: 1rem;
+  }
+  
+  /* Input դաշտեր */
+  input {
+    width: 100%;         /* Հիմնական, 100% լայնություն */
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-}
-
-button {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  input:focus {
+    border-color: #0C2d48;
+    box-shadow: 0 0 5px rgba(12, 45, 72, 0.3);
+    outline: none;
+  }
+  
+  /* Button (Մուտք գործել) */
+  button {
     width: 100%;
     padding: 10px;
     background-color: #0C2d48;
@@ -45,29 +98,47 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-}
-
-button:hover {
-    background-color: #0C2d48;
-}
-
-#loginErrorMessage {
+    transition: background-color 0.2s ease, transform 0.15s ease;
+  }
+  
+  button:hover {
+    background-color: #103963;
+    transform: scale(1.02);
+  }
+  
+  button:active {
+    transform: scale(0.98);
+  }
+  
+  /* Error message */
+  #loginErrorMessage {
     text-align: center;
     color: red;
     margin-top: 10px;
-}
-
-p {
-    text-align: center;
-    font-size: 14px;
-    color: white;
-}
-
-a {
+    font-size: 0.95rem;
+  }
+  
+  /* Link-եր */
+  a {
     color: #007BFF;
     text-decoration: none;
-}
-
-a:hover {
+    transition: text-decoration 0.2s ease;
+  }
+  
+  a:hover {
     text-decoration: underline;
-}
+  }
+  
+  /* Հավելյալ մանրուք՝ համաժամանակակետ կոնտեյներ, օրինակ, համար՝ վերևի պատճենները */
+  .login-container {
+    /* Եթե html-ում ավելացնում եք կոնտեյներ, նրանց կարող եք նաև ավելացնել */
+    margin-top: 20px;
+  }
+  
+  /* Եթե օգտագործվում է որևէ այլ կոնտեյներ, օրինակ, բաժանումներ՝ որպես ներսի spacing */
+  .page-wrapper {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;  /* Ներքին padding ձախից և աջից */
+  }
+  
