@@ -16,7 +16,7 @@
   
   /* Վերնագիր (header) */
   header {
-    background-color: #0C2D48; /* Մուգ կապույտ */
+    background-color: #002047; /* Մուգ կապույտ */
     padding: 20px;
     position: relative;
     text-align: center;
@@ -79,7 +79,7 @@ table {
   
   /* Աղյուսակի վերնագիր (thead) */
   table thead th {
-    background-color: #0C2D48; /* Ձեր հիմնական կապույտ գույնը */
+    background-color: #002047; /* Ձեր հիմնական կապույտ գույնը */
     color: #fff;
     font-weight: bold;
     padding: 12px 15px;
@@ -147,7 +147,7 @@ table {
   .filter-container label {
     font-size: 14px;
     font-weight: bold;
-    color: #0C2D48;
+    color: #002047;
   }
   
   /* Dropdown ձևավորում (select) */
@@ -180,7 +180,7 @@ table {
   
   /* Apply Filter կոճակ */
   #applyFilter {
-    background-color: #0C2D48;
+    background-color: #002047;
     color: white;
     padding: 8px 16px;
     border: none;
@@ -237,7 +237,7 @@ table {
   
   .course-btn {
     font-size: 14px;
-    background-color: #0C2D48; /* Չունենք gradient, միայն մեկ գույն */
+    background-color: #002047; /* Չունենք gradient, միայն մեկ գույն */
     color: #fff;
     padding: 10px 15px;
     border: none;

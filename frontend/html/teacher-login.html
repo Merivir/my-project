@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="hy">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Դասախոսի մուտք</title>
-    <link rel="stylesheet" href="/css/teacher-login.css"> <!-- եթե ունես հատուկ style -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Դասախոսի մուտք</title>
+  <link rel="stylesheet" href="/css/teacher-login.css"> <!-- Adjust the path if needed -->
 </head>
 <body>
-    <h1>Դասախոսի մուտք</h1>
-    <form id="teacherLoginForm" onsubmit="submitTeacherLoginForm(event)">
-        <label for="login">Մուտքանուն:</label>
-        <input type="text" id="login" name="login" required>
-        
-        <label for="password">Գաղտնաբառ:</label>
-        <input type="password" id="password" name="password" required>
-        
-        <button type="submit">Մուտք գործել</button>
-    </form>
-    <p id="loginErrorMessage"></p>
-    <!-- Եթե պետք է գրանցում, կարող ես ավելացնել հղում teacher-register.html-ի վրա -->
 
-    <!-- Քո script-ը, օրինակ teacher-login.js -->
-    <script src="/js/teacher-login.js"></script>
+  <header>
+    <h1>Դասախոսի Մուտք</h1>
+  </header>
+
+  <div class="login-page">
+    <form id="teacherLoginForm" class="login-form" onsubmit="submitTeacherLoginForm(event)">
+      <label for="login">Մուտքանուն:</label>
+      <input type="text" id="login" name="login" required>
+
+      <label for="password">Գաղտնաբառ:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit">Մուտք գործել</button>
+    </form>
+    <!-- Error message displayed below the form -->
+    <p id="loginErrorMessage"></p>
+  </div>
+
+  <script src="/js/teacher-login.js"></script> <!-- Your login script -->
 </body>
 </html>

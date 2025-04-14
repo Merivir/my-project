@@ -17,7 +17,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #0C2d48; 
+  background-color: #002047; 
   color: #fff;
   padding: 15px 20px;
 }
@@ -82,7 +82,7 @@ header h1 {
 
 /* Աղյուսակի վերնագիր (thead) */
 .schedule-table thead {
-  background-color: #0C2d48;
+  background-color: #002047;
   color: #fff;
   text-transform: uppercase;  /* վիզուալ ավելի highlight */
   letter-spacing: 1px;
@@ -135,7 +135,7 @@ header h1 {
   display: inline-block;
   margin: 10px 0;
   padding: 6px 12px;
-  background-color: #001030;
+  background-color: #002047;
   color: #fff;
   border-radius: 4px;
   font-size: 1rem;
@@ -144,7 +144,7 @@ header h1 {
 /* Համաձայն Global h2 */
 h2 {
   font-size: 1.4rem;
-  color: #0C2d48;
+  color: #002047;
   margin-top: 20px;
   margin-bottom: 10px;
 }
