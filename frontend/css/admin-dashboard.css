@@ -1,290 +1,121 @@
+/* 
+  Հիմնական body-ն – gradient ֆոն և այլն
+  Մնացած code-ը թողնում ենք նույնը, ինչ վերը ցուցադրվող տարբերակում էր,
+  պարզապես ավելացնում ենք ".admin-intro" կլասը:
+*/
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
     margin: 0;
     padding: 0;
+    font-family: "Arial", sans-serif;
+    color: #fff;
+    background: linear-gradient(to bottom, #0C2D48 0%, #10324E 50%, #1A4D7A 100%);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-/* Մեծացնում ենք քառակուսին (card) */
-.container {
-    max-width: 750px; /* Ավելի լայն */
-    width: 90%;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+  }
+  
+  .top-header {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.15);
     text-align: center;
-}
-
-/* Վերնագիրը տեղափոխվում է վերև */
-h1 {
+    padding: 25px 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .top-header h1 {
+    margin: 0;
     font-size: 28px;
-    margin-bottom: 10px;
-}
-
-h2 {
-    font-size: 28px;
-    margin: 10px;
-    color: black;
-}
-
-
-/* Լինքերը նույնպես տեղափոխում ենք դուրս */
-nav {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-nav a {
-    margin: 0 15px;
-    color: #007BFF;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  /* Փոփոխել գաղտնաբառը */
+  .change-password {
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+    color: #fff;
     text-decoration: none;
-    font-size: 16px;
-}
-
-nav a:hover {
-    text-decoration: underline;
-}
-
-/* Ընտրության դաշտի գեղեցիկ ձևավորում */
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-/* Ստեղծում ենք դասավորություն կողք կողքի */
-.time-slot-container {
-    display: flex;
-    justify-content: space-between; /* Ձախ ու աջ */
-    gap: 20px;
-    width: 100%;
-    align-items: flex-start;
-}
-
-/* Ամեն աղյուսակը ունի իր բաժինը */
-.schedule-table-container {
-    flex: 1;
-    text-align: center;
-}
-
-/* Աղյուսակի դիզայն */
-.schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-
-.schedule-table th, .schedule-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-}
-
-/* Checkbox-ների չափ */
-.time-slot-checkbox {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-/* Կոճակների փոքրացում և կողք-կողքի դասավորում */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Տարածություն կոճակների միջև */
-    margin-top: 20px;
-}
-
-.button-container button {
-    width: auto;
-    padding: 8px 15px;
     font-size: 14px;
-}
-
-/* Կոճակների ձևավորում */
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 15px;
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-button:hover:enabled {
-    background-color: #0056b3;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #0C2D48; /* 🔵 Կապույտ ֆոն */
-    color: white; /* Տեքստը դարձնում ենք սպիտակ */
-    margin: 0;
-    padding: 0;
+    border: 1px solid #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  .change-password:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+  
+  .wrapper {
+    flex: 1;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-}
-
-/* Մեծացնում ենք քառակուսին (card) */
-.container {
-    max-width: 750px; /* Ավելի լայն */
+    padding: 40px 15px;
+  }
+  
+  /* Սպիտակ քարտ (container) */
+  .container {
+    background-color: #fff;
+    color: #000;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    padding: 30px;
     width: 90%;
-    background-color: white; /* Փաստաթղթի հիմնական բովանդակությունը սպիտակ է մնում */
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    padding: 40px;
+    max-width: 600px;
     text-align: center;
-}
-
-.teacher-info-box {
-    margin-top: 10px;
-    padding: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.2); /* Կարմիր եզրագիծ */
-    border-radius: 5px;
-    background-color: white;
-    font-weight: bold; 
-    color: rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  /* Նոր admin-intro */
+  .admin-intro {
+    margin-bottom: 30px;
+  }
+  .admin-intro p {
+    margin: 0;
     font-size: 16px;
-    text-align: center;
-}
-
-
-/* Վերնագիրը տեղափոխվում է վերև */
-h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: white; /* Վերնագիրը դարձնում ենք սպիտակ, որ համապատասխանի ֆոնին */
-}
-
-/* Լինքերը նույնպես տեղափոխում ենք դուրս */
-nav {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-nav a {
-    margin: 0 15px;
-    color: white; /* 🔆 Ոսկեգույն, որպեսզի ավելի տեսանելի լինի կապույտ ֆոնի վրա */
-    text-decoration: none;
-    font-size: 16px;
-}
-
-nav a:hover {
-    text-decoration: underline;
-}
-
-/* Ընտրության դաշտի գեղեցիկ ձևավորում */
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-/* Ստեղծում ենք դասավորություն կողք կողքի */
-.time-slot-container {
-    display: flex;
-    justify-content: space-between; /* Ձախ ու աջ */
+    line-height: 1.4;
+    color: #333; /* Կտեսնվի սպիտակ քարտի վրա */
+  }
+  
+  /* Fade-in անիմացիա */
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Կոճակներ grid դասավորությամբ */
+  .button-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
-    width: 100%;
-    align-items: flex-start;
-}
-
-.schedule-table-container h2 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #000000; /* Եթե ֆոնը բաց է, փոխիր #333 */
-    text-align: center;
-    margin-bottom: 10px; /* Տարածություն ավելացրու աղյուսակից */
-    padding: 15px 0; /* Ավելացրած padding */
-    display: block; /* Ստիպում է, որ մնա իր տեղում */
-    position: relative; /* Խուսափում ենք հնարավոր վերև տեղափոխումից */
-    z-index: 5; /* Վերաբերում ենք վերևի շերտին */
-}
-
-.schedule-title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #0C2D48; /* Փոխիր #333, եթե ֆոնը բաց է */
-    text-align: center;
-    margin-bottom: 15px;
-    padding-top: 10px;
-}
-
-
-/* Աղյուսակի դիզայն */
-.schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: white; /* Աղյուսակները թողնում ենք սպիտակ */
-    color: black;
-}
-
-.schedule-table th, .schedule-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-}
-
-/* Checkbox-ների չափ */
-.time-slot-checkbox {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-/* Կոճակների փոքրացում և կողք-կողքի դասավորում */
-.button-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* Տարածություն կոճակների միջև */
-    margin-top: 20px;
-}
-
-/* Կոճակների ձևավորում */
-button {
-    width: auto;
-    padding: 12px 20px;
-    background-color: #10324e;
-    color: white;
+  }
+  
+  /* Կոճակների դիզայն */
+  .button-container button {
+    background: linear-gradient(to bottom, #0C2D48 0%, #10324E 50%, #1A4D7A 100%);
+    color: #fff;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    border-radius: 10px;
+    padding: 14px;
     font-size: 16px;
-    margin-top: 15px;
-}
-
-button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-button:hover:enabled {
-    background-color: #10324e;
-}
-
-#loadingSpinner p {
-    color: #10324e;;
-}
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.2);
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .button-container button:hover {
+    background: linear-gradient(135deg, #1C74B7 0%, #12608D 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+  }
+  .button-container button:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  

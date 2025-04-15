@@ -1,51 +1,41 @@
 <!DOCTYPE html>
 <html lang="hy">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Դասացուցակի ստեղծում</title>
-    <link rel="stylesheet" href="/css/admin-dashboard.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Բարի գալուստ, Ադմին</title>
+  <link rel="stylesheet" href="/css/admin-dashboard.css" />
 </head>
 <body>
+  <!-- Վերին header -->
+  <header class="top-header">
+    <h1>ԲԱՐԻ ԳԱԼՈՒՍՏ, ԱԴՄԻՆ</h1>
+    <a href="/admin/change-password" class="change-password">Փոփոխել գաղտնաբառը</a>
+  </header>
 
-    <h1>Դասացուցակի ստեղծում</h1>
-
-    <nav>
-        <a href="/edit-subjects">📚 Փոփոխել առարկաները</a>
-        <a href=/guest>👀 Դիտել որպես ուսանող</a>
-    </nav>
-
+  <!-- wrapper՝ կապահովի թե՛ ուղղահայաց, թե՛ հորիզոնական կենտրոնացում -->
+  <div class="wrapper">
+    <!-- Սպիտակ քարտ (container) -->
     <div class="container">
-        <h2>Ընտրել դասախոս</h2>
-        <select id="teacherSelect" onchange="updateTeacherInfo(this.value)">
-            <option value="">Ընտրել դասախոս</option>
-        </select>
 
-        <div id="teacher-info" class="teacher-info-box">
-            <!-- Այստեղ կցուցադրվի դասաժամերի քանակը -->
-        </div>
-        
-        <div class="time-slot-container">
-            <div class="schedule-table-container">
-                <h2>Առաջնային դասաժամեր</h2>
-                <div id="primarySlotsContainer"></div>
-            </div>
-        
-            <div class="schedule-table-container">
-                <h2>Երկրորդային դասաժամեր</h2>
-                <div id="backupSlotsContainer"></div>
-            </div>
-        </div>
-        
-        <div id="loadingSpinner" style="display: none;">
-            <p>⏳ Դասացուցակը կազմվում է, խնդրում ենք սպասել...</p>
-        </div>
-  
-        <div class="button-container">
-            <button id="confirmAvailability" onclick="confirmAvailability()" disabled>✅ Հաստատել ժամերը</button>
-            <button id="generateSchedule" onclick="generateSchedule()" disabled>⚡ Ստեղծել դասացուցակ</button>
-        </div>
+      <!-- ԱՅՍՏԵՂ ԱՎԵԼԱՑՆՈՒՄ ԵՆՔ Ձեր տեքստը -->
+      <div class="admin-intro">
+        <p>
+          Հարգելի Ադմին, այստեղ կարող եք կատարել ցանկացած մանիպուլյացիա կապված դասացուցակի կազմման հետ,  
+          ահա թե ինչպիսի հնարավորություններ ունեք:
+        </p>
+      </div>
 
-    <script src="/js/admin-dashboard.js"></script>
+      <!-- Կոճակների բլոկ -->
+      <div class="button-container">
+        <button onclick="window.location.href='/edit-subjects'">Առարկաների կառավարում</button>
+        <button onclick="window.location.href='/schedule'">Դիտել դասացուցակը</button>
+        <button onclick="window.location.href='/admin-dashboard'">Ստեղծել դասացուցակ</button>
+        <button onclick="window.location.href='/notifications'">Ուղարկել ծանուցում</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/admin-dashboard.js"></script>
 </body>
 </html>
