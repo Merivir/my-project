@@ -239,7 +239,6 @@ header {
 .popup-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 10px; /* Տողերի միջև տարածություն */
 }
 
@@ -306,7 +305,6 @@ header {
 /* Checkbox-ները թող լինեն inline տեքստի կողքին */
 .checkbox-container {
     display: flex;
-    align-items: center;
     gap: 8px;
     margin-top: 10px;
 }
@@ -336,39 +334,38 @@ header {
     background: #f0f0f0;
     cursor: not-allowed;
 }
-/* Համոզվում ենք, որ բոլոր select-ները նույն չափսի են */
-.teacherSelect {
-    width: 70%; /* Բոլոր ընտրության դաշտերը հավասար դարձնելու համար */
-    padding: 5px;
-    font-size: 14px;
-}
 
-/* Պլյուս (➕) և խաչ (❌) կոճակները փոքրացնում ենք */
-.add-teacher-btn, .remove-teacher-btn {
-    width: 25px; /* Կարճացնում ենք */
-    height: 25px;
-    padding: 2px;
-    font-size: 18px;
+
+/* Ավելացրի այս չներքորագիծը, ճիշտ popup-content-ի տակ */
+.popup-content .teacherSelect {
+    width: 180px !important;   /* կամ որքան ուզում ես */
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  select.teacherSelect {
+    width: 180px !important;
+    box-sizing: border-box;
+  }
+  
+  /* Իսկ ❌ կոճակը փոքր պահելու համար */
+  .remove-teacher-btn {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 5 !important;
+    font-size: 18px !important;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-}
+  }
+  
 /* Teacher container - թող լինի նույն լայնությամբ, ինչ practical & lab */
 .teacher-container {
     width: 90%;
     max-width: 500px; /* Թող լինի նույն չափով, ինչ practical & lab */
     display: flex;
-    align-items: center;
     gap: 10px; /* Կոճակների և դաշտի միջև ավելի հարմար տարածություն */
-}
-
-/* Select-ի չափը teacher-container-ի մեջ */
-.teacher-container select {
-    flex-grow: 1; /* Թույլ է տալիս select-ը լրացնել մնացած տարածությունը */
-    max-width: 450px;
-    text-align: center;
 }
 
 /* Բոլոր ուսուցչի ընտրության դաշտերը թող ունենան նույն չափը */
@@ -394,7 +391,6 @@ header {
     padding: 5px;
     font-size: 18px;
     display: flex;
-    align-items: center;
     justify-content: center;
 }
 
@@ -407,7 +403,6 @@ header {
 
 .teacher-row {
     display: flex;
-    align-items: center;
     gap: 8px; /* Տարածություն `select`-ի և կոճակի միջև */
     margin-top: 5px;
     width: 100%;
@@ -423,7 +418,6 @@ header {
     height: 32px;
     font-size: 16px;
     display: flex;
-    align-items: center;
     justify-content: center;
     cursor: pointer;
     border: none;
@@ -437,13 +431,9 @@ header {
 }
 
 
-
-
-
 /* Checkbox-ները թող մնան ձախ */
 .checkbox-container {
     display: flex;
-    align-items: center;
     justify-content: flex-start;
     width: 90%;
     max-width: 500px;
@@ -491,3 +481,128 @@ header {
 .hidden {
     display: none;
 }
+
+/********************************
+ * Հիմնական Layout փոփոխություններ
+ ********************************/
+
+/* Այս դասավորությունը կուրսի select-ները և "Ավելացնել առարկա" կոճակը դնում է նույն շարքում */
+.course-selection {
+    display: flex;
+    justify-content: center; /* Եթե ցանկանում եք, որ centered լինի, թողեք այսպես */
+    gap: 20px;              /* Տարրերի միջև տարածություն */
+    margin-top: 20px;
+}
+
+/* .dropdown-container-ը մնում է նույնը կամ փոքր ընտիր */
+.dropdown-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* Ավելացնել առարկա կոճակի ոճ, որպեսզի visually լինի նույն բարձրության ու տեսքի */
+.add-subject-btn {
+    background-color: #0A2540;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap; /* Միավորում է կոճակի տեքստը մեկ տողում */
+}
+
+.add-subject-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/********************************
+ * Ջնջման կոճակ (delete-btn) – խաչը սպիտակ
+ ********************************/
+.delete-btn {
+    background: #d9534f; /* կամ #FF4C4C */
+    color: #fff;         /* Թույլ է տալիս, որ cross կամ տեքստը լինի սպիտակ */
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 14px; /* Եթե ցանկանում եք λίγο մեծացնել/փոքրացնել */
+    display: inline-flex; 
+    justify-content: center;
+    gap: 4px; /* Եթե տեքստ + խաչ եք դնում, չխառնվեն */
+}
+
+/* Hover state, մի քիչ մգացնել */
+.delete-btn:hover {
+    background: #c9302c;
+}
+
+/* Կարող եք օգտագործել pseudo-element, եթե ուզում եք միայն խաչը, օրինակ:
+.delete-btn::before {
+    content: "✕";
+    color: #fff;
+    font-weight: bold;
+    margin-right: 5px;
+}
+*/
+
+/********************************
+ * Մնացած code-ը նույնն է
+ * (scroll, popups, etc.)
+ ********************************/
+
+
+ /* 1) popup ու popup-content շեմերը */
+/* popup–ն ունի որոշակի լայնություն ու box-sizing:border-box, որպեսզի padding–ը հաշվվի մեջ */
+.popup {
+    width: 500px;            /* կամ որքան քեզ հարմար ես գտնում */
+    max-width: 90vw;         /* փոքր էկրաններին չվերցնի ամբողջը */
+    padding: 0;              /* ոչինչ չկաթանենք այստեղ */
+    box-sizing: border-box;
+    max-height: 90vh;    /* Բարձրությանը սահման փտ տուր, եթե պարունակությունը մեծ լինի՝ սկրոլ */
+
+  }
+  
+  /* Ունենք մի ընդհանուր padding popup–ի content–ին */
+  .popup-content {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;    /* շատ կարևոր՝ stretching բոլոր children–ներին */
+    gap: 16px;               /* տողերի միջև փոքր բացվածք */
+    padding: 24px 32px;      /* վերև/ներք 24px, աջ/ձախ 32px */
+    box-sizing: border-box;  /* որպեսզի padding–ի չափսերը չբարձրացնեն լայնությունը */
+  }
+  
+  /* 2) Ուղղակի լցնել 100% width բոլորի վրա */
+  .popup-content label,
+  .popup-content input[type="text"],
+  .popup-content input[type="number"],
+  .popup-content select,
+  .teacher-container {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* 3) teacher-container–ը նույնպես 100% */
+  .teacher-container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  /* այդ մեջ առաջինը՝ select-ը թող զբաղեցնի մնացած ամբողջը */
+  .teacher-container select {
+    flex: 1;
+  }
+  
+  /* + և ❌ կոճակները թող ունենան նորմալ ֆիքսված չափսեր */
+  .teacher-container button {
+    flex: 0 0 auto;
+  }
+  
+  /* վերջապես, եթե ուզում ես, որ բոլոր label–ները ձախ կպած լինեն */
+  .popup-content label {
+    text-align: left;
+  }
+  

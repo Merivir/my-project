@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/css/edit-subjects.css">
 </head>
 <body>
-
     <header>
         <div class="back-container">
             <img src="/assets/left-arrow.png" alt="Վերադառնալ" class="back-arrow" id="backArrow">
@@ -15,6 +14,7 @@
         <h1>Փոփոխել Առարկաները</h1>
     </header>
 
+    <!-- Կուրսի ընտրություն և "Ավելացնել առարկա" կոճակը --> 
     <div class="course-selection">
         <div class="dropdown-container">
             <label for="courseSelect">Ընտրել կուրս</label>
@@ -27,10 +27,10 @@
                 <option value="">Ընտրել կուրսի կոդ...</option>
             </select>
         </div>
-    </div>
 
-    <!-- "Ավելացնել առարկա" կոճակը -->
-    <button id="addSubjectBtn" disabled>➕ Ավելացնել առարկա</button>
+        <!-- ԱՅՍՏԵՂ ենք դնում "Ավելացնել առարկա" կոճակը, որպեսզի լինի աջ կողմում -->
+        <button id="addSubjectBtn" disabled class="add-subject-btn">➕ Ավելացնել առարկա</button>
+    </div>
 
     <!-- Overlay (մուգ ֆոն) -->
     <div id="addSubjectPopupOverlay" class="popup-overlay hidden"></div>
@@ -45,7 +45,6 @@
             <input type="hidden" id="popupCourseId">
             <input type="hidden" id="popupCourseCode">
 
-
             <label for="newSubjectName">Առարկայի անվանում:</label>
             <input type="text" id="newSubjectName">
 
@@ -53,7 +52,6 @@
             <select id="newTeacher">
                 <option value="">Ընտրել դասախոս...</option>
             </select>
-
 
             <label for="newFrequency">Հաճախականություն:</label>
             <select id="newFrequency">
@@ -68,6 +66,7 @@
                 <input type="checkbox" id="enablePractical">
                 <label for="enablePractical">Գործնական</label>
             </div>
+
             <div id="practicalSection" class="hidden">
                 <label for="practicalTeacher">Գործնական դասախոս(ներ):</label>
                 <div class="teacher-container">
@@ -88,11 +87,11 @@
                 <input type="text" id="practicalRoomInput" placeholder="Օրինակ՝ 5207, 51109">
             </div>
             
-            
             <div class="checkbox-container">
                 <input type="checkbox" id="enableLab">
                 <label for="enableLab">Լաբորատոր</label>
             </div>
+
             <div id="labSection" class="hidden">
                 <label for="labTeacher">Լաբորատոր դասախոս(ներ):</label>
                 <div class="teacher-container">
@@ -113,17 +112,15 @@
                 <input type="text" id="labRoomInput" placeholder="Օրինակ՝ 5207, 51109">
             </div>
             
-            
-            
             <button id="saveNewSubject">✅ Ավելացնել</button>
         </div>
     </div>
-
 
     <div id="subjectsContainer" class="subjects-container">
         <!-- Առարկաները կավելացվեն այստեղ -->
     </div>
 
+    <!-- Կոճակ, եթե ունեք, օրինակ "Պահպանել Փոփոխությունները" -->
     <button id="saveChangesBtn" disabled>✅ Հաստատել փոփոխությունները</button>
 
     <!-- Popup հաստատման համար -->
@@ -162,12 +159,10 @@
                 <option value="biweekly">2 շաբաթը մեկ</option>
             </select>
 
-
             <button onclick="saveEditedSchedule()">✅ Պահպանել</button>
         </div>
     </div>
 
-    
     <script src="/js/edit-subjects.js"></script>
 </body>
 </html>
