@@ -4,7 +4,15 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'your_secret_key'; // Используйте переменные окружения для безопасности
 
 const router = express.Router();
+const nodemailer = require("nodemailer");
 
+const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: "myschedulepolytech@gmail.com",
+      pass: "xcshvlnrzqqsugpa"  // 🔐 App password (ոչ սովորական մուտքագրում)
+    }
+  });
 
 // Middleware для проверки токена
 function verifyToken(req, res, next) {
@@ -142,4 +150,38 @@ router.get('/list', async (req, res) => {
     }
 });
 
+router.post("/admin/send-message", async (req, res) => {
+    const { email, message } = req.body;
+  
+    if (!email || !message) {
+      return res.status(400).json({ error: "Պակաս տվյալներ" });
+    }
+  
+    try {
+      const pool = await poolPromise;
+      let recipients = [];
+  
+      if (email === "all") {
+        const result = await pool.request().query("SELECT email FROM Teachers WHERE email IS NOT NULL");
+        recipients = result.recordset.map(row => row.email);
+      } else {
+        recipients = [email];
+      }
+  
+      for (let to of recipients) {
+        await transporter.sendMail({
+          from: '"Admin MySchedule" <myschedulepolytech@gmail.com>',
+          to,
+          subject: "Հաղորդագրություն ադմինից",
+          text: message
+        });
+      }
+  
+      res.json({ message: "Նամակը ուղարկվել է" });
+    } catch (err) {
+      console.error("Email ուղարկելու սխալ:", err);
+      res.status(500).json({ error: "Սերվերի սխալ email ուղարկելիս" });
+    }
+  });
+  
 module.exports = router;

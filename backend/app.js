@@ -155,6 +155,7 @@ app.use('/api', require('./routes/adminRoutes'));
 app.use('/api/teacher', require('./routes/teacherRoutes'));
 app.use('/teacher-dashboard', require('./routes/teacherRoutes'));
 
+
 const subjectsRoutes = require('./routes/subjectsRoutes');
 app.use('/api', subjectsRoutes);
 
@@ -170,7 +171,9 @@ app.get('/teacher-availability', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/teacher-availability.html'));
 });
 
-
+app.get("/teacher-message", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/html/teacher-message.html"));
+});
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
