@@ -150,38 +150,49 @@ router.get('/list', async (req, res) => {
     }
 });
 
-router.post("/admin/send-message", async (req, res) => {
-    const { email, message } = req.body;
-  
-    if (!email || !message) {
-      return res.status(400).json({ error: "Պակաս տվյալներ" });
-    }
-  
-    try {
-      const pool = await poolPromise;
-      let recipients = [];
-  
-      if (email === "all") {
-        const result = await pool.request().query("SELECT email FROM Teachers WHERE email IS NOT NULL");
-        recipients = result.recordset.map(row => row.email);
-      } else {
-        recipients = [email];
+router.post('/admin/send-message', async (req, res) => {
+  const { teacherId, message } = req.body;
+
+  if (!teacherId || !message) {
+    return res.status(400).json({ error: "Լրացրեք բոլոր դաշտերը։" });
+  }
+
+  try {
+    const pool = await poolPromise;
+
+    let emails = [];
+
+    if (teacherId === "all") {
+      const result = await pool.request().query("SELECT email FROM Teachers WHERE email IS NOT NULL");
+      emails = result.recordset.map(row => row.email);
+    } else {
+      // ✅ Այստեղ type-conversion անում ենք միայն եթե ոչ "all"
+      const result = await pool.request()
+        .input('teacherId', sql.Int, parseInt(teacherId))
+        .query("SELECT email FROM Teachers WHERE id = @teacherId");
+
+      const email = result.recordset[0]?.email;
+      if (!email) {
+        return res.status(404).json({ error: "Տվյալ դասախոսը չի գտնվել կամ չունի email։" });
       }
-  
-      for (let to of recipients) {
-        await transporter.sendMail({
-          from: '"Admin MySchedule" <myschedulepolytech@gmail.com>',
-          to,
-          subject: "Հաղորդագրություն ադմինից",
-          text: message
-        });
-      }
-  
-      res.json({ message: "Նամակը ուղարկվել է" });
-    } catch (err) {
-      console.error("Email ուղարկելու սխալ:", err);
-      res.status(500).json({ error: "Սերվերի սխալ email ուղարկելիս" });
+      emails = [email];
     }
-  });
-  
+
+    for (const to of emails) {
+      await transporter.sendMail({
+        from: '"Admin" <myschedulepolytech@gmail.com>',
+        to,
+        subject: "Նոր հաղորդագրություն",
+        text: message
+      });
+    }
+
+    res.json({ message: "Հաղորդագրությունը հաջողությամբ ուղարկվեց։" });
+  } catch (err) {
+    console.error("❌ Error sending message:", err);
+    res.status(500).json({ error: "Սերվերի սխալ։" });
+  }
+});
+
+
 module.exports = router;
