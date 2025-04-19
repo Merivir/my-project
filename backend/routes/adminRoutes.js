@@ -158,32 +158,29 @@ router.post('/admin/send-message', async (req, res) => {
   }
 
   try {
-    const pool = await poolPromise;
-
+    const pool = await sql.connect(/* provide config here or import */);
     let emails = [];
 
     if (teacherId === "all") {
-      const result = await pool.request().query("SELECT email FROM Teachers WHERE email IS NOT NULL");
-      emails = result.recordset.map(row => row.email);
-    } else {
-      // ✅ Այստեղ type-conversion անում ենք միայն եթե ոչ "all"
       const result = await pool.request()
-        .input('teacherId', sql.Int, parseInt(teacherId))
-        .query("SELECT email FROM Teachers WHERE id = @teacherId");
-
-      const email = result.recordset[0]?.email;
-      if (!email) {
-        return res.status(404).json({ error: "Տվյալ դասախոսը չի գտնվել կամ չունի email։" });
+        .query("SELECT email FROM Teachers WHERE email IS NOT NULL");
+      emails = result.recordset.map(r => r.email);
+    } else {
+      const result = await pool.request()
+        .input("teacherId", sql.Int, parseInt(teacherId))
+        .query("SELECT email FROM Teachers WHERE id = @teacherId AND email IS NOT NULL");
+      if (!result.recordset.length) {
+        return res.status(404).json({ error: "Դասախոսը չի գտնվել կամ չունի email։" });
       }
-      emails = [email];
+      emails = [result.recordset[0].email];
     }
 
-    for (const to of emails) {
+    for (const email of emails) {
       await transporter.sendMail({
         from: '"Admin" <myschedulepolytech@gmail.com>',
-        to,
+        to: email,
         subject: "Նոր հաղորդագրություն",
-        text: message
+        text: message,
       });
     }
 
