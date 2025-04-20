@@ -1,100 +1,115 @@
+// teacher-change-password.js
+
 document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  document.getElementById('resetToken').value = params.get('token') || '';
-  
   const sendBtn = document.getElementById('sendCodeBtn');
   const sendHint = document.getElementById('sendHint');
   const retryLink = document.getElementById('retryLink');
   const codeHint = document.getElementById('codeHint');
 
-  // Send or retry code
+  const codeInput = document.getElementById('verificationCode');
+  const newPasswordInput = document.getElementById('newPassword');
+  const confirmPasswordInput = document.getElementById('confirmPassword');
+  const submitBtn = document.querySelector('button[type="submit"]');
+
+  const codeError = document.getElementById('codeError');
+  const passwordError = document.getElementById('passwordError');
+  const confirmError = document.getElementById('confirmError');
+  const message = document.getElementById('changePasswordMessage');
+
+  const tokenInput = document.getElementById('resetToken');
+
+  // Disable inputs initially
+  codeInput.disabled = true;
+  newPasswordInput.disabled = true;
+  confirmPasswordInput.disabled = true;
+  submitBtn.disabled = true;
+
   async function requestCode() {
     try {
-      const response = await fetch('/api/teacher/request-password-reset', {
+      const res = await fetch('/api/teacher/request-password-reset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('teacherToken')}`
         }
       });
-      const data = await response.json();
-      if (!response.ok) {
-        alert(data.message || 'Գոյացավ սխալ');
-        return;
-      }
-      // Եթե backend-ը վերադարձնում է { resetToken }, ապա
-      document.getElementById('resetToken').value = data.resetToken; // <-- ԱՅՍՏԵՂ
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Սխալ։ Կոդը չուղարկվեց։');
+
+      // Enable code input, show hints
+      codeInput.disabled = false;
+      sendBtn.disabled = true;
       sendHint.style.display = 'block';
       codeHint.style.display = 'block';
       retryLink.style.display = 'inline';
+
+      tokenInput.value = data.resetToken;
     } catch (err) {
-      console.error(err);
-      alert('Սխալ՝ չի հաջողվեց ուղարկել կոդը');
+      alert(err.message);
     }
   }
-  
 
   sendBtn.addEventListener('click', requestCode);
   retryLink.addEventListener('click', requestCode);
 
-  // Form submission
+  codeInput.addEventListener('input', () => {
+    if (codeInput.value.trim().length === 6) {
+      newPasswordInput.disabled = false;
+      confirmPasswordInput.disabled = false;
+      submitBtn.disabled = false;
+    }
+  });
+
   document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    // Clear previous errors
-    document.getElementById('codeError').innerText = '';
-    document.getElementById('passwordError').innerText = '';
-    document.getElementById('confirmError').innerText = '';
-    document.getElementById('changePasswordMessage').innerText = '';
 
-    const code = document.getElementById('verificationCode').value.trim();
-    const pwd = document.getElementById('newPassword').value;
-    const confirm = document.getElementById('confirmPassword').value;
+    const code = codeInput.value.trim();
+    const password = newPasswordInput.value.trim();
+    const confirm = confirmPasswordInput.value.trim();
+    const resetToken = tokenInput.value;
 
-    let valid = true;
-    // code validation
+    codeError.textContent = '';
+    passwordError.textContent = '';
+    confirmError.textContent = '';
+    message.textContent = '';
+
     if (!/^\d{6}$/.test(code)) {
-      document.getElementById('codeError').innerText = 'Կոդը պետք է լինի 6 թվանշան';
-      valid = false;
+      codeError.textContent = 'Կոդը պետք է լինի 6 թվանշան';
+      return;
     }
-    // password complexity
+
     const pwdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,}$/;
-    if (!pwdRegex.test(pwd)) {
-      document.getElementById('passwordError').innerText = 
-        'Գաղտնաբառը պետք է ≥8 նիշ, պարունակի մեծատառ, փոքրատառ, թիվ և հատուկ նշան';
-      valid = false;
+    if (!pwdRegex.test(password)) {
+      passwordError.textContent = 'Գաղտնաբառը պետք է ≥8 նիշ, պարունակի մեծատառ, փոքրատառ, թիվ և հատուկ նշան';
+      return;
     }
-    if (pwd !== confirm) {
-      document.getElementById('confirmError').innerText = 'Գաղտնաբառերը չեն համընկնում';
-      valid = false;
-    }
-    if (!valid) return;
 
-    // submit change
+    if (password !== confirm) {
+      confirmError.textContent = 'Գաղտնաբառերը չեն համընկնում';
+      return;
+    }
+
     try {
-      const resetToken = document.getElementById('resetToken').value;  // from hidden input
-
       const res = await fetch('/api/teacher/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          resetToken,                  // ← add this
+          resetToken,
           verificationCode: code,
-          newPassword: pwd
+          newPassword: password
         })
       });
 
       const data = await res.json();
-      if (!res.ok) {
-        document.getElementById('changePasswordMessage').style.color = 'red';
-        document.getElementById('changePasswordMessage').innerText = data.message || 'Սխալ';
-      } else {
-        document.getElementById('changePasswordMessage').style.color = 'green';
-        document.getElementById('changePasswordMessage').innerText = 'Գաղտնաբառը փոխվեց հաջողությամբ';
-      }
+      if (!res.ok) throw new Error(data.message || 'Չհաջողվեց թարմացնել գաղտնաբառը։');
+
+      message.style.color = 'green';
+      message.textContent = 'Գաղտնաբառը հաջողությամբ փոխվեց։';
+      submitBtn.disabled = true;
     } catch (err) {
-      console.error(err);
-      document.getElementById('changePasswordMessage').style.color = 'red';
-      document.getElementById('changePasswordMessage').innerText = 'Սերվերի սխալ';
+      message.style.color = 'red';
+      message.textContent = err.message;
     }
   });
 });

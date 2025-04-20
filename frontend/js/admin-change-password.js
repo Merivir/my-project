@@ -1,3 +1,5 @@
+// admin-change-password.js
+
 document.addEventListener("DOMContentLoaded", () => {
     const sendBtn = document.getElementById("sendCodeBtn");
     const sendHint = document.getElementById("sendHint");
@@ -6,29 +8,52 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmError = document.getElementById("confirmError");
     const resultMessage = document.getElementById("changePasswordMessage");
   
-    // ✅ Կոդի ուղարկում
+    const codeInput = document.getElementById("verificationCode");
+    const newPasswordInput = document.getElementById("newPassword");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const submitBtn = document.querySelector("button[type='submit']");
+    const tokenInput = document.getElementById("resetToken");
+  
+    // 📴 Disable initially
+    codeInput.disabled = true;
+    newPasswordInput.disabled = true;
+    confirmPasswordInput.disabled = true;
+    submitBtn.disabled = true;
+  
+    // ✅ Send verification code
     sendBtn.addEventListener("click", async () => {
       try {
         const res = await fetch("/api/admin/request-reset-code", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("adminToken")}` // ✅ պարտադիր
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
           }
         });
   
         const data = await res.json();
         if (!res.ok) return alert(data.message || "Չհաջողվեց ուղարկել կոդը");
   
-        document.getElementById("resetToken").value = data.resetToken;
+        tokenInput.value = data.resetToken;
         sendHint.style.display = "block";
+        codeInput.disabled = false;
+        sendBtn.disabled = true;
       } catch (err) {
         console.error("❌ Կոդի ուղարկման սխալ:", err);
         alert("Սխալ: չհաջողվեց ուղարկել կոդը");
       }
     });
   
-    // ✅ Գաղտնաբառի փոփոխում
+    // Enable fields once 6-digit code is entered
+    codeInput.addEventListener("input", () => {
+      if (/^\d{6}$/.test(codeInput.value.trim())) {
+        newPasswordInput.disabled = false;
+        confirmPasswordInput.disabled = false;
+        submitBtn.disabled = false;
+      }
+    });
+  
+    // ✅ Change password form submission
     document.getElementById("changePasswordForm").addEventListener("submit", async (e) => {
       e.preventDefault();
   
@@ -37,10 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
       confirmError.textContent = "";
       resultMessage.textContent = "";
   
-      const code = document.getElementById("verificationCode").value.trim();
-      const pwd = document.getElementById("newPassword").value;
-      const confirm = document.getElementById("confirmPassword").value;
-      const resetToken = document.getElementById("resetToken").value;
+      const code = codeInput.value.trim();
+      const pwd = newPasswordInput.value;
+      const confirm = confirmPasswordInput.value;
+      const resetToken = tokenInput.value;
   
       let valid = true;
   
@@ -67,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${localStorage.getItem("adminToken")}` // ✅ պարտադիր երկրորդ անգամ էլ
+            "Authorization": `Bearer ${localStorage.getItem("adminToken")}`
           },
           body: JSON.stringify({
             resetToken,
@@ -80,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (res.ok) {
           resultMessage.style.color = "green";
           resultMessage.textContent = "Գաղտնաբառը հաջողությամբ փոխվեց։";
+          submitBtn.disabled = true;
         } else {
           resultMessage.style.color = "red";
           resultMessage.textContent = data.message || "Սխալ։";
