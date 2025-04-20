@@ -102,6 +102,8 @@ app.get('/teacher-dashboard/settingsMenu', (req, res) => {
 app.get('/teacher-change-password', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/html/teacher-change-password.html'));
   });
+
+  
   
 const verifyTeacherToken = require('./middleware/verifyTeacherToken');
 
@@ -174,6 +176,10 @@ app.get('/teacher-availability', (req, res) => {
 app.get("/teacher-message", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend/html/teacher-message.html"));
 });
+app.get('/admin/change-password', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/html/admin-change-password.html'));
+  });
+  
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

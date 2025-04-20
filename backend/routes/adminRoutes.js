@@ -14,22 +14,22 @@ const transporter = nodemailer.createTransport({
     }
   });
 
-// Middleware для проверки токена
+// Middleware for verifying token
 function verifyToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) {
-        return res.status(403).json({ message: 'Access denied. No token provided.' });
-    }
+  if (!token) {
+    return res.status(403).json({ message: 'Access denied. No token provided.' });
+  }
 
-    try {
-        const decoded = jwt.verify(token, SECRET_KEY);
-        req.user = decoded;
-        next();
-    } catch (err) {
-        res.status(401).json({ message: 'Invalid token' });
-    }
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
 }
 
 router.get("/levels", async (req, res) => {
@@ -104,41 +104,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
-    const { login, password } = req.body;
-
-    try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('login', sql.NVarChar, login)
-            .query('SELECT * FROM admins WHERE login = @login');
-
-        if (result.recordset.length === 0) {
-            console.log("Մուտքանունը սխալ է:", login);
-            return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
-        }
-
-        const admin = result.recordset[0];
-
-        console.log("Բերված տվյալներ:", admin);
-
-        // Համեմատում ենք գաղտնաբառը bcrypt-ի միջոցով
-        const passwordMatch = await bcrypt.compare(password, admin.password);
-        console.log("Համեմատում ենք:", password, "հետ", admin.password, "| Արդյունք:", passwordMatch);
-
-        if (!passwordMatch) {
-            console.log("Գաղտնաբառը սխալ է:", password);
-            return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
-        }
-
-        res.json({ message: 'Մուտքը հաջողվեց!' });
-    } catch (err) {
-        console.error('Մուտքի սխալ:', err.message);
-        res.status(500).json({ message: 'Սերվերի սխալ' });
-    }
-});
-
-
 
 router.get('/list', async (req, res) => {
     try {
@@ -158,7 +123,7 @@ router.post('/admin/send-message', async (req, res) => {
   }
 
   try {
-    const pool = await sql.connect(/* provide config here or import */);
+    const pool = await poolPromise;
     let emails = [];
 
     if (teacherId === "all") {
@@ -166,6 +131,8 @@ router.post('/admin/send-message', async (req, res) => {
         .query("SELECT email FROM Teachers WHERE email IS NOT NULL");
       emails = result.recordset.map(r => r.email);
     } else {
+      console.log("📤 Փնտրում ենք կոնկրետ դասախոսի email՝ ըստ ID:", teacherId);
+
       const result = await pool.request()
         .input("teacherId", sql.Int, parseInt(teacherId))
         .query("SELECT email FROM Teachers WHERE id = @teacherId AND email IS NOT NULL");
@@ -191,5 +158,102 @@ router.post('/admin/send-message', async (req, res) => {
   }
 });
 
+// 📍 POST /api/admin/change-password
+
+// ✅ Change password
+router.post("/admin/change-password", verifyToken, async (req, res) => {
+  const { resetToken, verificationCode, newPassword } = req.body;
+
+  try {
+    const login = req.user.login;
+    const pool = await poolPromise;
+
+    const userResult = await pool.request()
+      .input("login", sql.NVarChar, login)
+      .query("SELECT * FROM admins WHERE login = @login");
+
+    const admin = userResult.recordset[0];
+    if (!admin) return res.status(404).json({ message: "Ադմինը չի գտնվել։" });
+
+    if (admin.verification_code !== verificationCode) {
+      return res.status(400).json({ message: "Սխալ կոդ։" });
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+
+    await pool.request()
+      .input("login", sql.NVarChar, login)
+      .input("password", sql.NVarChar, hashed)
+      .input("code", sql.NVarChar, null)
+      .query("UPDATE admins SET password = @password, verification_code = @code WHERE login = @login");
+
+    res.json({ message: "Գաղտնաբառը հաջողությամբ թարմացվել է։" });
+  } catch (err) {
+    console.error("❌ Error changing admin password:", err);
+    res.status(500).json({ message: "Սերվերի սխալ։" });
+  }
+});
+
+// Admin login
+router.post('/admin/login', async (req, res) => {
+  const { login, password } = req.body;
+
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input('login', sql.NVarChar, login)
+      .query('SELECT * FROM admins WHERE login = @login');
+
+    if (result.recordset.length === 0) {
+      return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
+    }
+
+    const admin = result.recordset[0];
+    const passwordMatch = await bcrypt.compare(password, admin.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Սխալ մուտքանուն կամ գաղտնաբառ' });
+    }
+
+    const token = jwt.sign({ login: admin.login }, SECRET_KEY, { expiresIn: "1h" });
+    res.json({ message: 'Մուտքը հաջողվեց!', token });
+  } catch (err) {
+    console.error('Մուտքի սխալ:', err.message);
+    res.status(500).json({ message: 'Սերվերի սխալ' });
+  }
+});
+
+// 🔐 Request password reset code
+router.post("/admin/request-reset-code", verifyToken, async (req, res) => {
+  try {
+    const login = req.user.login;
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("login", sql.NVarChar, login)
+      .query("SELECT email FROM admins WHERE login = @login");
+
+    const email = result.recordset[0]?.email;
+    if (!email) return res.status(404).json({ message: "Մեյլ չի գտնվել։" });
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await pool.request()
+      .input("login", sql.NVarChar, login)
+      .input("code", sql.NVarChar, code)
+      .query("UPDATE admins SET verification_code = @code WHERE login = @login");
+
+    await transporter.sendMail({
+      from: '"Schedule Admin" <myschedulepolytech@gmail.com>',
+      to: email,
+      subject: "Գաղտնաբառի հաստատման կոդ",
+      text: `Ձեր հաստատման կոդն է՝ ${code}`
+    });
+
+    res.json({ resetToken: "admin_static_token", message: "Կոդը հաջողությամբ ուղարկվեց։" });
+  } catch (err) {
+    console.error("❌ Error sending reset code:", err);
+    res.status(500).json({ message: "Սերվերի սխալ։" });
+  }
+});
 
 module.exports = router;
