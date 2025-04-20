@@ -148,7 +148,7 @@ const verifyTeacherToken = require('./middleware/verifyTeacherToken');
 });
 
 
-
+app.use('/api/reset', require('./routes/resetPasswordRoutes'));
 app.use("/api", require("./routes/editRoutes"));
 app.use('/guest', require('./routes/guestRoutes'));
 app.use('/schedule', require('./routes/scheduleRoutes'));
