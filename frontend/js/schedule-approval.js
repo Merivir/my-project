@@ -29,24 +29,124 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function renderSchedule(data) {
-    const tableBody = document.querySelector("#scheduleBody");
-    tableBody.innerHTML = ""; //  Մաքրում ենք հին տվյալները
+// ✅ Full renderSchedule(data) function for schedule-approval.js
+// Groups by course -> week_type -> table
+// Each class is draggable, each cell is droppable
 
+function renderSchedule(data) {
+    const container = document.getElementById("scheduleContainer");
+    if (!container) return console.error("📛 scheduleContainer not found");
+    container.innerHTML = "";
+
+    // 🔹 Group data by course and week_type
+    const grouped = {};
     data.forEach(item => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${item.day || "❌"}</td>  
-            <td>${item.time_slot || "❌"}</td>  
-            <td>${item.subject || "❌"}</td>  
-            <td>${item.course || "❌"}</td>  
-            <td>${item.class_type || "❌"}</td>  
-            <td>${item.teacher || "❌"}</td>  
-            <td>${item.room || "❌"}</td>  
-            <td>${item.week_type || "❌"}</td>  
-        `;
-        tableBody.appendChild(row);
+        const course = item.course;
+        const weekType = item.week_type;
+        if (!grouped[course]) grouped[course] = {};
+        if (!grouped[course][weekType]) grouped[course][weekType] = [];
+        grouped[course][weekType].push(item);
     });
 
-    console.log(" Աղյուսակը հաջողությամբ լցվեց");
+    const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
+    const timeSlots = ["09:30-10:50", "11:00-12:20", "12:50-14:10", "14:20-15:40"];
+
+    for (const [course, weekTypes] of Object.entries(grouped)) {
+        const courseTitle = document.createElement("h2");
+        courseTitle.textContent = `📘 ${course}`;
+        container.appendChild(courseTitle);
+
+        for (const [weekType, lessons] of Object.entries(weekTypes)) {
+            const weekTitle = document.createElement("h3");
+            weekTitle.textContent = `🕓 Շաբաթվա տեսակ՝ ${weekType}`;
+            container.appendChild(weekTitle);
+
+            const table = document.createElement("table");
+            table.classList.add("schedule-table");
+
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+            headerRow.innerHTML = "<th>Ժամ</th>" + days.map(day => `<th>${day}</th>`).join("");
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement("tbody");
+            timeSlots.forEach(slot => {
+                const row = document.createElement("tr");
+                const timeCell = document.createElement("td");
+                timeCell.textContent = slot;
+                row.appendChild(timeCell);
+
+                days.forEach(day => {
+                    const cell = document.createElement("td");
+                    cell.id = `cell-${day}-${slot}-${course}-${weekType}`;
+                    cell.classList.add("dropzone");
+                    cell.dataset.day = day;
+                    cell.dataset.slot = slot;
+
+                    cell.addEventListener("dragover", e => e.preventDefault());
+                    cell.addEventListener("drop", handleDrop);
+
+                    const matchingLessons = lessons.filter(l => l.day === day && l.time_slot === slot);
+                    matchingLessons.forEach(lesson => {
+                        const div = document.createElement("div");
+                        div.classList.add("class-block");
+                        div.draggable = true;
+                        div.textContent = `${lesson.subject} (${lesson.teacher})`;
+                        div.dataset.id = lesson.id;
+                        div.dataset.day = day;
+                        div.dataset.slot = slot;
+                        div.dataset.course = course;
+                        div.dataset.week = weekType;
+
+                        div.addEventListener("dragstart", handleDragStart);
+                        cell.appendChild(div);
+                    });
+
+                    row.appendChild(cell);
+                });
+
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+    }
+
+    console.log("✅ renderSchedule finished with drag/drop enabled");
 }
+
+let draggedElement = null;
+
+function handleDragStart(e) {
+    draggedElement = e.target;
+    e.dataTransfer.effectAllowed = "move";
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    if (!draggedElement || this.contains(draggedElement)) return;
+
+    this.appendChild(draggedElement);
+
+    // ✅ Update metadata
+    draggedElement.dataset.day = this.dataset.day;
+    draggedElement.dataset.slot = this.dataset.slot;
+    draggedElement.classList.add("modified");
+}
+
+// 📤 Call this to collect all moved lessons
+function collectModifiedLessons() {
+    return Array.from(document.querySelectorAll(".class-block.modified")).map(el => ({
+        id: el.dataset.id,
+        new_day: el.dataset.day,
+        new_slot: el.dataset.slot,
+        course: el.dataset.course,
+        week_type: el.dataset.week
+    }));
+} 
+
+// ⏱️ Later: add Confirm button logic
+// const modified = collectModifiedLessons();
+// fetch('/api/update-positions', { method: 'POST', body: JSON.stringify(modified) })
