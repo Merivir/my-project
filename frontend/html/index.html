@@ -7,11 +7,16 @@
     <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-    <h1>Բարի գալուստ</h1>
-    <p>Ընտրեք, թե ինչպես եք ցանկանում շարունակել</p>
-    <button id="guestButton">Շարունակել որպես ուսանող</button>
-    <button id="teacherButton">Շարունակել որպես դասախոս</button>
-    <button id="adminButton">Շարունակել որպես ադմինիստրատոր</button>
+    <div class="container">
+        <h1>Բարի գալուստ</h1>
+        <p>Ընտրեք, թե ինչպես եք ցանկանում շարունակել</p>
+
+        <div class="button-container">
+            <button id="guestButton">Շարունակել որպես ուսանող</button>
+            <button id="teacherButton">Շարունակել որպես դասախոս</button>
+            <button id="adminButton">Շարունակել որպես ադմինիստրատոր</button>
+        </div>
+    </div>
 
     <script>
         document.getElementById('guestButton').addEventListener('click', () => {
@@ -22,11 +27,10 @@
             window.location.href = '/admin-login'; 
         });
 
-        // Նոր ավելացված կոճակ դասախոսի համար
         document.getElementById('teacherButton').addEventListener('click', () => {
-            // Այս ռոութը պետք է ապահովես app.js-ում (կամ այլ router-ում)
             window.location.href = '/teacher-login'; 
         });
     </script> 
 </body>
+
 </html>

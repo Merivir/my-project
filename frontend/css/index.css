@@ -1,82 +1,80 @@
-/* Ընդհանուր reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Հիմնական ֆոն */
-  body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #ebeef1 0%, #ebeef1 50%, #f2f6fa 100%); 
-    /* Կարող եք gradent-ը փոխել ձեր ճաշակով */
-    color: #333;
-    text-align: center;
-    padding: 2rem 1rem;
-  }
-  
-  /* Գլխավոր վերնագիր – «Բարի գալուստ» */
-  h1 {
-    font-size: 3rem;
-    color: #002047; /* Մեր հիմնական գույնը */
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
-    /* Ցանկության դեպքում կարող եք մեծացնել ստվերը */
-  }
-  
-  /* Ներածական պարբերություն */
-  p {
-    font-size: 1.2rem;
-    color: #002047; /* Պահում ենք նույն գունային գամման */
-    margin-bottom: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.5;
-  }
-  
-  /* Կոճակների զետեղում */
-  
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom right, #1a2a4f, #0c3d6e);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;  /* վերևից սկսել */
+  padding-top: 60px;            /* վերնագրի տեղը թողնում ենք */
+  color: #fff;
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 
+/* Վերնագիր */
+h1 {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+  letter-spacing: 1px;
+}
+
+/* Ներածական տեքստ */
+p {
+  font-size: 1.2rem;
+  max-width: 700px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.6;
+  color: #eee;
+}
+
+/* Կոճակների կոնտեյներ */
+.button-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;  /* ← ավելի շատ բացվածք */
+  max-width: 500px;
+  width: 100%;
+}
+
+
+/* Կոճակներ */
 button {
-    display: inline-block;
-    padding: 20px 40px; /* Ավելի մեծ padding-ի համար կոճակը կլինի ավելի մեծ */
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #000000;
-    background: linear-gradient(135deg, #ffffff, #002047); /* Հեշտ և թխված գույնի գրաֆիկ */
-    border: none;
-    border-radius: 50px; /* Լավ փափուկ կարճրեր */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Նուրբ խառնաշփոթ գուռ */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin: 10px;
+  padding: 14px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #0c3d6e, #0a2a55);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #155a8a, #0c3d6e);
+  transform: scale(1.03);
 }
 
 button:active {
-    transform: scale(0.98);
+  transform: scale(0.97);
 }
 
-  
-  /* Ռեսպոնսիվ */
-  @media (max-width: 600px) {
-    h1 {
-      font-size: 2.2rem;
-    }
-    p {
-      font-size: 1rem;
-    }
-    button {
-      font-size: 0.9rem;
-      padding: 0.8rem 1.5rem;
-    }
+/* Ռեսպոնսիվ */
+@media (max-width: 500px) {
+  h1 {
+    font-size: 2.2rem;
   }
-  
+  p {
+    font-size: 1rem;
+  }
+  button {
+    font-size: 1rem;
+    padding: 12px 20px;
+  }
+}
