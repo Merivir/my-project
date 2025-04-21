@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
 // ✅ Full renderSchedule(data) function for schedule-approval.js
 // Groups by course -> week_type -> table
 // Each class is draggable, each cell is droppable
@@ -38,14 +39,19 @@ function renderSchedule(data) {
     if (!container) return console.error("📛 scheduleContainer not found");
     container.innerHTML = "";
 
-    // 🔹 Group data by course and week_type
     const grouped = {};
+    const dualWeekLessons = new Map();
+
     data.forEach(item => {
         const course = item.course;
         const weekType = item.week_type;
-        if (!grouped[course]) grouped[course] = {};
-        if (!grouped[course][weekType]) grouped[course][weekType] = [];
-        grouped[course][weekType].push(item);
+        const targetWeekTypes = weekType === "երկուսն էլ" ? ["համարիչ", "հայտարար"] : [weekType];
+
+        targetWeekTypes.forEach(type => {
+            if (!grouped[course]) grouped[course] = {};
+            if (!grouped[course][type]) grouped[course][type] = [];
+            grouped[course][type].push({ ...item, originalWeekType: weekType });
+        });
     });
 
     const days = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ"];
@@ -98,9 +104,15 @@ function renderSchedule(data) {
                         div.dataset.slot = slot;
                         div.dataset.course = course;
                         div.dataset.week = weekType;
+                        div.dataset.originalWeek = lesson.originalWeekType || weekType;
 
                         div.addEventListener("dragstart", handleDragStart);
                         cell.appendChild(div);
+
+                        if (lesson.originalWeekType === "երկուսն էլ") {
+                            if (!dualWeekLessons.has(lesson.id)) dualWeekLessons.set(lesson.id, []);
+                            dualWeekLessons.get(lesson.id).push(div);
+                        }
                     });
 
                     row.appendChild(cell);
@@ -114,6 +126,7 @@ function renderSchedule(data) {
         }
     }
 
+    window._dualWeekLessonsMap = dualWeekLessons;
     console.log("✅ renderSchedule finished with drag/drop enabled");
 }
 
@@ -128,21 +141,42 @@ async function handleDrop(e) {
     e.preventDefault();
     if (!draggedElement || this.contains(draggedElement)) return;
 
-    this.appendChild(draggedElement);
-
-    // ✅ Update metadata
     const newDay = this.dataset.day;
     const newSlot = this.dataset.slot;
+
+    // Update dragged element
     draggedElement.dataset.day = newDay;
     draggedElement.dataset.slot = newSlot;
     draggedElement.classList.add("modified");
+    this.appendChild(draggedElement);
+
+    // Update all dual-week copies together
+    const id = draggedElement.dataset.id;
+    if (window._dualWeekLessonsMap?.has(id)) {
+        const related = window._dualWeekLessonsMap.get(id);
+        related.forEach(copy => {
+            copy.dataset.day = newDay;
+copy.dataset.slot = newSlot;
+copy.textContent = draggedElement.textContent;
+copy.classList.add("modified");
+
+            const cellId = `cell-${newDay}-${newSlot}-${copy.dataset.course}-${copy.dataset.week}`;
+            const cell = document.getElementById(cellId);
+            if (cell) {
+    if (copy.parentNode && copy.parentNode !== cell) {
+        copy.parentNode.removeChild(copy);
+    }
+    cell.appendChild(copy);
+}
+        });
+    }
 
     const payload = {
-        id: draggedElement.dataset.id,
+        id: id,
         new_day: newDay,
         new_slot: newSlot,
         course: draggedElement.dataset.course,
-        week_type: draggedElement.dataset.week
+        week_type: draggedElement.dataset.originalWeek || draggedElement.dataset.week
     };
 
     try {
@@ -151,24 +185,27 @@ async function handleDrop(e) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify([payload])
         });
-
         const result = await res.json();
         if (!res.ok) {
-            alert("❌ Չհաջողվեց պահպանել դիրքը:");
-            console.error(result);
-        }
+    alert("❌ Չհաջողվեց պահպանել դիրքը:");
+    console.error(result);
+} else {
+    // ✅ Refresh schedule to reflect synced changes
+    const fresh = await fetch("/schedule_approval");
+    const updated = await fresh.json();
+    renderSchedule(updated);
+}
     } catch (err) {
         console.error("❌ Error during auto-save:", err);
     }
 }
 
-// 📤 Call this to collect all moved lessons
 function collectModifiedLessons() {
     return Array.from(document.querySelectorAll(".class-block.modified")).map(el => ({
         id: el.dataset.id,
         new_day: el.dataset.day,
         new_slot: el.dataset.slot,
         course: el.dataset.course,
-        week_type: el.dataset.week
+        week_type: el.dataset.originalWeek || el.dataset.week
     }));
 }
