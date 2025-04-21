@@ -30,11 +30,25 @@
       <div class="button-container">
         <button onclick="window.location.href='/edit-subjects'">Առարկաների կառավարում</button>
         <button onclick="window.location.href='/guest'">Դիտել դասացուցակը</button>
-        <button onclick="window.location.href='/schedule-approval'">Ստեղծել դասացուցակ</button>
+        <!-- <button onclick="window.location.href='/schedule-approval'">Ստեղծել դասացուցակ</button> -->
+        <button id="openGeneratePopup">Ստեղծել դասացուցակ</button>
         <button onclick="window.location.href='/teacher-message'">Ուղարկել ծանուցում</button>
       </div>
     </div>
+
+    <!-- Ստեղծել դասացուցակի փոփափ -->
+<div id="generatePopupOverlay" class="popup-overlay hidden"></div>
+<div id="generatePopup" class="popup hidden">
+  <p>Ցանկանում եք ստեղծել դասացուցակ՝ հիմնվելով առկա բոլոր սահմանափակումների վրա՞</p>
+  <div class="popup-buttons">
+    <button id="confirmGenerateBtn">Այո</button>
+    <button id="cancelGenerateBtn">Չեղարկել</button>
   </div>
+</div>
+
+  </div>
+
+
 
   <script src="/js/admin-dashboard.js"></script>
 </body>

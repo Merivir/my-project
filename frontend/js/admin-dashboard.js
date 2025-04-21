@@ -3,26 +3,49 @@ const timeSlots = ["I", "II", "III", "IV"];
 let isConfirmed = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadTeachers();
-    generateTimeSlotCheckboxes("primarySlotsContainer");
-    generateTimeSlotCheckboxes("backupSlotsContainer");
-
-    document.getElementById("teacherSelect").addEventListener("change", (e) => {
-        updateTeacherInfo(e.target.value);
-        toggleCheckboxes(true);
+    const popup = document.getElementById("generatePopup");
+    const overlay = document.getElementById("generatePopupOverlay");
+    const openBtn = document.getElementById("openGeneratePopup");
+    const confirmBtn = document.getElementById("confirmGenerateBtn");
+    const cancelBtn = document.getElementById("cancelGenerateBtn");
+  
+    if (!popup || !overlay || !openBtn || !confirmBtn || !cancelBtn) {
+      console.error("❌ Մեկ կամ մի քանի popup տարրեր չգտնվեցին HTML-ում");
+      return;
+    }
+  
+    openBtn.addEventListener("click", () => {
+      popup.classList.remove("hidden");
+      overlay.classList.remove("hidden");
     });
-
-    document.addEventListener("change", (event) => {
-        if (event.target.classList.contains("time-slot-checkbox")) {
-            updateConfirmButton();
+  
+    cancelBtn.addEventListener("click", () => {
+      popup.classList.add("hidden");
+      overlay.classList.add("hidden");
+    });
+  
+    confirmBtn.addEventListener("click", async () => {
+      popup.classList.add("hidden");
+      overlay.classList.add("hidden");
+  
+      try {
+        const res = await fetch("/api/generate-schedule", { method: "POST" });
+        const data = await res.json();
+  
+        if (res.ok) {
+          alert("Դասացուցակը հաջողությամբ կազմվեց!");
+          window.location.href = "/schedule-approval";
+        } else {
+          alert("Սխալ՝ " + (data.error || "սերվերի խնդիր"));
         }
+      } catch (err) {
+        console.error("Սխալ ալգորիթմի ընթացքում:", err);
+        alert("Սխալ՝ դասացուցակը կազմելու ժամանակ");
+      }
     });
+  });
 
-    document.getElementById("confirmAvailability").addEventListener("click", confirmAvailability);
-   // document.getElementById("generateSchedule").addEventListener("click", generateSchedule);
-});
-
-
+  
 // Բեռնում ենք դասախոսների ցանկը
 async function loadTeachers() {
     try {

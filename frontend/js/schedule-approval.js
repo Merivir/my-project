@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+
 // ✅ Full renderSchedule(data) function for schedule-approval.js
 // Groups by course -> week_type -> table
 // Each class is draggable, each cell is droppable
@@ -98,7 +100,9 @@ function renderSchedule(data) {
                         const div = document.createElement("div");
                         div.classList.add("class-block");
                         div.draggable = true;
-                        div.textContent = `${lesson.subject} (${lesson.teacher})`;
+                        div.innerHTML = `
+  <strong>${lesson.subject}</strong>, ${lesson.class_type}, ${lesson.room}, ${lesson.teacher}
+`;
                         div.dataset.id = lesson.id;
                         div.dataset.day = day;
                         div.dataset.slot = slot;
@@ -138,6 +142,13 @@ function handleDragStart(e) {
 }
 
 async function handleDrop(e) {
+    e.preventDefault();
+
+    // ✅ Week control logic for "երկուսն էլ"
+    if (draggedElement?.dataset.originalWeek === "երկուսն էլ" && draggedElement.dataset.week !== "համարիչ") {
+        alert("«Երկուսն էլ» դասերը կարող եք տեղափոխել միայն համարիչ աղյուսակից:");
+        return;
+    }
     e.preventDefault();
     if (!draggedElement || this.contains(draggedElement)) return;
 
