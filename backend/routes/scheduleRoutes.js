@@ -282,5 +282,50 @@ router.get('/teacher/:teacherId', async (req, res) => {
     }
 });
 
+// 📁 routes/scheduleRoutes.js
+
+router.post('/update-positions', async (req, res) => {
+    const updates = req.body;
+
+    if (!Array.isArray(updates) || updates.length === 0) {
+        return res.status(400).json({ error: "No updates provided." });
+    }
+
+    try {
+        const pool = await poolPromise;
+
+        // Get all Days and TimeSlots to map names to IDs
+        const [daysRes, slotsRes] = await Promise.all([
+            pool.request().query("SELECT id, name FROM Days"),
+            pool.request().query("SELECT id, slot FROM TimeSlots")
+        ]);
+
+        const dayMap = Object.fromEntries(daysRes.recordset.map(d => [d.name, d.id]));
+        const slotMap = Object.fromEntries(slotsRes.recordset.map(s => [s.slot, s.id]));
+
+        for (const { id, new_day, new_slot } of updates) {
+            const dayId = dayMap[new_day];
+            const slotId = slotMap[new_slot];
+
+            if (!dayId || !slotId) continue; // skip if mapping failed
+
+            await pool.request()
+                .input("id", sql.Int, id)
+                .input("day_id", sql.Int, dayId)
+                .input("slot_id", sql.Int, slotId)
+                .query(`
+                    UPDATE created_schedule
+                    SET day_of_week = @day_id,
+                        time_of_day = @slot_id
+                    WHERE id = @id
+                `);
+        }
+
+        res.json({ message: "All positions updated successfully." });
+    } catch (error) {
+        console.error("❌ update-positions error:", error);
+        res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+});
 
 module.exports = router;

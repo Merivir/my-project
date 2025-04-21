@@ -124,16 +124,42 @@ function handleDragStart(e) {
     e.dataTransfer.effectAllowed = "move";
 }
 
-function handleDrop(e) {
+async function handleDrop(e) {
     e.preventDefault();
     if (!draggedElement || this.contains(draggedElement)) return;
 
     this.appendChild(draggedElement);
 
     // ✅ Update metadata
-    draggedElement.dataset.day = this.dataset.day;
-    draggedElement.dataset.slot = this.dataset.slot;
+    const newDay = this.dataset.day;
+    const newSlot = this.dataset.slot;
+    draggedElement.dataset.day = newDay;
+    draggedElement.dataset.slot = newSlot;
     draggedElement.classList.add("modified");
+
+    const payload = {
+        id: draggedElement.dataset.id,
+        new_day: newDay,
+        new_slot: newSlot,
+        course: draggedElement.dataset.course,
+        week_type: draggedElement.dataset.week
+    };
+
+    try {
+        const res = await fetch("/api/schedule/update-positions", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify([payload])
+        });
+
+        const result = await res.json();
+        if (!res.ok) {
+            alert("❌ Չհաջողվեց պահպանել դիրքը:");
+            console.error(result);
+        }
+    } catch (err) {
+        console.error("❌ Error during auto-save:", err);
+    }
 }
 
 // 📤 Call this to collect all moved lessons
@@ -145,8 +171,4 @@ function collectModifiedLessons() {
         course: el.dataset.course,
         week_type: el.dataset.week
     }));
-} 
-
-// ⏱️ Later: add Confirm button logic
-// const modified = collectModifiedLessons();
-// fetch('/api/update-positions', { method: 'POST', body: JSON.stringify(modified) })
+}
