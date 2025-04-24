@@ -1,40 +1,43 @@
+// Ստանում ենք role-ը URL-ով կամ localStorage-ից
+function getUserRoleFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("role") || localStorage.getItem("userRole") || "guest";
+}
+
+const userRole = getUserRoleFromURL();
+const isAdmin = userRole === "admin";
+
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("/schedule_approval")  //  Ստուգել, որ API-ի ուղղությունը ճիշտ է
+    fetch("/schedule_approval")
         .then(response => response.json())
         .then(data => {
-            console.log(" API-ից ստացված տվյալները:", data); //  Debugging համար
-            
             if (!Array.isArray(data) || data.length === 0) {
-                console.warn(" API-ից տվյալներ չկան կամ սխալ ֆորմատ է");
-                document.querySelector("#scheduleBody").innerHTML = "<tr><td colspan='8' style='text-align:center;'>📢 Տվյալներ չկան</td></tr>";
+                document.querySelector("#scheduleBody").innerHTML =
+                    "<tr><td colspan='8' style='text-align:center;'>📢 Տվյալներ չկան</td></tr>";
                 return;
             }
 
             renderSchedule(data);
         })
-        .catch(error => console.error(" Error fetching schedule approval data:", error));
+        .catch(error => console.error("Error fetching schedule approval data:", error));
 
-    //  Հաստատելու կոճակը սեղմելիս տանում է դեպի guest.html
-    document.getElementById("confirmBtn").addEventListener("click", function () {
-        alert(" Դասացուցակը հաստատված է!");
-        window.location.href = "/guest";
-    });
+    if (isAdmin) {
+        document.getElementById("confirmBtn")?.addEventListener("click", function () {
+            alert("Դասացուցակը հաստատված է!");
+            window.location.href = "/guest";
+        });
 
-    //  Հրաժարվելու կոճակը սեղմելիս վերադարձնում է admin-dashboard.html
-    document.getElementById("rejectBtn").addEventListener("click", function () {
-        const confirmReject = confirm("Համոզվա՞ծ եք, որ ցանկանում եք հրաժարվել։");
-        if (confirmReject) {
-            window.location.href = "/admin-dashboard";
-        }
-    });
+        document.getElementById("rejectBtn")?.addEventListener("click", function () {
+            const confirmReject = confirm("Համոզվա՞ծ եք, որ ցանկանում եք հրաժարվել։");
+            if (confirmReject) {
+                window.location.href = "/admin-dashboard";
+            }
+        });
+    } else {
+        document.getElementById("confirmBtn")?.remove();
+        document.getElementById("rejectBtn")?.remove();
+    }
 });
-
-
-
-
-// ✅ Full renderSchedule(data) function for schedule-approval.js
-// Groups by course -> week_type -> table
-// Each class is draggable, each cell is droppable
 
 function renderSchedule(data) {
     const container = document.getElementById("scheduleContainer");
@@ -92,17 +95,17 @@ function renderSchedule(data) {
                     cell.dataset.day = day;
                     cell.dataset.slot = slot;
 
-                    cell.addEventListener("dragover", e => e.preventDefault());
-                    cell.addEventListener("drop", handleDrop);
+                    if (isAdmin) {
+                        cell.addEventListener("dragover", e => e.preventDefault());
+                        cell.addEventListener("drop", handleDrop);
+                    }
 
                     const matchingLessons = lessons.filter(l => l.day === day && l.time_slot === slot);
                     matchingLessons.forEach(lesson => {
                         const div = document.createElement("div");
                         div.classList.add("class-block");
-                        div.draggable = true;
-                        div.innerHTML = `
-  <strong>${lesson.subject}</strong>, ${lesson.class_type}, ${lesson.room}, ${lesson.teacher}
-`;
+                        div.draggable = isAdmin;
+                        div.innerHTML = `<strong>${lesson.subject}</strong>, ${lesson.class_type}, ${lesson.room}, ${lesson.teacher}`;
                         div.dataset.id = lesson.id;
                         div.dataset.day = day;
                         div.dataset.slot = slot;
@@ -110,7 +113,10 @@ function renderSchedule(data) {
                         div.dataset.week = weekType;
                         div.dataset.originalWeek = lesson.originalWeekType || weekType;
 
-                        div.addEventListener("dragstart", handleDragStart);
+                        if (isAdmin) {
+                            div.addEventListener("dragstart", handleDragStart);
+                        }
+
                         cell.appendChild(div);
 
                         if (lesson.originalWeekType === "երկուսն էլ") {
@@ -131,7 +137,6 @@ function renderSchedule(data) {
     }
 
     window._dualWeekLessonsMap = dualWeekLessons;
-    console.log("✅ renderSchedule finished with drag/drop enabled");
 }
 
 let draggedElement = null;
@@ -144,46 +149,41 @@ function handleDragStart(e) {
 async function handleDrop(e) {
     e.preventDefault();
 
-    // ✅ Week control logic for "երկուսն էլ"
     if (draggedElement?.dataset.originalWeek === "երկուսն էլ" && draggedElement.dataset.week !== "համարիչ") {
         alert("«Երկուսն էլ» դասերը կարող եք տեղափոխել միայն համարիչ աղյուսակից:");
         return;
     }
-    e.preventDefault();
+
     if (!draggedElement || this.contains(draggedElement)) return;
 
     const newDay = this.dataset.day;
     const newSlot = this.dataset.slot;
 
-    // Update dragged element
     draggedElement.dataset.day = newDay;
     draggedElement.dataset.slot = newSlot;
     draggedElement.classList.add("modified");
     this.appendChild(draggedElement);
 
-    // Update all dual-week copies together
     const id = draggedElement.dataset.id;
     if (window._dualWeekLessonsMap?.has(id)) {
         const related = window._dualWeekLessonsMap.get(id);
         related.forEach(copy => {
             copy.dataset.day = newDay;
-copy.dataset.slot = newSlot;
-copy.textContent = draggedElement.textContent;
-copy.classList.add("modified");
+            copy.dataset.slot = newSlot;
+            copy.textContent = draggedElement.textContent;
+            copy.classList.add("modified");
 
             const cellId = `cell-${newDay}-${newSlot}-${copy.dataset.course}-${copy.dataset.week}`;
             const cell = document.getElementById(cellId);
-            if (cell) {
-    if (copy.parentNode && copy.parentNode !== cell) {
-        copy.parentNode.removeChild(copy);
-    }
-    cell.appendChild(copy);
-}
+            if (cell && copy.parentNode !== cell) {
+                copy.parentNode?.removeChild(copy);
+                cell.appendChild(copy);
+            }
         });
     }
 
     const payload = {
-        id: id,
+        id,
         new_day: newDay,
         new_slot: newSlot,
         course: draggedElement.dataset.course,
@@ -196,16 +196,16 @@ copy.classList.add("modified");
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify([payload])
         });
+
         const result = await res.json();
         if (!res.ok) {
-    alert("❌ Չհաջողվեց պահպանել դիրքը:");
-    console.error(result);
-} else {
-    // ✅ Refresh schedule to reflect synced changes
-    const fresh = await fetch("/schedule_approval");
-    const updated = await fresh.json();
-    renderSchedule(updated);
-}
+            alert("❌ Չհաջողվեց պահպանել դիրքը");
+            console.error(result);
+        } else {
+            const fresh = await fetch("/schedule_approval");
+            const updated = await fresh.json();
+            renderSchedule(updated);
+        }
     } catch (err) {
         console.error("❌ Error during auto-save:", err);
     }

@@ -1,21 +1,59 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="hy">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор роли</title>
+    <title>PolytechSchedule</title>
     <link rel="stylesheet" href="/css/index.css">
+
 </head>
 <body>
-    <div class="container">
-        <h1>Բարի գալուստ</h1>
-        <p>Ընտրեք, թե ինչպես եք ցանկանում շարունակել</p>
-
-        <div class="button-container">
-            <button id="guestButton">Շարունակել որպես ուսանող</button>
-            <button id="teacherButton">Շարունակել որպես դասախոս</button>
-            <button id="adminButton">Շարունակել որպես ադմինիստրատոր</button>
-        </div>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">P</div>
+                <span>PolytechSchedule</span>
+            </div>
+            <div class="sidebar-content">
+                <h1>Բարի գալուստ</h1>
+                <p>Մուտք գործեք համակարգ և ստացեք մուտք դեպի բոլոր ֆունկցիաները։ Ընտրեք Ձեր դերը շարունակելու համար։</p>
+            </div>
+        </aside>
+        
+        <main class="content">
+            <div class="content-header">
+                <h2>Մուտք գործել</h2>
+                <p>Ընտրեք, թե ինչպես եք ցանկանում շարունակել</p>
+            </div>
+            
+            <div class="btn-group">
+                <button id="guestButton" class="btn btn-primary">
+                    <span>
+                        <div class="icon">Ու</div>
+                        Շարունակել որպես ուսանող
+                    </span>
+                    <span class="arrow">→</span>
+                </button>
+                
+                <button id="teacherButton" class="btn btn-outline">
+                    <span>
+                        <div class="icon">Դ</div>
+                        Շարունակել որպես դասախոս
+                    </span>
+                    <span class="arrow">→</span>
+                </button>
+                
+                <button id="adminButton" class="btn btn-outline">
+                    <span>
+                        <div class="icon">Ա</div>
+                        Շարունակել որպես ադմինիստրատոր
+                    </span>
+                    <span class="arrow">→</span>
+                </button>
+            </div>
+            
+            <div class="decoration">© 2025 PolytechSchedule</div>
+        </main>
     </div>
 
     <script>
@@ -32,5 +70,4 @@
         });
     </script> 
 </body>
-
 </html>

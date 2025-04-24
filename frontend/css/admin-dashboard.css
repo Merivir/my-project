@@ -134,6 +134,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     background: white;
+    color: #000;
     padding: 24px;
     border-radius: 10px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
@@ -143,6 +144,16 @@ body {
   }
   
   .popup-buttons button {
+    background: linear-gradient(to bottom, #0C2D48 0%, #10324E 50%, #1A4D7A 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.2);
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
     margin: 10px;
   }
   

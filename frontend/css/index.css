@@ -1,80 +1,236 @@
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom right, #1a2a4f, #0c3d6e);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;  /* վերևից սկսել */
-  padding-top: 60px;            /* վերնագրի տեղը թողնում ենք */
-  color: #fff;
-  text-align: center;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-/* Վերնագիր */
-h1 {
-  font-size: 3rem;
-  color: #fff;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-  letter-spacing: 1px;
-}
-
-/* Ներածական տեքստ */
-p {
-  font-size: 1.2rem;
-  max-width: 700px;
-  margin: 0 auto 3rem auto;
-  line-height: 1.6;
-  color: #eee;
-}
-
-/* Կոճակների կոնտեյներ */
-.button-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 40px;  /* ← ավելի շատ բացվածք */
-  max-width: 500px;
-  width: 100%;
-}
-
-
-/* Կոճակներ */
-button {
-  padding: 14px 24px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #fff;
-  background: linear-gradient(135deg, #0c3d6e, #0a2a55);
-  border: none;
-  border-radius: 16px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  background: linear-gradient(135deg, #155a8a, #0c3d6e);
-  transform: scale(1.03);
-}
-
-button:active {
-  transform: scale(0.97);
-}
-
-/* Ռեսպոնսիվ */
-@media (max-width: 500px) {
-  h1 {
-    font-size: 2.2rem;
-  }
-  p {
-    font-size: 1rem;
-  }
-  button {
-    font-size: 1rem;
-    padding: 12px 20px;
-  }
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #0a2a55;
+            --primary-light: #1e4584;
+            --primary-dark: #061c3a;
+            --accent: #3d7dd9;
+            --text-light: #f8fafc;
+            --text-dark: #1e293b;
+            --bg-light: #f1f5f9;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            background-color: var(--bg-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a2a55' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .app {
+            max-width: 1100px;
+            width: 100%;
+            display: flex;
+            height: 600px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            background: white;
+        }
+        
+        .sidebar {
+            width: 35%;
+            background: linear-gradient(150deg, var(--primary), var(--primary-dark));
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0.1;
+            top: -100px;
+            right: -100px;
+        }
+        
+        .sidebar::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0.1;
+            bottom: -50px;
+            left: -50px;
+        }
+        
+        .logo {
+            margin-bottom: 40px;
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 800;
+        }
+        
+        .sidebar-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--text-light);
+            z-index: 1;
+        }
+        
+        .sidebar-content h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .sidebar-content p {
+            font-size: 16px;
+            opacity: 0.85;
+            margin-bottom: 30px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .content-header {
+            margin-bottom: 60px;
+        }
+        
+        .content-header h2 {
+            color: var(--text-dark);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .content-header p {
+            color: #64748b;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .btn {
+            padding: 16px 20px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+            background: white;
+            color: #475569;
+        }
+        
+        .btn span {
+            z-index: 1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 15px 20px -3px rgba(10, 42, 85, 0.3);
+        }
+        
+        .arrow {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover .arrow {
+            transform: translateX(5px);
+        }
+        
+        .icon {
+            margin-right: 12px;
+            width: 24px;
+            height: 24px;
+            background: rgba(71, 85, 105, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover .icon {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .decoration {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 900px) {
+            .app {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 30px 20px;
+            }
+            
+            .sidebar-content h1 {
+                font-size: 28px;
+            }
+            
+            .content {
+                padding: 40px 20px;
+            }
+        }
