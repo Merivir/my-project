@@ -1,163 +1,310 @@
-/* Reset */
-html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    height: 100%;
-  }
-  
-  /* Full-page gradient background */
-  body {
-    min-height: 100vh; /* ensures gradient covers the entire screen */
-    display: flex;
-    flex-direction: column; /* so header is on top, then the .login-page below */
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #818e9e, #002047);
-    color: #fff;
-  }
-  
-  /* Header styles */
-  header {
-    text-align: center;
-    padding: 20px;
-    background-color: #002047; /* Dark blue band at the top */
-  }
-  
-  header h1 {
-    margin: 0;
-    font-size: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #fff;
-  }
-  
-  /* Container that occupies remaining space, 
-     ensuring the login form is centered vertically & horizontally */
-  .login-page {
-    flex: 1;               /* fills leftover space */
-    display: flex;
-    align-items: center;   /* vertical centering */
-    justify-content: center; /* horizontal centering */
-  }
-  
-/* The login form: card style, centered, with box shadow */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #0a2a55;
+  --primary-light: #1e4584;
+  --primary-dark: #061c3a;
+  --accent: #4c7bda;
+  --text-light: #f8fafc;
+  --text-dark: #1e293b;
+  --bg-light: #f1f5f9;
+  --success: #10b981;
+  --error: #ef4444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  background-color: #f5f7fa;
+  color: var(--text-dark);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.login-left {
+  width: 40%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.login-right {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-left-content {
+  position: relative;
+  z-index: 1;
+  max-width: 400px;
+}
+
+.login-left::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0.1;
+  top: -100px;
+  right: -100px;
+}
+
+.login-left::after {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0.1;
+  bottom: -50px;
+  left: -50px;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-weight: 800;
+  margin-right: 12px;
+  font-size: 1.2rem;
+}
+
+.app-logo span {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.welcome-text h1 {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.welcome-text p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.login-form-container {
+  max-width: 450px;
+  width: 100%;
+}
+
+.login-form-header {
+  margin-bottom: 2rem;
+}
+
+.login-form-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.login-form-header p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
 .login-form {
-    width: 400px;
-    background-color: #fff;
-    color: #333;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    animation: fadeInUp 0.4s ease-out;
-    transition: transform 0.3s ease;
-    align-self: flex-start; /* form-ը ինքնից իրան վեր, ոչ թե միասին vertical centering */
-    margin-top: 30px;       /* վերեւի պակաս կոդ: հնարավոր է օգտագործել դրական արժեք, հակառակ դեպքում՝ զուգընթաց negative */
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
+  color: var(--text-dark);
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 42, 85, 0.1);
+  outline: none;
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+}
+
+.remember-me input {
+  margin-right: 0.5rem;
+}
+
+.remember-me label {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.forgot-password {
+  font-size: 0.9rem;
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.submit-btn:hover {
+  background: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(10, 42, 85, 0.15);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.login-error {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  text-align: center;
+  min-height: 1.5rem;
+}
+
+.ornament-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--primary-light);
+  opacity: 0.05;
+  z-index: -1;
+}
+
+.ornament-1 {
+  width: 300px;
+  height: 300px;
+  top: -150px;
+  right: 10%;
+}
+
+.ornament-2 {
+  width: 200px;
+  height: 200px;
+  bottom: 50px;
+  right: 20%;
+}
+
+/* Mobile styles */
+@media (max-width: 992px) {
+  body {
+    flex-direction: column;
   }
 
-  
-  .login-form:hover {
-    /* slight shift on hover, adjust values as you wish */
-    transform: translate(-4px, -4px);
-  }
-  
-  /* Fade-in animation keyframes */
-  @keyframes fadeInUp {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Label styles */
-  .login-form label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #333;
-    font-size: 1rem;
-  }
-  
-  /* Input fields */
-  .login-form input {
+  .login-left, .login-right {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .login-form input:focus {
-    border-color: #002047;
-    box-shadow: 0 0 4px rgba(0,0,0,0.15);
-    outline: none;
-  }
-  
-  /* Submit button */
-  .login-form button {
-    width: 100%;
-    background-color: #002047;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 14px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
   }
 
-  /* Համեմատական դաշտերի ու կոճակների համար */
-.login-form input,
-.login-form button {
-  width: 100%;           /* Բոլորը ընդհարմար կլինեն parent-ի ընդհանրությամբ */
-  box-sizing: border-box;/* Համոզվում ենք, որ padding-ը ներառվում է 100%-ում */
-  padding: 12px;         /* Հետևում է նույն չափը բոլոր input-ների ու կոճակների համար */
-  margin-bottom: 15px;    /* Հավասար բացտողություն ներքևում */
-  font-size: 16px;
+  .login-left {
+    padding: 3rem 2rem;
+    min-height: 35vh;
+  }
+
+  .login-right {
+    padding: 2rem;
+  }
+
+  .welcome-text h1 {
+    font-size: 1.75rem;
+  }
+
+  .ornament-circle {
+    display: none;
+  }
 }
 
-/* Եթե կորստ աքնելի եք, կարող եք նաև սահմանել սահմանափակված բարձրություն */
-.login-form input {
-  height: 45px;          /* Օրինակ՝ 45px բարձրություն */
+@media (max-width: 576px) {
+  .login-left {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-right {
+    padding: 1.5rem;
+  }
+
+  .login-form-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-text h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .welcome-text p {
+    font-size: 0.9rem;
+  }
 }
-
-.login-form button {
-  height: 45px;          /* Նման վերքի բաճկալ, որ շատ տարբերություն չլինի */
-}
-
-  
-  .login-form button:hover {
-    background-color: #103963;
-    transform: scale(1.02);
-  }
-  
-  .login-form button:active {
-    transform: scale(0.98);
-  }
-  
-  /* Error message */
-  #loginErrorMessage {
-    text-align: center;
-    color: red;
-    margin-top: 10px;
-    font-size: 0.95rem;
-  }
-  
-  /* Responsive (small screens) */
-  @media (max-width: 600px) {
-    .login-form {
-      width: 90%;
-      padding: 20px;
-    }
-    header h1 {
-      font-size: 1.6rem;
-    }
-  }
-  
-
-  

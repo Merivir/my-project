@@ -3,35 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Դասախոսի մուտք</title>
-  <link rel="stylesheet" href="/css/teacher-login.css"> <!-- Adjust the path if needed -->
+  <title>Դասախոսի մուտք | PolytechSchedule</title>
+  <link rel="stylesheet" href="/css/teacher-login.css">
 </head>
 <body>
-
-  <header>
-    <h1>Դասախոսի Մուտք</h1>
-  </header>
-
-  <div class="login-page">
-    <form id="teacherLoginForm" class="login-form" onsubmit="submitTeacherLoginForm(event)">
-      <label for="login">Մուտքանուն:</label>
-      <input type="text" id="login" name="login" required>
-
-      <label for="password">Գաղտնաբառ:</label>
-      <input type="password" id="password" name="password" required>
-
-      <button type="submit">Մուտք գործել</button>
-      <p id="loginErrorMessage"></p>
-
-    </form>
-    <!-- Error message displayed below the form -->
+  <div class="login-left">
+    <div class="login-left-content">
+      <div class="app-logo">
+        <div class="logo-icon">P</div>
+        <span>PolytechSchedule</span>
+      </div>
+      <div class="welcome-text">
+        <h1>Բարի գալուստ</h1>
+        <p>Մուտք գործեք ձեր հաշիվ՝ դասերի ցուցակը դիտելու համար: </p>
+      </div>
+    </div>
   </div>
 
-  <p style="text-align: center; color: #fff;">
-    <a href="/reset-password-before-login.html?role=teacher" style="color: #fff; text-decoration: underline;">Մոռացե՞լ եք գաղտնաբառը</a>
-  </p>
-  
+  <div class="login-right">
+    <div class="ornament-circle ornament-1"></div>
+    <div class="ornament-circle ornament-2"></div>
+    
+    <div class="login-form-container">
+      <div class="login-form-header">
+        <h2>Դասախոսի Մուտք</h2>
+        <p>Մուտքագրեք ձեր տվյալները՝ շարունակելու համար</p>
+      </div>
+      
+      <form id="teacherLoginForm" class="login-form" onsubmit="submitTeacherLoginForm(event)">
+        <div class="form-group">
+          <label for="login">Մուտքանուն</label>
+          <input type="text" id="login" name="login" placeholder="Մուտքագրեք ձեր մուտքանունը" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Գաղտնաբառ</label>
+          <input type="password" id="password" name="password" placeholder="Մուտքագրեք ձեր գաղտնաբառը" required>
+        </div>
+        
+        <div class="remember-forgot">
+          <div class="remember-me">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember">Հիշել ինձ</label>
+          </div>
+          <a href="/reset-password-before-login.html?role=teacher" class="forgot-password">Մոռացե՞լ եք գաղտնաբառը</a>
+        </div>
+        
+        <button type="submit" class="submit-btn">Մուտք գործել</button>
+        
+        <div id="loginErrorMessage" class="login-error"></div>
+      </form>
+    </div>
+  </div>
 
-  <script src="/js/teacher-login.js"></script> <!-- Your login script -->
+  <script src="/js/teacher-login.js"></script>
 </body>
 </html>
