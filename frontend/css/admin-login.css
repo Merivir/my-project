@@ -1,145 +1,279 @@
-/* Reset */
-html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    height: 100%;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #0a2a55;
+  --primary-light: #1e4584;
+  --primary-dark: #061c3a;
+  --accent: #3d7dd9;
+  --text-light: #f8fafc;
+  --text-dark: #1e293b;
+  --bg-light: #f1f5f9;
+  --success: #10b981;
+  --error: #ef4444;
+}
+
+body {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background-color: var(--bg-light);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a2a55' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.app {
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  height: 600px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  background: white;
+}
+
+.sidebar {
+  width: 35%;
+  background: linear-gradient(150deg, var(--primary), var(--primary-dark));
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0.1;
+  top: -100px;
+  right: -100px;
+}
+
+.sidebar::after {
+  content: "";
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0.1;
+  bottom: -50px;
+  left: -50px;
+}
+
+.logo {
+  margin-bottom: 40px;
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.sidebar-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--text-light);
+  z-index: 1;
+}
+
+.sidebar-content h1 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.sidebar-content p {
+  font-size: 16px;
+  opacity: 0.85;
+  margin-bottom: 30px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.content {
+  flex: 1;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.content-header {
+  margin-bottom: 40px;
+}
+
+.content-header h2 {
+  color: var(--text-dark);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.content-header p {
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.login-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #475569;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  background: white;
+  color: var(--text-dark);
+  font-family: inherit;
+}
+
+.form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 42, 85, 0.1);
+  outline: none;
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+}
+
+.remember-me input {
+  margin-right: 8px;
+}
+
+.remember-me label {
+  font-size: 14px;
+  color: #475569;
+}
+
+.forgot-password {
+  font-size: 14px;
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-btn:hover {
+  background: var(--primary-light);
+  transform: translateY(-3px);
+  box-shadow: 0 15px 20px -3px rgba(10, 42, 85, 0.3);
+}
+
+.login-error {
+  color: var(--error);
+  font-size: 14px;
+  margin-top: 16px;
+  text-align: center;
+  min-height: 20px;
+}
+
+.decoration {
+  position: absolute;
+  bottom: 20px;
+  right: 40px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .app {
+    flex-direction: column;
+    height: auto;
   }
   
-  /* Full-page gradient background */
-  body {
-    min-height: 100vh; /* ensures gradient covers the entire screen */
-    display: flex;
-    flex-direction: column; /* so header is on top, then the .login-page below */
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #818e9e, #002047);
-    color: #fff;
-  }
-  
-  /* Header styles */
-  header {
-    text-align: center;
-    padding: 20px;
-    background-color: #002047; /* Dark blue band at the top */
-  }
-  
-  header h1 {
-    margin: 0;
-    font-size: 2rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #fff;
-  }
-  
-  /* Container that occupies remaining space, 
-     ensuring the login form is centered vertically & horizontally */
-  .login-page {
-    flex: 1;               /* fills leftover space */
-    display: flex;
-    align-items: center;   /* vertical centering */
-    justify-content: center; /* horizontal centering */
-  }
-  
-  /* The login form: card style, centered, with box shadow */
-  .login-form {
-    width: 400px;
-    background-color: #fff;
-    color: #333;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    animation: fadeInUp 0.4s ease-out; /* slight entrance animation */
-    transition: transform 0.3s ease;
-    align-self: flex-start; /* form ինքն իրեն բարձր է պահում, ոչ թե exact vertical center */
-    margin-top: 30px;       /* ազատ տարածություն վերևից */
-  }
-  
-  /* Hover effect for the card */
-  .login-form:hover {
-    transform: translate(-4px, -4px);
-  }
-  
-  /* Fade-in animation keyframes */
-  @keyframes fadeInUp {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Label styles */
-  .login-form label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #333;
-    font-size: 1rem;
-  }
-  
-  /* Make input fields consistent in sizing */
-  .login-form input,
-  .login-form button {
+  .sidebar {
     width: 100%;
-    box-sizing: border-box;
-    padding: 12px;
-    margin-bottom: 15px;
-    font-size: 16px;
+    padding: 30px 20px;
   }
   
-  /* Inputs */
-  .login-form input {
-    height: 45px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  .sidebar-content h1 {
+    font-size: 28px;
   }
   
-  .login-form input:focus {
-    border-color: #002047;
-    box-shadow: 0 0 4px rgba(0,0,0,0.15);
-    outline: none;
+  .content {
+    padding: 40px 20px;
   }
-  
-  /* Submit button */
-  .login-form button {
-    height: 45px;
-    background-color: #002047;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+
+  .remember-forgot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
-  
-  .login-form button:hover {
-    background-color: #103963;
-    transform: scale(1.02);
-  }
-  
-  .login-form button:active {
-    transform: scale(0.98);
-  }
-  
-  /* Error message */
-  #loginErrorMessage {
-    text-align: center;
-    color: red;
-    margin-top: 10px;
-    font-size: 0.95rem;
-  }
-  
-  /* Responsive (small screens) */
-  @media (max-width: 600px) {
-    .login-form {
-      width: 90%;
-      padding: 20px;
-    }
-    header h1 {
-      font-size: 1.6rem;
-    }
-  }
-  
+}

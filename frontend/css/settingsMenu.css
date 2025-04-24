@@ -13,7 +13,7 @@
 /* հանեք այստեղ position: fixed; */
 #settings-container {
   position: absolute;       /* հարաբերական է header-ի նկատմամբ */
-  top: 4%;                 /* վերեւի 50% */
+  top: 8%;                 /* վերեւի 50% */
   right: 20px;              /* աջից 20px */
   transform: translateY(-50%); /* վերադարձրեք ճիշտ վերևի կենտրոն */
   z-index: 100;             /* կամ ինչ հարկավոր է */
