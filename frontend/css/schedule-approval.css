@@ -37,7 +37,7 @@ body {
 
 /* Վերնագիր */
 header {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background-color: var(--primary);
   color: white;
   padding: 1.5rem;
   text-align: center;
@@ -90,6 +90,8 @@ header {
   background-color: var(--bg-light);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a2a55' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 button {
@@ -166,10 +168,10 @@ button {
 #scheduleContainer h2 {
   font-size: 1.5rem;
   color: var(--primary);
-  margin: 2rem 0 1rem;
+  margin: 2rem 0 0.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--accent);
-  display: inline-block;
+  display: block;
+  text-align: center;
 }
 
 #scheduleContainer h2:first-child {
@@ -178,14 +180,12 @@ button {
 
 /* Շաբաթվա տեսակի վերնագիր */
 #scheduleContainer h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-dark);
-  margin: 1.5rem 0 1rem;
+  margin: 0 0 1rem;
   font-weight: 500;
-  background-color: var(--bg-light);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  display: inline-block;
+  text-align: center;
+  display: block;
 }
 
 /* Աղյուսակ */
@@ -200,7 +200,7 @@ button {
 }
 
 .schedule-table thead {
-  background: linear-gradient(to right, var(--primary), var(--primary-light));
+  background-color: var(--primary);
   color: white;
 }
 
@@ -225,19 +225,14 @@ button {
   transition: var(--transition);
 }
 
-.schedule-table tbody tr:nth-child(even) td {
-  background-color: var(--bg-light);
+/* Բոլոր տողերին միատեսակ գույն տալ */
+.schedule-table tbody tr td {
+  background-color: white;
 }
 
-/* Թույլ տալիս է տարբեր տարրերին տարբեր գույներով լինել */
-.schedule-table tbody tr:first-child td:first-child {
-  background-color: var(--primary-light);
-  color: white;
-  font-weight: 600;
-}
-
+/* Ժամերի սյունն այլ գույնով */
 .schedule-table tbody td:first-child {
-  background-color: var(--primary-light);
+  background-color: var(--primary);
   color: white;
   font-weight: 600;
 }
@@ -253,12 +248,13 @@ button {
   color: var(--text-dark);
   cursor: grab;
   transition: var(--transition);
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--primary);
   text-align: left;
   min-height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .class-block:hover {
@@ -276,6 +272,15 @@ button {
 .class-block.modified {
   border-left-color: var(--warning);
   background-color: #fff8eb;
+  position: relative;
+}
+
+.modified::after {
+  content: "✏️";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 12px;
 }
 
 /* Drop zone */
@@ -449,4 +454,21 @@ button {
 
 .toast.hide {
   animation: slideOut 0.3s forwards;
+}
+
+/* Dragging state */
+.dragging {
+  opacity: 0.6;
+  transform: scale(0.95);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

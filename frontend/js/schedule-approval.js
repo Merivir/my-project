@@ -387,10 +387,11 @@ function getUserRoleFromURL() {
       draggedElement.classList.remove('dragging');
     }
   
-    if (draggedElement?.dataset.originalWeek === "երկուսն էլ" && draggedElement.dataset.week !== "համարիչ") {
-      showToast('error', 'Սխալ', '«Երկուսն էլ» դասերը կարող եք տեղափոխել միայն համարիչ աղյուսակից:');
-      return;
-    }
+    // Հեռացնում ենք «երկուսն էլ» սահմանափակումը
+    // if (draggedElement?.dataset.originalWeek === "երկուսն էլ" && draggedElement.dataset.week !== "համարիչ") {
+    //   showToast('error', 'Սխալ', '«Երկուսն էլ» դասերը կարող եք տեղափոխել միայն համարիչ աղյուսակից:');
+    //   return;
+    // }
   
     if (!draggedElement || this.contains(draggedElement)) return;
   
@@ -553,6 +554,67 @@ function getUserRoleFromURL() {
       
       .confirm-modal {
         animation: fadeIn 0.3s ease-out;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      
+      .confirm-modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      }
+      
+      .confirm-modal h3 {
+        margin-bottom: 1rem;
+        color: var(--primary, #0a2a55);
+      }
+      
+      .confirm-modal p {
+        margin-bottom: 1.5rem;
+      }
+      
+      .confirm-modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+      
+      .confirm-modal button {
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      
+      .confirm-yes {
+        background-color: var(--error, #ef4444);
+        color: white;
+      }
+      
+      .confirm-no {
+        background-color: #e2e8f0;
+        color: #1e293b;
+      }
+      
+      .confirm-yes:hover {
+        background-color: #e43c3c;
+      }
+      
+      .confirm-no:hover {
+        background-color: #d1d5db;
       }
     `;
     document.head.appendChild(styleElement);
