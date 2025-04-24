@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Բարի գալուստ, Ադմին</title>
   <link rel="stylesheet" href="/css/admin-dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
 </head>
 <body>
   <!-- Վերին header -->
   <header class="top-header">
     <h1>ԲԱՐԻ ԳԱԼՈՒՍՏ, ԱԴՄԻՆ</h1>
-    <a href="/admin/change-password" class="change-password">Փոփոխել գաղտնաբառը</a>
+    <a href="/admin/change-password" class="change-password">
+      <i class="fas fa-key"></i> Փոփոխել գաղտնաբառը
+    </a>
   </header>
 
   <!-- wrapper՝ կապահովի թե՛ ուղղահայաց, թե՛ հորիզոնական կենտրոնացում -->
@@ -28,27 +31,31 @@
 
       <!-- Կոճակների բլոկ -->
       <div class="button-container">
-        <button onclick="window.location.href='/edit-subjects'">Առարկաների կառավարում</button>
-        <button onclick="window.location.href='/guest'">Դիտել դասացուցակը</button>
-        <!-- <button onclick="window.location.href='/schedule-approval'">Ստեղծել դասացուցակ</button> -->
-        <button id="openGeneratePopup">Ստեղծել դասացուցակ</button>
-        <button onclick="window.location.href='/teacher-message'">Ուղարկել ծանուցում</button>
+        <button onclick="window.location.href='/edit-subjects'">
+          <i class="fas fa-book"></i> Առարկաների կառավարում
+        </button>
+        <button onclick="window.location.href='/guest'">
+          <i class="fas fa-calendar-alt"></i> Դիտել դասացուցակը
+        </button>
+        <button id="openGeneratePopup">
+          <i class="fas fa-magic"></i> Ստեղծել դասացուցակ
+        </button>
+        <button onclick="window.location.href='/teacher-message'">
+          <i class="fas fa-envelope"></i> Ուղարկել ծանուցում
+        </button>
       </div>
     </div>
 
     <!-- Ստեղծել դասացուցակի փոփափ -->
-<div id="generatePopupOverlay" class="popup-overlay hidden"></div>
-<div id="generatePopup" class="popup hidden">
-  <p>Ցանկանում եք ստեղծել դասացուցակ՝ հիմնվելով առկա բոլոր սահմանափակումների վրա՞</p>
-  <div class="popup-buttons">
-    <button id="confirmGenerateBtn">Այո</button>
-    <button id="cancelGenerateBtn">Չեղարկել</button>
+    <div id="generatePopupOverlay" class="popup-overlay hidden"></div>
+    <div id="generatePopup" class="popup hidden">
+      <p>Ցանկանում եք ստեղծել դասացուցակ՝ հիմնվելով առկա բոլոր սահմանափակումների վրա՞</p>
+      <div class="popup-buttons">
+        <button id="confirmGenerateBtn">Այո</button>
+        <button id="cancelGenerateBtn">Չեղարկել</button>
+      </div>
+    </div>
   </div>
-</div>
-
-  </div>
-
-
 
   <script src="/js/admin-dashboard.js"></script>
 </body>
