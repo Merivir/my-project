@@ -4,11 +4,12 @@
   --primary: #0a2a55;
   --primary-light: #1e4584;
   --primary-dark: #061c3a;
-  --primary-gradient: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
   --accent: #3d7dd9;
   --text-light: #f8fafc;
   --text-dark: #1e293b;
   --bg-light: #f1f5f9;
+  --success: #10b981;
+  --error: #ef4444;
   --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -22,28 +23,23 @@
 }
 
 body {
-  margin: 0;
-  padding: 0;
   font-family: 'Poppins', 'Segoe UI', sans-serif;
-  color: var(--text-light);
-  background: var(--primary-gradient);
-  background-image: 
-    radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
-    var(--primary-gradient);
+  background-color: var(--bg-light);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a2a55' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
+/* Top Header */
 .top-header {
-  position: relative;
-  background-color: rgba(0, 0, 0, 0.1);
-  text-align: center;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: var(--text-light);
   padding: 20px 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  text-align: center;
+  position: relative;
+  box-shadow: var(--shadow-md);
   z-index: 10;
 }
 
@@ -70,8 +66,9 @@ body {
   padding: 8px 16px;
   border-radius: 50px;
   transition: var(--transition);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .change-password:hover {
@@ -80,6 +77,11 @@ body {
   transform: translateY(-50%) scale(1.05);
 }
 
+.change-password i {
+  font-size: 14px;
+}
+
+/* Main Content Wrapper */
 .wrapper {
   flex: 1;
   display: flex;
@@ -88,58 +90,110 @@ body {
   padding: 40px 20px;
 }
 
+/* Admin Dashboard Grid Layout */
 .container {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: white;
   color: var(--text-dark);
   border-radius: 24px;
   box-shadow: var(--shadow-lg);
   padding: 40px;
   width: 90%;
-  max-width: 650px;
-  text-align: center;
+  max-width: 1100px;
+  position: relative;
+  overflow: hidden;
   animation: fadeIn 0.8s ease-out;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Dashboard Sections */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: minmax(200px, auto);
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.dashboard-card {
+  background-color: var(--bg-light);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary), var(--primary));
+  border-radius: 3px 0 0 3px;
+}
+
+/* Introduction Text */
 .admin-intro {
   margin-bottom: 35px;
+  text-align: center;
+  position: relative;
+}
+
+.admin-intro::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary), var(--primary));
+  margin: 25px auto 0;
+  border-radius: 2px;
 }
 
 .admin-intro p {
   margin: 0;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #475569;
   font-weight: 400;
 }
 
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(30px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
+/* Button Container - With Cards Layout */
 .button-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
 }
 
 .button-container button {
-  background: var(--primary-gradient);
-  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 30px 20px;
+  background: var(--bg-light);
+  color: var(--text-dark);
   border: none;
-  border-radius: 14px;
-  padding: 16px;
-  font-size: 15px;
-  cursor: pointer;
+  border-radius: 16px;
   font-weight: 500;
-  box-shadow: var(--shadow-md);
+  font-size: 16px;
+  cursor: pointer;
   transition: var(--transition);
+  box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
-  z-index: 1;
+  text-align: center;
 }
 
 .button-container button::before {
@@ -147,29 +201,66 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 6px;
   height: 100%;
-  background: linear-gradient(135deg, var(--accent), var(--primary-light));
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.3s ease;
+  background: linear-gradient(to bottom, var(--primary-light), var(--primary));
+  border-radius: 3px 0 0 3px;
+  transition: var(--transition);
+}
+
+.button-container button i {
+  font-size: 32px;
+  color: var(--primary);
+  transition: var(--transition);
 }
 
 .button-container button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 20px rgba(10, 42, 85, 0.25);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.button-container button:hover i {
+  color: var(--bg-light);
+  transform: scale(1.1);
 }
 
 .button-container button:hover::before {
-  opacity: 1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  border-radius: 16px 16px 0 0;
 }
 
+.button-container button span {
+  position: relative;
+  z-index: 2;
+}
+
+.button-container button:hover span {
+  color: white;
+  position: relative;
+  z-index: 2;
+}
 .button-container button:active {
   transform: translateY(-2px);
-  box-shadow: 0 5px 10px rgba(10, 42, 85, 0.2);
 }
 
-/* Popup styles */
+/* Animation */
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer/Decoration */
+.decoration {
+  position: absolute;
+  bottom: 20px;
+  right: 40px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+/* Popup Overlay */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -190,6 +281,7 @@ body {
   visibility: visible;
 }
 
+/* Popup */
 .popup {
   position: fixed;
   top: 50%;
@@ -201,7 +293,8 @@ body {
   border-radius: 20px;
   box-shadow: var(--shadow-lg);
   z-index: 1001;
-  width: 350px;
+  width: 400px;
+  max-width: 90%;
   text-align: center;
   opacity: 0;
   visibility: hidden;
@@ -216,11 +309,12 @@ body {
 
 .popup p {
   font-size: 16px;
-  margin-bottom: 20px;
-  line-height: 1.5;
+  margin-bottom: 25px;
+  line-height: 1.6;
   color: #475569;
 }
 
+/* Popup Buttons */
 .popup-buttons {
   display: flex;
   justify-content: center;
@@ -228,19 +322,18 @@ body {
 }
 
 .popup-buttons button {
-  background: var(--primary-gradient);
-  color: var(--text-light);
-  border: none;
-  border-radius: 12px;
   padding: 12px 25px;
+  border-radius: 12px;
   font-size: 15px;
-  cursor: pointer;
   font-weight: 500;
+  cursor: pointer;
   transition: var(--transition);
 }
 
 .popup-buttons button:first-child {
-  background: linear-gradient(135deg, var(--accent), var(--primary-light));
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  border: none;
 }
 
 .popup-buttons button:last-child {
@@ -250,15 +343,56 @@ body {
 }
 
 .popup-buttons button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-md);
 }
 
 .popup-buttons button:active {
   transform: translateY(0);
-  box-shadow: var(--shadow-sm);
 }
 
 .hidden {
   display: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 30px 20px;
+  }
+  
+  .button-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .button-container button {
+    padding: 20px;
+  }
+  
+  .top-header h1 {
+    font-size: 20px;
+  }
+  
+  .change-password {
+    padding: 6px 12px;
+    right: 15px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup {
+    width: 85%;
+    padding: 25px 20px;
+  }
+  
+  .popup-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .popup-buttons button {
+    width: 100%;
+  }
 }
