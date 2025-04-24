@@ -1,123 +1,452 @@
-/* Հիմնական ոճերը */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #0a2a55;
+  --primary-light: #1e4584;
+  --primary-dark: #061c3a;
+  --accent: #3d7dd9;
+  --text-light: #f8fafc;
+  --text-dark: #1e293b;
+  --bg-light: #f1f5f9;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a2a55' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* Վերնագիր */
 header {
-    background-color: #0C2d48; /* Մուգ կապույտ */
-    color: white;
-    padding: 20px;
-    text-align: center;
-    font-size: 24px;
-    position: relative;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Վերադառնալ սլաք */
 .back-arrow {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+  position: absolute;
+  top: 50%;
+  left: 1.5rem;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: var(--transition);
+}
+
+.back-arrow:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.05);
 }
 
 .back-arrow-img {
-    width: 50px; /* ✅ Սլաքի չափ */
-    height: auto;
-    opacity: 0.9;
-    transition: 0.3s ease-in-out;
+  width: 24px;
+  height: 24px;
+  opacity: 0.9;
 }
 
-.back-arrow:hover .back-arrow-img {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-/* Կոճակների նոր դիրքավորում (աջ վերևում, կողք կողքի) */
+/* Կոճակների կոնտեյներ */
 .button-container {
-    display: flex;
-    justify-content: flex-end; /* ✅ Աջ կողմում */
-    margin-bottom: 15px;
-    padding-right: 20px;
-    margin-top: 20px;
-    gap: 10px; /* ✅ Ավելացնում է տարածություն կոճակների միջև */
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--bg-light);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .confirm {
-    background-color: #28a745;
-    color: white;
+  background-color: var(--success);
+  color: white;
+}
+
+.confirm:hover {
+  background-color: #0da271;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.confirm:active {
+  transform: translateY(0);
+}
+
+.confirm::before {
+  content: "✓";
+  font-weight: bold;
 }
 
 .reject {
-    background-color: #dc3545;
-    color: white;
+  background-color: var(--error);
+  color: white;
 }
 
-button:hover {
-    opacity: 0.8;
+.reject:hover {
+  background-color: #e43c3c;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
-/* Աղյուսակի ավելի գեղեցիկ դիրքավորում */
+.reject:active {
+  transform: translateY(0);
+}
+
+.reject::before {
+  content: "✕";
+  font-weight: bold;
+}
+
+/* Աղյուսակի կոնտեյներ */
 .dashboard-container {
-    max-width: 90%; /* ✅ Հարմարեցնում ենք լայնությունը */
-    margin: 80px auto 40px auto; /* ✅ Իջեցնում ենք, որ կոճակները վերևում լինեն */
-    padding: 30px; /* ✅ Ավելացնում ենք padding եզրերին */
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 95%;
+  margin: 1rem auto 3rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
 }
 
+/* Ժամանակացույցի կոնտեյներ */
+#scheduleContainer {
+  padding: 1rem;
+}
+
+/* Կուրսի վերնագիր */
+#scheduleContainer h2 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+}
+
+#scheduleContainer h2:first-child {
+  margin-top: 1rem;
+}
+
+/* Շաբաթվա տեսակի վերնագիր */
+#scheduleContainer h3 {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin: 1.5rem 0 1rem;
+  font-weight: 500;
+  background-color: var(--bg-light);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* Աղյուսակ */
 .schedule-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    font-family: Arial, sans-serif;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-md);
 }
 
 .schedule-table thead {
-    background-color: #032b5c;
-    color: white;
-    text-align: center;
+  background: linear-gradient(to right, var(--primary), var(--primary-light));
+  color: white;
 }
 
-.schedule-table th, .schedule-table td {
-    padding: 12px 10px;
-    text-align: center;
-    min-width: 120px;
-    vertical-align: middle;
+.schedule-table th,
+.schedule-table td {
+  padding: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
 }
 
-.schedule-table tbody td {
-    background-color: #f8f9fc;
-    border: 1px solid #e3e6f0;
+.schedule-table th {
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+.schedule-table td {
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.schedule-table tbody tr:nth-child(even) td {
+  background-color: var(--bg-light);
+}
+
+/* Թույլ տալիս է տարբեր տարրերին տարբեր գույներով լինել */
+.schedule-table tbody tr:first-child td:first-child {
+  background-color: var(--primary-light);
+  color: white;
+  font-weight: 600;
+}
+
+.schedule-table tbody td:first-child {
+  background-color: var(--primary-light);
+  color: white;
+  font-weight: 600;
+}
+
+/* Դաս */
 .class-block {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    margin: 4px auto;
-    padding: 4px 6px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #1a1a1a;
-    cursor: grab;
-    line-height: 1.4;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  margin: 0.3rem;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  cursor: grab;
+  transition: var(--transition);
+  border-left: 3px solid var(--accent);
+  text-align: left;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.class-block:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.class-block strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--primary);
+  font-size: 0.9rem;
+}
+
+.class-block.modified {
+  border-left-color: var(--warning);
+  background-color: #fff8eb;
+}
+
+/* Drop zone */
+.dropzone {
+  min-height: 80px;
+  transition: var(--transition);
+}
+
+.dropzone:hover {
+  background-color: rgba(61, 125, 217, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .dashboard-container {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .schedule-table {
+    font-size: 0.8rem;
+  }
+  
+  .schedule-table th,
+  .schedule-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .button-container {
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  #scheduleContainer h2 {
+    font-size: 1.3rem;
+  }
+  
+  #scheduleContainer h3 {
+    font-size: 1.1rem;
+  }
+  
+  .class-block {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Բեռնման անիմացիա */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(61, 125, 217, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--accent);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 16px;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Toast ծանուցում */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.toast {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  min-width: 300px;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  animation: slideIn 0.3s forwards;
+  border-left: 4px solid var(--primary);
+}
+
+.toast.success {
+  border-left-color: var(--success);
+}
+
+.toast.error {
+  border-left-color: var(--error);
+}
+
+.toast-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.toast.success .toast-icon {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.toast.error .toast-icon {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: var(--text-dark);
+}
+
+.toast-message {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast.hide {
+  animation: slideOut 0.3s forwards;
 }

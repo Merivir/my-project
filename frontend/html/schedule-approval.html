@@ -1,45 +1,31 @@
 <!DOCTYPE html>
 <html lang="hy">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Դասացուցակի Հաստատում</title>
-    <link rel="stylesheet" href="/css/schedule-approval.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Դասացուցակի Հաստատում</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/schedule-approval.css">
 </head>
 <body>
-    <header>Դասացուցակի Հաստատում</header>
-    
-    <!-- <div class="back-arrow" onclick="goBack()">
-        <img src="/assets/back-arrow.png" alt="Back" class="back-arrow-img">
-    </div> -->
-    
-    <div class="button-container">
-        <button id="rejectBtn" class="reject">Հրաժարվել</button>
-        <button id="confirmBtn" class="confirm">Հաստատել</button>
+  <header>
+    <a href="javascript:history.back()" class="back-arrow">
+      <img src="/assets/left-arrow.png" alt="Back" class="back-arrow-img">
+    </a>
+    <h1>Դասացուցակի Հաստատում</h1>
+  </header>
+  
+  <div class="button-container">
+    <button id="rejectBtn" class="reject">Հրաժարվել</button>
+    <button id="confirmBtn" class="confirm">Հաստատել</button>
+  </div>
+  
+  <div class="dashboard-container">
+    <div id="scheduleContainer">
+      <!-- Դասացուցակը կավելացվի այստեղ JavaScript-ի միջոցով -->
     </div>
-    
-    <div class="dashboard-container">
-        <div id="scheduleContainer"></div>
-        <table class="schedule-table">
-            <thead>
-                <tr>
-                    <th>Օր</th>
-                    <th>Ժամ</th>
-                    <th>Առարկա</th>
-                    <th>Կուրս</th>  
-                    <th>Դասի Տեսակ</th>  
-                    <th>Դասախոս(ներ)</th>  
-                    <th>Լսարան(ներ)</th>  
-                    <th>Շաբաթվա Տեսակ</th>  
-                </tr>
-            </thead>
-            <tbody id="scheduleBody">
-                <!-- Տվյալները կավելացվեն այստեղ -->
-            </tbody>
-        </table>
-        
-    </div>
-    
-    <script src="/js/schedule-approval.js"></script>
+  </div>
+
+  <script src="/js/schedule-approval.js"></script>
 </body>
 </html>
