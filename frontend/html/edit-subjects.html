@@ -8,9 +8,9 @@
 </head>
 <body>
     <header>
-        <div class="back-container">
-            <img src="/assets/left-arrow.png" alt="Վերադառնալ" class="back-arrow" id="backArrow">
-        </div>
+        <a href="javascript:history.back()" class="back-arrow">
+            <img src="/assets/left-arrow.png" alt="back" class="back-arrow-img">
+          </a>
         <h1>Փոփոխել Առարկաները</h1>
     </header>
 
@@ -121,7 +121,7 @@
     </div>
 
     <!-- Կոճակ, եթե ունեք, օրինակ "Պահպանել Փոփոխությունները" -->
-    <button id="saveChangesBtn" disabled>✅ Հաստատել փոփոխությունները</button>
+    <!-- <button id="saveChangesBtn" disabled>✅ Հաստատել փոփոխությունները</button> -->
 
     <!-- Popup հաստատման համար -->
     <div id="confirmPopup" class="modal hidden">

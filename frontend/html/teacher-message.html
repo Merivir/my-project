@@ -2,25 +2,47 @@
 <html lang="hy">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ուղարկել հաղորդագրություն դասախոսին</title>
   <link rel="stylesheet" href="/css/teacher-message.css">
 </head>
 <body>
-  <h2>Ուղարկել հաղորդագրություն դասախոսին</h2>
+  <div class="container">
+    <form id="messageForm">
+      <h2>Ուղարկել հաղորդագրություն դասախոսին</h2>
+      
+      <div class="form-group">
+        <select id="teacherSelect" required>
+          <option value="">Ընտրել...</option>
+          <option value="all">📢 Բոլոր դասախոսներին</option>
+          <option value="1">Արմեն Հարությունյան</option>
+          <option value="2">Գոհար Սարգսյան</option>
+          <option value="3">Կարեն Մկրտչյան</option>
+          <option value="4">Լիլիթ Պետրոսյան</option>
+        </select>
+        <label for="teacherSelect" class="floating-label">Ընտրել դասախոսին</label>
+      </div>
+      
+      <div class="form-group">
+        <textarea id="messageText" maxlength="500" required placeholder=" "></textarea>
+        <label for="messageText" class="floating-label">Հաղորդագրություն</label>
+        <div class="character-count"><span id="currentCount">0</span>/<span id="maxCount">500</span></div>
+      </div>
+      
+      <div class="button-container">
+        <button type="submit" class="ripple">
+          <span class="button-text">
+            <span>📩 Ուղարկել</span>
+            <span class="arrow">→</span>
+          </span>
+          <span class="loading-spinner"></span>
+        </button>
+      </div>
+    </form>
+  </div>
 
-  <form id="messageForm">
-    <label for="teacherSelect">Ընտրել դասախոսին:</label>
-    <select id="teacherSelect" required>
-      <option value="">Ընտրել դասախոսին...</option>
-      <option value="all">📢 Բոլոր դասախոսներին</option>
-
-    </select>
-
-    <label for="messageText">Հաղորդագրություն:</label>
-    <textarea id="messageText" rows="5" required placeholder="Գրեք ձեր հաղորդագրությունը..."></textarea>
-
-    <button type="submit">📩 Ուղարկել</button>
-  </form>
+  <!-- Toast notification container -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <script src="/js/teacher-message.js"></script>
 </body>

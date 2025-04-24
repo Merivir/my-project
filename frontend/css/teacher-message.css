@@ -1,101 +1,551 @@
-/* Gradient ֆոն և ընդհանուր դիզայն */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Arial", sans-serif;
-  color: white;
-  background: linear-gradient(to bottom, #0C2D48 0%, #10324E 50%, #1A4D7A 100%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* Վերնագիր */
-h2 {
-  font-size: 28px;
-  margin: 40px 0 20px;
-  letter-spacing: 1px;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* Սպիտակ քարտ */
-form#messageForm {
-  background-color: #fff;
-  color: #000;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  padding: 30px 35px;
-  width: 90%;
-  max-width: 600px;
-  animation: fadeIn 0.6s ease-out;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+    :root {
+      --primary: #0a2a55;
+      --primary-light: #1e4584;
+      --primary-dark: #061c3a;
+      --accent: #3d7dd9;
+      --text-light: #f8fafc;
+      --text-dark: #1e293b;
+      --bg-light: #f1f5f9;
+      --success: #10b981;
+      --error: #ef4444;
+      --border-color: #e2e8f0;
+    }
 
-/* Պիտակներ */
-form label {
-  font-weight: bold;
-  font-size: 15px;
-  text-align: left;
-}
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background-image: 
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a2a55' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
 
-/* Դաշտերի ոճավորում */
-form select,
-form textarea {
-  font-size: 16px;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  width: 100%;
-  box-sizing: border-box;
-  resize: vertical;
-}
+    .container {
+      max-width: 550px;
+      width: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      background: white;
+      position: relative;
+    }
 
-/* Placeholder գույն */
-form textarea::placeholder {
-  color: #888;
-}
+    h2 {
+      color: var(--primary);
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-align: center;
+      padding-bottom: 12px;
+      position: relative;
+    }
 
-/* Ուղարկման կոճակ */
-form button {
-  background: linear-gradient(to bottom, #0C2D48 0%, #10324E 50%, #1A4D7A 100%);
-  color: white;
-  font-size: 16px;
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0 4px 0px rgba(0,0,0,0.2);
-  transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
-}
+    h2::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--accent);
+      border-radius: 3px;
+    }
 
-form button:hover {
-  background: linear-gradient(135deg, #1C74B7 0%, #12608D 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-}
+    /* Form container */
+    #messageForm {
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
 
-form button:active {
-  transform: translateY(0px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+    #messageForm::before {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+      opacity: 0.05;
+      top: -150px;
+      right: -150px;
+      z-index: 0;
+    }
 
-/* անիմացիա */
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
+    #messageForm::after {
+      content: "";
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent) 0%, rgba(255,255,255,0) 70%);
+      opacity: 0.05;
+      bottom: -100px;
+      left: -100px;
+      z-index: 0;
+    }
 
-/* Մոբայլ օպտիմալացում */
-@media (max-width: 480px) {
-  form#messageForm {
-    padding: 20px;
-  }
+    /* Form elements styling */
+    .form-group {
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
 
-  h2 {
-    font-size: 22px;
-    margin: 30px 0 15px;
-  }
-}
+    .form-group.focus {
+      transform: translateY(-4px);
+    }
+
+    .label-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      color: var(--primary);
+      font-size: 15px;
+    }
+
+    .required-star {
+      color: var(--accent);
+      margin-left: 4px;
+    }
+
+    .char-counter {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 400;
+    }
+
+    select, textarea {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 15px;
+      color: var(--text-dark);
+      background-color: white;
+      transition: all 0.3s ease;
+      border: 2px solid var(--border-color);
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230a2a55' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(61, 125, 217, 0.1);
+    }
+
+    select:hover, textarea:hover {
+      border-color: var(--accent);
+    }
+
+    /* Modern label for select and textarea */
+    .form-group {
+      position: relative;
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      color: #94a3b8;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      background: white;
+      padding: 0 5px;
+    }
+
+    select:focus ~ .floating-label,
+    select:not([value=""]) ~ .floating-label,
+    textarea:focus ~ .floating-label,
+    textarea:not(:placeholder-shown) ~ .floating-label {
+      top: -8px;
+      left: 12px;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Character counter */
+    .character-count {
+      position: absolute;
+      right: 16px;
+      bottom: 8px;
+      font-size: 12px;
+      color: #94a3b8;
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+
+    .character-count.warning {
+      color: #f59e0b;
+    }
+
+    .character-count.error {
+      color: var(--error);
+    }
+
+    /* Submit button */
+    .button-container {
+      position: relative;
+      z-index: 1;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      border: 2px solid var(--border-color);
+      outline: none;
+      background: white;
+      color: #475569;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    button[type="submit"]:not(.loading):hover {
+      transform: translateY(-3px);
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 15px 20px -3px rgba(10, 42, 85, 0.3);
+    }
+
+    button[type="submit"] .button-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    button[type="submit"] .arrow {
+      transition: transform 0.3s ease;
+    }
+
+    button[type="submit"]:hover .arrow {
+      transform: translateX(5px);
+    }
+
+    /* Loading State */
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    button[type="submit"].loading {
+      pointer-events: none;
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    button[type="submit"].loading .button-text {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    button[type="submit"].loading .loading-spinner {
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    button[type="submit"].success {
+      background-color: var(--success);
+      color: white;
+      border-color: var(--success);
+      pointer-events: none;
+    }
+
+    button[type="submit"].success .success-icon {
+      margin-right: 8px;
+    }
+
+    /* Success Checkmark Animation */
+    .checkmark {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: block;
+      stroke-width: 2;
+      stroke: white;
+      stroke-miterlimit: 10;
+      box-shadow: inset 0px 0px 0px currentColor;
+      animation: fill 0.4s ease-in-out .4s forwards, scale 0.3s ease-in-out 0.9s both;
+    }
+
+    .checkmark-circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      stroke: white;
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .checkmark-check {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+
+    @keyframes stroke {
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes scale {
+      0%, 100% {
+        transform: none;
+      }
+      50% {
+        transform: scale3d(1.1, 1.1, 1);
+      }
+    }
+
+    @keyframes fill {
+      100% {
+        box-shadow: inset 0px 0px 0px 30px transparent;
+      }
+    }
+
+    /* Ripple effect */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+      background-repeat: no-repeat;
+      background-position: 50%;
+      transform: scale(10, 10);
+      opacity: 0;
+      transition: transform .5s, opacity 1s;
+    }
+
+    .ripple:active::after {
+      transform: scale(0, 0);
+      opacity: .3;
+      transition: 0s;
+    }
+
+    /* Toast notification */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 350px;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .toast {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast.error {
+      border-left: 4px solid var(--error);
+    }
+
+    .toast-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .toast.success .toast-icon {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .toast.error .toast-icon {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: var(--text-dark);
+    }
+
+    .toast-message {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .toast-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--primary-light);
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: progress 5s linear forwards;
+    }
+
+    @keyframes progress {
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    .toast-close {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .toast-close:hover {
+      color: var(--text-dark);
+    }
+
+    /* Animation for form appearance */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .container {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Input field animation */
+    @keyframes shake {
+      0%, 100% {transform: translateX(0);}
+      25% {transform: translateX(-5px);}
+      75% {transform: translateX(5px);}
+    }
+
+    .error-shake {
+      animation: shake 0.4s ease-in-out;
+      border-color: var(--error) !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      #messageForm {
+        padding: 30px 20px;
+      }
+      
+      h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+
+      .container {
+        border-radius: 16px;
+      }
+    }

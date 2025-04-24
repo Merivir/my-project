@@ -10,6 +10,10 @@
 <body>
   <!-- Վերին header -->
   <header class="top-header">
+    <a href="javascript:history.back()" class="back-arrow">
+      <img src="/assets/left-arrow.png" alt="back" class="back-arrow-img">
+    </a>
+
     <h1>ԲԱՐԻ ԳԱԼՈՒՍՏ, ԱԴՄԻՆ</h1>
     <a href="/reset-password-before-login.html?role=admin" class="change-password">
       <i class="fas fa-key"></i> Փոփոխել գաղտնաբառը
@@ -20,10 +24,11 @@
   <div class="wrapper">
     <!-- Սպիտակ քարտ (container) -->
     <div class="container">
+
       <!-- ԱՅՍՏԵՂ ԱՎԵԼԱՑՆՈՒՄ ԵՆՔ Ձեր տեքստը -->
       <div class="admin-intro">
         <p>
-          Հարգելի Ադմին, այստեղ կարող եք կատարել ցանկացած մանիպուլյացիա կապված դասացուցակի կազմման հետ,
+          Հարգելի Ադմին, այստեղ կարող եք կատարել ցանկացած մանիպուլյացիա կապված դասացուցակի կազմման հետ,  
           ահա թե ինչպիսի հնարավորություններ ունեք:
         </p>
       </div>
@@ -34,19 +39,23 @@
           <i class="fas fa-book"></i>
           <span>Առարկաների կառավարում</span>
         </button>
+
         <button onclick="window.location.href='/guest'">
           <i class="fas fa-calendar-alt"></i>
           <span>Դիտել դասացուցակը</span>
         </button>
+
         <button id="openGeneratePopup">
           <i class="fas fa-magic"></i>
           <span>Ստեղծել դասացուցակ</span>
         </button>
+
         <button onclick="window.location.href='/teacher-message'">
           <i class="fas fa-envelope"></i>
           <span>Ուղարկել ծանուցում</span>
         </button>
       </div>
+
     </div>
 
     <!-- Ստեղծել դասացուցակի փոփափ -->

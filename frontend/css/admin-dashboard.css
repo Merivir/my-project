@@ -52,6 +52,39 @@ body {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+
+/* Վերադառնալ սլաք */
+.back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  z-index: 1000;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.back-arrow-img {
+  width: 20px;
+  height: auto;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.back-arrow:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+.back-arrow:hover .back-arrow-img {
+  opacity: 1;
+}
+
 .change-password {
   position: absolute;
   top: 50%;
@@ -196,6 +229,14 @@ body {
   text-align: center;
 }
 
+.button-container button i {
+  font-size: 32px;
+  color: var(--primary);
+  transition: var(--transition);
+  position: relative;
+  z-index: 2;
+}
+
 .button-container button::before {
   content: '';
   position: absolute;
@@ -206,21 +247,17 @@ body {
   background: linear-gradient(to bottom, var(--primary-light), var(--primary));
   border-radius: 3px 0 0 3px;
   transition: var(--transition);
-}
-
-.button-container button i {
-  font-size: 32px;
-  color: var(--primary);
-  transition: var(--transition);
+  z-index: 1;
 }
 
 .button-container button:hover {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  background: white;
+  color: white;
 }
 
+/* Այստեղ պահպանում ենք տեքստը և պատկերակը և դարձնում սպիտակ */
 .button-container button:hover i {
-  color: var(--bg-light);
+  color: white;
   transform: scale(1.1);
 }
 
@@ -231,16 +268,17 @@ body {
   border-radius: 16px 16px 0 0;
 }
 
+/* Շատ կարևոր ֆիքս! Ավելացնում ենք ճիշտ z-index և պահպանում տեսանելիությունը */
 .button-container button span {
   position: relative;
   z-index: 2;
 }
 
+/* Սպիտակացնում ենք տեքստը hover-ի ժամանակ */
 .button-container button:hover span {
   color: white;
-  position: relative;
-  z-index: 2;
 }
+
 .button-container button:active {
   transform: translateY(-2px);
 }
@@ -329,6 +367,7 @@ body {
   cursor: pointer;
   transition: var(--transition);
 }
+
 
 .popup-buttons button:first-child {
   background: linear-gradient(135deg, var(--primary), var(--primary-light));

@@ -1,608 +1,728 @@
-/* Ընդհանուր ոճավորում */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #0a2a55;
+  --primary-light: #1e4584;
+  --primary-dark: #061c3a;
+  --accent: #3d7dd9;
+  --text-light: #f8fafc;
+  --text-dark: #1e293b;
+  --bg-light: #f1f5f9;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --neutral-100: #f1f5f9;
+  --neutral-200: #e2e8f0;
+  --neutral-300: #cbd5e1;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    text-align: center;
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230a2a55' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
-/* Header-ի ստիլ */
+/* Header styles */
 header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #0A2540;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: var(--text-light);
+  padding: 20px;
+  position: relative;
+  box-shadow: var(--shadow-lg);
 }
 
-/* Վերադառնալու սլաք */
-.back-container {
-    position: absolute;
-    left: 20px;
+header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+
+/* Վերադառնալ սլաք */
 .back-arrow {
-    width: 40px;
-    height: auto;
-    cursor: pointer;
+  position: absolute;
+  top: 20px;
+  left: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  z-index: 1000;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-/* Կուրսի և կուրսի կոդի ընտրության բաժին */
+.back-arrow-img {
+  width: 20px;
+  height: auto;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.back-arrow:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+.back-arrow:hover .back-arrow-img {
+  opacity: 1;
+}
+/* Course selection section */
 .course-selection {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 1200px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  flex-wrap: wrap;
 }
 
 .dropdown-container {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.course-selection select {
-    width: 200px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+.dropdown-container label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--neutral-600);
+  display: block;
 }
 
-/* Առարկաների բաժին */
+.dropdown-container select {
+  padding: 12px 16px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--text-dark);
+  background-color: white;
+  transition: var(--transition);
+  width: 220px;
+  font-family: 'Poppins', sans-serif;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230a2a55' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+
+.dropdown-container select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(61, 125, 217, 0.1);
+}
+
+.dropdown-container select:disabled {
+  background-color: var(--neutral-100);
+  color: var(--neutral-400);
+  border-color: var(--neutral-200);
+  cursor: not-allowed;
+}
+
+/* Add subject button */
+.add-subject-btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+}
+
+.add-subject-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(10, 42, 85, 0.15);
+}
+
+.add-subject-btn:disabled {
+  background: linear-gradient(135deg, var(--neutral-400), var(--neutral-500));
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* Subjects container */
 .subjects-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  margin: 0 auto 20px;
+  max-width: 1200px;
+  width: 100%;           /* թող բազմապատկվի կոնտեյների լայնքով */
+  height: 500px;         /* ‼️ ընտրիր հավասարաչափ ֆիքսված բարձրություն */
+  max-height: 600px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  left: 0;
 }
 
-/* Պահպանման կոճակը */
-#saveChangesBtn {
-    margin-top: 20px;
-    padding: 12px 20px;
-    background-color: #0A2540;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+.subjects-container::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Popup-ի ստիլ */
-.modal {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    width: 350px;
-    text-align: center;
-    z-index: 1000;
+.subjects-container::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+  border-radius: 4px;
 }
 
-.modal-content {
-    padding: 20px;
+.subjects-container::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 4px;
 }
 
-.modal button {
-    padding: 10px;
-    width: 100px;
-    border: none;
-    border-radius: 5px;
-    margin: 5px;
-    font-size: 16px;
-    cursor: pointer;
+.subjects-container::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
-#confirmExit {
-    background-color: #d9534f;
-    color: white;
-}
-
-#cancelExit {
-    background-color: #0A2540;
-    color: white;
-}
-
-.subjects-container {
-    max-width: 90%;
-    max-height: 400px;
-    overflow-y: auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    padding: 15px;
-    border: 1px solid #ccc;
-    background: white;
-    border-radius: 8px;
-    position: relative;
-    left: 20px; /* Փոխիր այս թիվը, որպեսզի տեղափոխես աջ */
-}
-
-
+/* Subject cards */
 .subject-card {
-    background: white;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 300px;
-    text-align: center;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  width: 300px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-200);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.subject-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.subject-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
+  border-radius: 4px 0 0 4px;
 }
 
 .subject-card h3 {
-    font-size: 18px;
-    margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--neutral-200);
 }
 
 .subject-card p {
-    font-size: 14px;
-    margin: 4px 0;
+  font-size: 14px;
+  margin: 8px 0;
+  color: var(--neutral-600);
+}
+
+.subject-card p strong {
+  font-weight: 500;
+  color: var(--neutral-700);
+  margin-right: 6px;
 }
 
 .delete-btn {
-    background: #d9534f;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
+  background-color: var(--error);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 16px;
+  align-self: flex-end;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
 }
+
+/* Ավելացնում եմ խաչը սպիտակ գույնով */
 
 .delete-btn:hover {
-    background: #c9302c;
+  background-color: #ef4444;
+  transform: translateY(-2px);
 }
 
-/* Պահել հաստատման կոճակը ներքևում */
-.save-container {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-}
-/* Pop-up-ի ստիլ */
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    width: 420px;
-    text-align: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s ease-in-out;
+/* Save changes button */
+#saveChangesBtn {
+  background: linear-gradient(135deg, var(--success), #0d9488);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin: 0 auto 30px;
+  display: block;
+  box-shadow: var(--shadow-md);
 }
 
-/* Pop-up-ի գլխամաս */
-.popup h2 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #0A2540;
+/* Նաև հեռացնում եմ disabled-ը, որ կոճակը միշտ հասանելի լինի */
+#saveChangesBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
 }
 
-/* Փակման կոճակ */
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 22px;
-    cursor: pointer;
-    color: #555;
-    transition: 0.3s;
-}
-
-.close-btn:hover {
-    color: #d9534f;
-}
-
-
-
-/* Երբ pop-up-ը բացվում է */
-.popup.visible {
-    display: block !important;
-}
-
-/* Overlay-ի ճիշտ աշխատանք */
+/* Popup styles */
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+  display: none;
 }
 
-/* Popup-ի նոր ձևավորում */
-.popup-content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Տողերի միջև տարածություն */
-}
-
-.popup-content label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.popup-content button {
-    width: 100%;
-    padding: 10px;
-    background-color: #0A2540;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.popup-content button:hover {
-    background-color: #08315a;
-}
-
-/* Pop-up-ի բացման էֆեկտ */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -55%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-}
-
-
-/* Փոփափի հիմնական ոճ */
+/* Popup */
 .popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: white;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  display: none;
+}
+
+.popup.visible {
+  display: block !important;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translate(-50%, -55%);
+  }
+  to { 
+    opacity: 1; 
     transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    width: 500px;
-    max-height: 80vh;
-    overflow-y: auto;
-    text-align: left;
+  }
 }
 
-.popup-content select,
-.popup-content input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+.popup-content {
+  padding: 25px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-/* Checkbox-ները թող լինեն inline տեքստի կողքին */
-.checkbox-container {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.checkbox-container input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-}
-
-/* ✅ Սքրոլ ավելացնենք popup-ի համար */
 .popup::-webkit-scrollbar {
-    width: 8px;
-}
-
-.popup::-webkit-scrollbar-thumb {
-    background: #0A2540;
-    border-radius: 4px;
+  width: 8px;
 }
 
 .popup::-webkit-scrollbar-track {
-    background: #f1f1f1;
+  background: var(--neutral-100);
+  border-radius: 4px;
 }
 
-/* Երբ դաշտերը արգելափակված են */
-.popup-content select:disabled, 
-.popup-content input:disabled {
-    background: #f0f0f0;
-    cursor: not-allowed;
+.popup::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 4px;
 }
 
+.popup::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
 
-/* Ավելացրի այս չներքորագիծը, ճիշտ popup-content-ի տակ */
-.popup-content .teacherSelect {
-    width: 180px !important;   /* կամ որքան ուզում ես */
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-  
-  select.teacherSelect {
-    width: 180px !important;
-    box-sizing: border-box;
-  }
-  
-  /* Իսկ ❌ կոճակը փոքր պահելու համար */
-  .remove-teacher-btn {
-    width: 40px !important;
-    height: 40px !important;
-    padding: 5 !important;
-    font-size: 18px !important;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-/* Teacher container - թող լինի նույն լայնությամբ, ինչ practical & lab */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: var(--neutral-500);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.close-btn:hover {
+  color: var(--error);
+}
+
+.popup-content h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.popup-content label {
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: var(--neutral-700);
+}
+
+.popup-content input[type="text"],
+.popup-content input[type="number"],
+.popup-content select {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 10px;
+  font-size: 15px;
+  transition: var(--transition);
+  margin-bottom: 10px;
+  color: var(--text-dark);
+  font-family: 'Poppins', sans-serif;
+  background-color: white;
+}
+
+.popup-content input[type="text"]:focus,
+.popup-content input[type="number"]:focus,
+.popup-content select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(61, 125, 217, 0.1);
+}
+
+.popup-content input[type="text"]:disabled,
+.popup-content input[type="number"]:disabled,
+.popup-content select:disabled {
+  background-color: var(--neutral-100);
+  color: var(--neutral-500);
+  cursor: not-allowed;
+}
+
+/* Checkbox container */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  justify-content: flex-start;
+  width: 90%;
+  max-width: 500px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.checkbox-container label {
+  margin-bottom: 0;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: left;
+}
+
+/* Teacher container */
 .teacher-container {
-    width: 90%;
-    max-width: 500px; /* Թող լինի նույն չափով, ինչ practical & lab */
-    display: flex;
-    gap: 10px; /* Կոճակների և դաշտի միջև ավելի հարմար տարածություն */
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
 }
 
-/* Բոլոր ուսուցչի ընտրության դաշտերը թող ունենան նույն չափը */
 .teacher-container select {
-    flex-grow: 1; /* Թույլ է տալիս դաշտը զբաղեցնել ամբողջ տարածքը */
-    width: 100%; /* Լրիվ լայնություն */
-    max-width: 450px; /* Հարմար լայնություն */
-    text-align: center;
+  flex: 1;
+  margin-bottom: 0;
 }
 
-/* Բոլոր ուսուցչի ընտրության դաշտերը, ներառյալ առաջինը */
-.teacher-container select:first-child {
-    flex-grow: 1;
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
+.add-teacher-btn {
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  font-size: 18px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
 }
 
-/* Պլյուս (+) կոճակը */
-.teacher-container button {
-    width: 40px;
-    height: 40px;
-    padding: 5px;
-    font-size: 18px;
-    display: flex;
-    justify-content: center;
+.add-teacher-btn:hover:not(:disabled) {
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
 }
 
-/* Բոլոր դաշտերը դնում ենք ձախ կողմում */
-.teacher-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Դասավորում ձախ կողմում */
+.add-teacher-btn:disabled {
+  background-color: var(--neutral-400);
+  cursor: not-allowed;
 }
 
 .teacher-row {
-    display: flex;
-    gap: 8px; /* Տարածություն `select`-ի և կոճակի միջև */
-    margin-top: 5px;
-    width: 100%;
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+  width: 100%;
 }
 
 .teacherSelect {
-    flex-grow: 1;
-    padding: 5px;
+  flex-grow: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 10px;
+  font-size: 15px;
+  transition: var(--transition);
+  color: var(--text-dark);
+  font-family: 'Poppins', sans-serif;
+  background-color: white;
 }
 
 .remove-teacher-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-    background-color: #d9534f;
-    color: white;
-    border-radius: 5px;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 5px;
+  transition: var(--transition);
 }
 
 .remove-teacher-btn:hover {
-    background-color: #c9302c;
+  background-color: #0a2a55;
+  transform: translateY(-2px);
 }
 
-
-/* Checkbox-ները թող մնան ձախ */
-.checkbox-container {
+button {
     display: flex;
-    justify-content: flex-start;
-    width: 90%;
-    max-width: 500px;
-}
-
-/* Checkbox-ի կողքի տեքստը */
-.checkbox-container label {
-    font-size: 16px;
-    text-align: left;
-}
-
-/* Checkbox-երը փոքրացնենք, եթե մեծ են */
-.checkbox-container input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-}
-
-/* Գործնական և Լաբորատոր բաժինները */
+    justify-content: center;
+    gap: 15px;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    height: 45px;
+    background-color: #002047;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+/* Practical and Lab sections */
 #practicalSection, #labSection {
-    width: 90%; /* Թողնել լայն, բայց ոչ ամբողջ */
-    max-width: 500px; /* Սահմանափակում առավելագույն լայնությունը */
-    padding: 10px; /* Տարածություն ներսից */
-    margin-top: 10px; /* Տեղ բացել վերևի տարրերից */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Բովանդակությունը կենտրոնում */
-    gap: 10px; /* Տարրերի միջև տարածություն */
-    background-color: transparent; /* Թափանցիկ ֆոն */
+  width: 100%;
+  max-width: 500px;
+  padding: 16px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  background-color: rgba(61, 125, 217, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(61, 125, 217, 0.1);
+}
+
+#practicalSection label, #labSection label {
+  align-self: flex-start;
+}
+
+#practicalSection select, #labSection select,
+#practicalSection input, #labSection input {
+  width: 100%;
+  max-width: 450px;
 }
 
 /* Բոլոր input-ները, select-ները, և կոճակները */
 #practicalSection select, #labSection select,
 #practicalSection input, #labSection input {
-    width: 100%;
-    max-width: 450px;
-    text-align: center; /* Տեքստերը մեջտեղում */
+  width: 100%;
+  max-width: 450px;
 }
 
-/* Գործնական և Լաբորատոր տեքստերը թող մնան ձախ */
-#practicalSection label, #labSection label {
-    align-self: flex-start;
+/* Save button in popup */
+#saveNewSubject {
+  width: 100%;
+  padding: 12px 20px;
+  background-color: var(--success);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+  font-weight: 500;
+  transition: var(--transition);
 }
 
+#saveNewSubject:hover {
+  background-color: #0d9488;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
 
+/* Confirmation modal */
+.modal {
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  width: 350px;
+  text-align: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: var(--neutral-700);
+}
+
+.modal button {
+  padding: 10px;
+  width: 100px;
+  border: none;
+  border-radius: 8px;
+  margin: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+#confirmExit {
+  background-color: var(--error);
+  color: white;
+}
+
+#confirmExit:hover {
+  background-color: #c9302c;
+  transform: translateY(-2px);
+}
+
+#cancelExit {
+  background-color: var(--primary);
+  color: white;
+}
+
+#cancelExit:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+/* Hidden class */
 .hidden {
-    display: none;
+  display: none !important;
 }
 
-/********************************
- * Հիմնական Layout փոփոխություններ
- ********************************/
-
-/* Այս դասավորությունը կուրսի select-ները և "Ավելացնել առարկա" կոճակը դնում է նույն շարքում */
-.course-selection {
-    display: flex;
-    justify-content: center; /* Եթե ցանկանում եք, որ centered լինի, թողեք այսպես */
-    gap: 20px;              /* Տարրերի միջև տարածություն */
-    margin-top: 20px;
-}
-
-/* .dropdown-container-ը մնում է նույնը կամ փոքր ընտիր */
-.dropdown-container {
-    display: flex;
-    gap: 20px;
-}
-
-/* Ավելացնել առարկա կոճակի ոճ, որպեսզի visually լինի նույն բարձրության ու տեսքի */
-.add-subject-btn {
-    background-color: #0A2540;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 12px 20px;
-    cursor: pointer;
-    font-size: 16px;
-    white-space: nowrap; /* Միավորում է կոճակի տեքստը մեկ տողում */
-}
-
-.add-subject-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/********************************
- * Ջնջման կոճակ (delete-btn) – խաչը սպիտակ
- ********************************/
-.delete-btn {
-    background: #d9534f; /* կամ #FF4C4C */
-    color: #fff;         /* Թույլ է տալիս, որ cross կամ տեքստը լինի սպիտակ */
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-size: 14px; /* Եթե ցանկանում եք λίγο մեծացնել/փոքրացնել */
-    display: inline-flex; 
-    justify-content: center;
-    gap: 4px; /* Եթե տեքստ + խաչ եք դնում, չխառնվեն */
-}
-
-/* Hover state, մի քիչ մգացնել */
-.delete-btn:hover {
-    background: #c9302c;
-}
-
-/* Կարող եք օգտագործել pseudo-element, եթե ուզում եք միայն խաչը, օրինակ:
-.delete-btn::before {
-    content: "✕";
-    color: #fff;
-    font-weight: bold;
-    margin-right: 5px;
-}
-*/
-
-/********************************
- * Մնացած code-ը նույնն է
- * (scroll, popups, etc.)
- ********************************/
-
-
- /* 1) popup ու popup-content շեմերը */
-/* popup–ն ունի որոշակի լայնություն ու box-sizing:border-box, որպեսզի padding–ը հաշվվի մեջ */
-.popup {
-    width: 500px;            /* կամ որքան քեզ հարմար ես գտնում */
-    max-width: 90vw;         /* փոքր էկրաններին չվերցնի ամբողջը */
-    padding: 0;              /* ոչինչ չկաթանենք այստեղ */
-    box-sizing: border-box;
-    max-height: 90vh;    /* Բարձրությանը սահման փտ տուր, եթե պարունակությունը մեծ լինի՝ սկրոլ */
-
-  }
-  
-  /* Ունենք մի ընդհանուր padding popup–ի content–ին */
-  .popup-content {
-    display: flex;
+/* Responsive design */
+@media (max-width: 768px) {
+  .course-selection {
     flex-direction: column;
-    align-items: stretch;    /* շատ կարևոր՝ stretching բոլոր children–ներին */
-    gap: 16px;               /* տողերի միջև փոքր բացվածք */
-    padding: 24px 32px;      /* վերև/ներք 24px, աջ/ձախ 32px */
-    box-sizing: border-box;  /* որպեսզի padding–ի չափսերը չբարձրացնեն լայնությունը */
+    gap: 16px;
+    padding: 16px;
   }
   
-  /* 2) Ուղղակի լցնել 100% width բոլորի վրա */
-  .popup-content label,
-  .popup-content input[type="text"],
-  .popup-content input[type="number"],
-  .popup-content select,
-  .teacher-container {
+  .dropdown-container {
+    flex-direction: column;
+    align-items: stretch;
     width: 100%;
-    box-sizing: border-box;
   }
   
-  /* 3) teacher-container–ը նույնպես 100% */
-  .teacher-container {
-    display: flex;
-    gap: 10px;
+  .dropdown-container select {
+    width: 100%;
   }
   
-  /* այդ մեջ առաջինը՝ select-ը թող զբաղեցնի մնացած ամբողջը */
-  .teacher-container select {
-    flex: 1;
+  .add-subject-btn {
+    width: 100%;
   }
   
-  /* + և ❌ կոճակները թող ունենան նորմալ ֆիքսված չափսեր */
-  .teacher-container button {
-    flex: 0 0 auto;
+  .subject-card {
+    width: 100%;
   }
   
-  /* վերջապես, եթե ուզում ես, որ բոլոր label–ները ձախ կպած լինեն */
-  .popup-content label {
-    text-align: left;
+  .popup-content {
+    padding: 20px;
   }
   
+  .modal-content button {
+    margin: 8px;
+  }
+}

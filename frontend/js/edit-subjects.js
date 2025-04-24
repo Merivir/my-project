@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <p><strong>Հաճախականություն:</strong> 
                     ${subject.weekly_type === "weekly" ? "Ամեն շաբաթ" : subject.weekly_type === "biweekly" ? "2 շաբաթը մեկ" : "Չի նշված"}
                 </p>
-                <button class="delete-btn" data-id="${subject.schedule_id}">❌ Ջնջել</button>
+                <button class="delete-btn" data-id="${subject.schedule_id}">Ջնջել</button>
             `;
 
             // Եթե delete-btn-ին սեղմվում է, չբացել edit pop-up-ը
