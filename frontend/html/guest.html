@@ -5,11 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ուսանողի Դասացուցակ</title>
   <link rel="stylesheet" href="/css/guest.css">
-
+  <style>
+    /* Ներքին ոճաթերթ՝ ուղղակի տեսնելու համար */
+    .course-btn-container {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    
+    .filter-section {
+      display: inline-block;
+      vertical-align: middle;
+      float: right;
+    }
+    
+    /* Մաքրում ենք float-ը */
+    .clearfix::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  </style>
 </head>
 <body>
-
-    <!-- Վերադառնալու սլաք (ճիշտ տեղում) -->
+    <!-- Վերադառնալու սլաք -->
     <a href="javascript:history.back()" class="back-arrow">
         <img src="/assets/left-arrow.png" class="back-arrow-img">
     </a>
@@ -19,38 +37,43 @@
     </header>
 
     <div class="page-wrapper"> 
-    <!-- Կուրսի ընտրության կոճակներ -->
-    <div class="course-buttons">
-        <button class="course-btn" data-course="1">1-ին կուրս</button>
-        <button class="course-btn" data-course="2">2-րդ կուրս</button>
-        <button class="course-btn" data-course="3">3-րդ կուրս</button>
-        <button class="course-btn" data-course="4">4-րդ կուրս</button>
-    </div>
-    
-    
-    <!-- Դասացուցակի դինամիկ կառուցման համար բաժին -->
-    <div class="filter-container">
-        <label for="courseCodeFilter">Ֆիլտր ըստ կուրսի կոդի:</label>
-        <select id="courseCodeFilter">
-            <option value="">Բոլորը</option>
-        </select>
-        <button id="applyFilter" type="button">Հաստատել</button>
-    </div>
-    <div id="scheduleContainer">
-        <h1>Դասացուցակ</h1>
-    </div>
-    
-    <!-- Պոպափ պատուհան -->
-    <div id="classPopup" class="popup hidden">
-        <div class="popup-content">
-            <span class="close-btn" onclick="closePopup()">&times;</span>
-            <h2>Դասի Մանրամասներ</h2>
-            <p><strong>Առարկա:</strong> <span id="popupSubject"></span></p>
-            <p><strong>Դասախոս:</strong> <span id="popupTeacher"></span></p>
-            <p><strong>Լսարան:</strong> <span id="popupRoom"></span></p>
-            <p><strong>Դասի Տիպ:</strong> <span id="popupType"></span></p>
+      <!-- Վերևի հատվածը համատեղելու համար կոճակներն ու ֆիլտրը -->
+      <div class="clearfix">
+        <!-- Կուրսի կոճակների բաժին -->
+        <div class="course-btn-container">
+            <button class="course-btn" data-course="1">1-ին կուրս</button>
+            <button class="course-btn" data-course="2">2-րդ կուրս</button>
+            <button class="course-btn" data-course="3">3-րդ կուրս</button>
+            <button class="course-btn" data-course="4">4-րդ կուրս</button>
         </div>
-    </div>
+        
+        <!-- Ֆիլտրի բաժին -->
+        <div class="filter-section">
+            <label for="courseCodeFilter">Ֆիլտր ըստ կուրսի կոդի:</label>
+            <select id="courseCodeFilter">
+                <option value="">Բոլորը</option>
+            </select>
+            <button id="applyFilter" type="button">Հաստատել</button>
+        </div>
+      </div>
+    
+      <!-- Դասացուցակի բաժին -->
+      <div id="scheduleContainer">
+          <h1>Դասացուցակ</h1>
+          <!-- Այստեղ կթարմացվի դասացուցակի աղյուսակը -->
+      </div>
+    
+      <!-- Պոպափ պատուհան -->
+      <div id="classPopup" class="popup hidden">
+          <div class="popup-content">
+              <span class="close-btn" onclick="closePopup()">&times;</span>
+              <h2>Դասի Մանրամասներ</h2>
+              <p><strong>Առարկա:</strong> <span id="popupSubject"></span></p>
+              <p><strong>Դասախոս:</strong> <span id="popupTeacher"></span></p>
+              <p><strong>Լսարան:</strong> <span id="popupRoom"></span></p>
+              <p><strong>Դասի Տիպ:</strong> <span id="popupType"></span></p>
+          </div>
+      </div>
     </div>
     <script src="/js/script.js"></script>  
 </body>
