@@ -387,3 +387,79 @@ button:active {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-500);
 }
+
+/* Enhanced Information container styling */
+.info-message-container {
+  background-color: var(--gray-50);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  border-left: 4px solid var(--accent);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.info-message {
+  color: var(--gray-700);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.info-message p {
+  margin-bottom: 0.75rem;
+}
+
+.info-message p:last-child {
+  margin-bottom: 0;
+}
+
+.info-message strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Styled bullet points list */
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 1rem 0.5rem;
+}
+
+.info-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.info-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0.25rem;
+  color: var(--accent);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Animation */
+.info-message-container {
+  animation: fadeIn var(--transition-normal);
+  animation-delay: 50ms;
+}
+
+@media (max-width: 768px) {
+  .info-message-container {
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .info-message {
+    font-size: 0.875rem;
+  }
+  
+  .info-list {
+    margin-left: 0;
+  }
+}
