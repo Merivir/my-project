@@ -71,6 +71,66 @@ function getUserRoleFromURL() {
   }
   
   
+// Հաջողության վիճակը ցուցադրելու գործառույթ
+function showSuccess() {
+    const popup = document.getElementById("generatePopup");
+    popup.innerHTML = `
+      <div class="result-container success">
+        <div class="result-icon">
+          <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <div class="result-text">Դասացուցակը բարեհաջող կառուցվել է</div>
+        <button class="close-popup">Փակել</button>
+      </div>
+    `;
+  
+    // Փակման կոճակի գործառույթ
+    document.querySelector('.close-popup').addEventListener('click', () => {
+      const popup = document.getElementById("generatePopup");
+      const overlay = document.getElementById("generatePopupOverlay");
+      popup.classList.add("hidden");
+      overlay.classList.add("hidden");
+    });
+  }
+  // Ավելացրեք այս ֆունկցիաները showSuccess()-ից առաջ
+
+// Բեռնման վիճակը փոփափի մեջ ցուցադրելու գործառույթ
+function showLoadingPopup() {
+    const popup = document.getElementById("generatePopup");
+    popup.innerHTML = `
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Դասացուցակի կառուցում...</div>
+      </div>
+    `;
+  }
+  
+  // Սխալի վիճակը ցուցադրելու գործառույթ
+  function showErrorPopup(errorMessage = "Դասացուցակի կառուցման ընթացքում առաջացել է սխալ") {
+    const popup = document.getElementById("generatePopup");
+    popup.innerHTML = `
+      <div class="result-container error">
+        <div class="result-icon">
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="result-text">${errorMessage}</div>
+        <button class="close-popup">Փակել</button>
+      </div>
+    `;
+    
+    // Փակման կոճակի գործառույթ
+    document.querySelector('.close-popup').addEventListener('click', () => {
+      const popup = document.getElementById("generatePopup");
+      const overlay = document.getElementById("generatePopupOverlay");
+      popup.classList.add("hidden");
+      overlay.classList.add("hidden");
+    });
+  }
+
+  
   document.addEventListener("DOMContentLoaded", function () {
     const scheduleBody = document.querySelector("#scheduleBody");
     const scheduleContainer = document.getElementById("scheduleContainer");
@@ -96,6 +156,7 @@ function getUserRoleFromURL() {
           }
           return;
         }
+  
   
         // Պահպանում ենք ամբողջ դասացուցակի տվյալները
         scheduleData = data;
@@ -152,7 +213,7 @@ function getUserRoleFromURL() {
           });
         });
       }
-  
+
       if (rejectBtn) {
         rejectBtn.addEventListener("click", function () {
           // Ստեղծում ենք մոդալ պատուհան
@@ -172,47 +233,76 @@ function getUserRoleFromURL() {
           document.body.appendChild(modal);
           
           // Վերաթողարկել ալգորիթմը
-          modal.querySelector('.confirm-regen').addEventListener('click', function() {
-            document.body.removeChild(modal);
-            
-            // Ցուցադրում ենք լոադինգ մոդալը
-            const loadingModal = document.createElement('div');
-            loadingModal.className = 'loading-modal';
-            loadingModal.innerHTML = `
-              <div class="loading-modal-content">
-                <div class="loading-spinner"></div>
-                <p>Ալգորիթմի վերաթողարկում...</p>
-              </div>
-            `;
-            document.body.appendChild(loadingModal);
-            
-            // Ուղարկում ենք հարցում ալգորիթմի վերաթողարկման համար
-            fetch("/api/generate-schedule", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              }
-            })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error("Վերաթողարկման սխալ");
-              }
-              return response.json();
-            })
-            .then(data => {
-              document.body.removeChild(loadingModal);
-              showToast('success', 'Հաջողություն', 'Ալգորիթմը հաջողությամբ վերաթողարկվել է');
-              setTimeout(() => {
-                window.location.href = "/schedule-approval?role=admin";
-              }, 1500);
-            })
-            .catch(error => {
-              document.body.removeChild(loadingModal);
-              console.error("Error regenerating schedule:", error);
-              showToast('error', 'Սխալ', 'Չհաջողվեց վերաթողարկել ալգորիթմը');
+            modal.querySelector('.confirm-regen').addEventListener('click', function() {
+                document.body.removeChild(modal);
+                
+                // Ստեղծում ենք փոփապ և օվերլեյ եթե դրանք չկան
+                if (!document.getElementById("generatePopupOverlay")) {
+                const overlay = document.createElement('div');
+                overlay.id = "generatePopupOverlay";
+                overlay.className = "popup-overlay";
+                document.body.appendChild(overlay);
+                }
+                
+                if (!document.getElementById("generatePopup")) {
+                const popup = document.createElement('div');
+                popup.id = "generatePopup";
+                popup.className = "popup-container";
+                document.body.appendChild(popup);
+                }
+                
+                // Ցուցադրում ենք օվերլեյը և փոփափը
+                const overlay = document.getElementById("generatePopupOverlay");
+                const popup = document.getElementById("generatePopup");
+                overlay.classList.remove("hidden");
+                popup.classList.remove("hidden");
+                
+                // Ցուցադրում ենք բեռնման փոփափը
+                showLoadingPopup();
+                
+                // Ուղարկում ենք հարցում ալգորիթմի վերաթողարկման համար
+                fetch("/api/generate-schedule", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+                })
+                .then(response => {
+                if (!response.ok) {
+                    throw new Error("Վերաթողարկման սխալ");
+                }
+                return response.json();
+                })
+                .then(data => {
+                // Ցուցադրում ենք հաջողության փոփափը
+                showSuccess();
+                
+                // Թարմացնում ենք էջի տվյալները
+                const scheduleContainer = document.getElementById("scheduleContainer");
+                if (scheduleContainer) {
+                    showLoading(scheduleContainer, 'Դասացուցակի բեռնում...');
+                }
+                
+                // Բեռնում ենք նոր դասացուցակը
+                return fetch("/schedule_approval");
+                })
+                .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                return response.json();
+                })
+                .then(freshData => {
+                scheduleData = freshData; // Թարմացնում ենք գլոբալ տվյալները
+                renderSchedule(freshData);
+                showToast('success', 'Հաջողություն', 'Ալգորիթմը հաջողությամբ վերաթողարկվել է');
+                })
+                .catch(error => {
+                console.error("Error regenerating schedule:", error);
+                showErrorPopup("Չհաջողվեց վերաթողարկել ալգորիթմը");
+                showToast('error', 'Սխալ', 'Չհաջողվեց վերաթողարկել ալգորիթմը');
+                });
             });
-          });
-          
           // Չեղարկել
           modal.querySelector('.confirm-cancel').addEventListener('click', function() {
             document.body.removeChild(modal);
@@ -682,6 +772,129 @@ function getUserRoleFromURL() {
         font-weight: 500;
         text-align: center;
       }
+        .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.7);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .popup-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        z-index: 2001;
+        box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        }
+
+        .popup-container.hidden,
+        .popup-overlay.hidden {
+        display: none;
+        }
+
+        .result-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 120px;
+        }
+
+        .result-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        font-size: 28px;
+        color: white;
+        }
+                
+        .success .result-icon {
+        background-color: var(--success, #10b981);
+        }
+
+        .error .result-icon {
+        background-color: var(--error, #ef4444);
+        }
+
+        .result-text {
+        font-size: 16px;
+        font-weight: 500;
+        }
+
+        .success .result-text {
+        color: var(--success, #10b981);
+        }
+
+        .error .result-text {
+        color: var(--error, #ef4444);
+        }
+
+        /* Checkmark անիմացիա */
+        .checkmark {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: block;
+        stroke-width: 3;
+        stroke: white;
+        stroke-miterlimit: 10;
+        box-shadow: inset 0px 0px 0px transparent;
+        animation: fill 0.4s ease-in-out .4s forwards, scale 0.3s ease-in-out 0.9s both;
+        }
+
+        .checkmark-circle {
+        stroke-dasharray: 166;
+        stroke-dashoffset: 166;
+        stroke-width: 3;
+        stroke-miterlimit: 10;
+        stroke: white;
+        fill: none;
+        animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark-check {
+        transform-origin: 50% 50%;
+        stroke-dasharray: 48;
+        stroke-dashoffset: 48;
+        animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        @keyframes stroke {
+        100% {
+            stroke-dashoffset: 0;
+        }
+        }
+
+        @keyframes scale {
+        0%, 100% {
+            transform: none;
+        }
+        50% {
+            transform: scale3d(1.1, 1.1, 1);
+        }
+        }
+
+        @keyframes fill {
+        100% {
+            box-shadow: inset 0px 0px 0px 30px transparent;
+        }
+        }
     `;
     document.head.appendChild(styleElement);
   });
