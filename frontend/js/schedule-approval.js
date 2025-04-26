@@ -203,7 +203,7 @@ function getUserRoleFromURL() {
               document.body.removeChild(loadingModal);
               showToast('success', 'Հաջողություն', 'Ալգորիթմը հաջողությամբ վերաթողարկվել է');
               setTimeout(() => {
-                window.location.href = "/admin-dashboard";
+                window.location.href = "/schedule-approval?role=admin";
               }, 1500);
             })
             .catch(error => {
@@ -534,7 +534,6 @@ function getUserRoleFromURL() {
     return modifiedLessons;
   }
   
-  // Ավելացնում ենք CSS ոճեր drag-ի համար
   document.addEventListener('DOMContentLoaded', function() {
     const styleElement = document.createElement('style');
     styleElement.textContent = `
@@ -604,17 +603,18 @@ function getUserRoleFromURL() {
       
       .confirm-modal-buttons {
         display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
       }
       
       .confirm-modal button {
-        padding: 0.5rem 1.5rem;
+        padding: 0.75rem 1rem;
         border-radius: 8px;
         font-weight: 500;
         border: none;
         cursor: pointer;
         transition: all 0.2s ease;
+        width: 100%;
       }
       
       .confirm-yes {
@@ -633,6 +633,54 @@ function getUserRoleFromURL() {
       
       .confirm-no:hover {
         background-color: #d1d5db;
+      }
+      
+      .confirm-regen {
+        background-color: var(--accent, #3d7dd9);
+        color: white;
+      }
+  
+      .confirm-regen:hover {
+        background-color: #346bc0;
+      }
+      
+      .loading-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease-out;
+      }
+  
+      .loading-modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 300px;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      }
+  
+      .loading-modal .loading-spinner {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 1.5rem;
+      }
+  
+      .loading-modal p {
+        font-size: 1.1rem;
+        color: var(--primary, #0a2a55);
+        font-weight: 500;
+        text-align: center;
       }
     `;
     document.head.appendChild(styleElement);
