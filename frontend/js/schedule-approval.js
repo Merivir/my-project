@@ -70,6 +70,7 @@ function getUserRoleFromURL() {
     `;
   }
   
+  
   document.addEventListener("DOMContentLoaded", function () {
     const scheduleBody = document.querySelector("#scheduleBody");
     const scheduleContainer = document.getElementById("scheduleContainer");
@@ -122,7 +123,7 @@ function getUserRoleFromURL() {
           }
           
           // Ուղարկում ենք հարցում սերվերին
-          fetch("/api/approve-schedule", {
+          fetch("/api/approve-schedule?role=admin", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -154,23 +155,39 @@ function getUserRoleFromURL() {
   
       if (rejectBtn) {
         rejectBtn.addEventListener("click", function () {
+          // Ստեղծում ենք մոդալ պատուհան
           const modal = document.createElement('div');
           modal.className = 'confirm-modal';
           modal.innerHTML = `
             <div class="confirm-modal-content">
               <h3>Հաստատել մերժումը</h3>
-              <p>Համոզվա՞ծ եք, որ ցանկանում եք հրաժարվել:</p>
+              <p>Ցանկանո՞ւմ եք վերաթողարկել ալգորիթմը</p>
+              <p class="warning-text"><i class="fas fa-exclamation-triangle"></i> Հակառակ դեպքում դուք չեք կարողանա վերականգնել ներկայիս տարբերակը</p>
               <div class="confirm-modal-buttons">
-                <button class="confirm-yes">Այո</button>
-                <button class="confirm-no">Չեղարկել</button>
+                <button class="confirm-regen">Վերաթողարկել ալգորիթմը</button>
+                <button class="confirm-cancel">Չեղարկել</button>
               </div>
             </div>
           `;
           document.body.appendChild(modal);
           
-          modal.querySelector('.confirm-yes').addEventListener('click', function() {
-            // Ուղարկում ենք մերժման հարցում
-            fetch("/api/reject-schedule", {
+          // Վերաթողարկել ալգորիթմը
+          modal.querySelector('.confirm-regen').addEventListener('click', function() {
+            document.body.removeChild(modal);
+            
+            // Ցուցադրում ենք լոադինգ մոդալը
+            const loadingModal = document.createElement('div');
+            loadingModal.className = 'loading-modal';
+            loadingModal.innerHTML = `
+              <div class="loading-modal-content">
+                <div class="loading-spinner"></div>
+                <p>Ալգորիթմի վերաթողարկում...</p>
+              </div>
+            `;
+            document.body.appendChild(loadingModal);
+            
+            // Ուղարկում ենք հարցում ալգորիթմի վերաթողարկման համար
+            fetch("/api/generate-schedule", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
@@ -178,25 +195,26 @@ function getUserRoleFromURL() {
             })
             .then(response => {
               if (!response.ok) {
-                throw new Error("Մերժման սխալ");
+                throw new Error("Վերաթողարկման սխալ");
               }
               return response.json();
             })
             .then(data => {
-              showToast('error', 'Մերժված է', 'Դասացուցակը մերժվել է');
+              document.body.removeChild(loadingModal);
+              showToast('success', 'Հաջողություն', 'Ալգորիթմը հաջողությամբ վերաթողարկվել է');
               setTimeout(() => {
                 window.location.href = "/admin-dashboard";
               }, 1500);
             })
             .catch(error => {
-              console.error("Error rejecting schedule:", error);
-              showToast('error', 'Սխալ', 'Չհաջողվեց մերժել դասացուցակը');
+              document.body.removeChild(loadingModal);
+              console.error("Error regenerating schedule:", error);
+              showToast('error', 'Սխալ', 'Չհաջողվեց վերաթողարկել ալգորիթմը');
             });
-            
-            document.body.removeChild(modal);
           });
           
-          modal.querySelector('.confirm-no').addEventListener('click', function() {
+          // Չեղարկել
+          modal.querySelector('.confirm-cancel').addEventListener('click', function() {
             document.body.removeChild(modal);
           });
           

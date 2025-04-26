@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Ուղղորդում ենք դեպի հաստատման էջ 2 վայրկյան անց
         setTimeout(() => {
-          window.location.href = "/schedule-approval";
+          window.location.href = "/schedule-approval?role=admin";
         }, 3000);
       } else {
         // Ցուցադրում ենք սխալի անիմացիան
@@ -369,7 +369,7 @@ async function generateSchedule() {
 
     //  Եթե ամեն ինչ հաջող է, տեղափոխվում ենք `schedule-approval.html`
     alert(" Դասացուցակը կազմվել է հաջողությամբ!");
-    window.location.href = "/schedule-approval.html";
+    window.location.href = "/schedule-approval?role=admin.html";
 
   } catch (error) {
     console.error(" Սխալ դասացուցակ կազմելիս:", error);
