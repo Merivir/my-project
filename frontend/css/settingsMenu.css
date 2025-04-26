@@ -13,7 +13,7 @@
 /* հանեք այստեղ position: fixed; */
 #settings-container {
   position: absolute;       /* հարաբերական է header-ի նկատմամբ */
-  top: 8%;                 /* վերեւի 50% */
+  top: 50px;                 /* վերեւի 50% */
   right: 20px;              /* աջից 20px */
   transform: translateY(-50%); /* վերադարձրեք ճիշտ վերևի կենտրոն */
   z-index: 100;             /* կամ ինչ հարկավոր է */
@@ -23,7 +23,7 @@
   #settings-dropdown {
     position: absolute;
     right: 0;
-    top: 70px;
+    top: 30px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 8px;

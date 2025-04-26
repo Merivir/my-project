@@ -252,10 +252,6 @@ def split_by_week_type(data):
 # Գլոբալ պարամետրեր և տիպեր բաժնում ավելացնենք լեզվական առարկաների ցանկ
 LANGUAGE_SUBJECTS = {
     "Խորացված անգլերեն",
-    "Օտար լեզու",
-    "Հայոց լեզու",
-    "Ռուսաց լեզու",
-    "Անգլերեն"
     # կարող եք ավելացնել այլ լեզվական առարկաներ
 }
 def build_conflict_graph(entries, teacher_availability=None):
