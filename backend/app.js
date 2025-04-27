@@ -147,6 +147,48 @@ const verifyTeacherToken = require('./middleware/verifyTeacherToken');
     }
 });
 
+// In app.js or server.js
+app.post("/admin/finalize-schedule", async (req, res) => {
+    try {
+      const pool = await sql.connect(config);
+      
+      // Նախ մաքրում ենք Schedule աղյուսակը
+      await pool.request().query(`DELETE FROM Schedule`);
+      
+      // Տեղափոխում ենք created_schedule-ից Schedule
+      await pool.request().query(`
+        INSERT INTO Schedule (level_id, course_id, subject_id, type_id, teacher_id, room_id, week_id, day_id, time_slot_id, weekly_id, details)
+        SELECT 
+            l.id AS level_id,
+            c.id AS course_id,
+            s_sub.id AS subject_id,
+            ty.id AS type_id,
+            t.id AS teacher_id,
+            r.id AS room_id,
+            w.id AS week_id,
+            cs.day_of_week AS day_id,
+            cs.time_of_day AS time_slot_id,
+            CASE 
+                WHEN cs.week_type = N'երկուսն էլ' THEN (SELECT id FROM Weekly WHERE type = 'weekly')
+                ELSE (SELECT id FROM Weekly WHERE type = 'biweekly')
+            END AS weekly_id,
+            N'Հաստատված դասացուցակ' AS details
+        FROM created_schedule cs
+        JOIN Levels l ON l.name = cs.level
+        JOIN Courses c ON c.code = cs.course
+        JOIN Subjects s_sub ON s_sub.name = cs.subject
+        JOIN Types ty ON ty.name = cs.type
+        JOIN Teachers t ON t.name = JSON_VALUE(cs.teachers, '$[0]')
+        JOIN Rooms r ON r.number = JSON_VALUE(cs.rooms, '$[0]')
+        JOIN Weeks w ON w.type = cs.week_type;
+      `);
+      
+      res.status(200).json({ message: "✅ Դասացուցակը հաջողությամբ հաստատվել է և տեղափոխվել է Schedule աղյուսակ" });
+    } catch (error) {
+      console.error("Finalize schedule error:", error);
+      res.status(500).json({ error: "❌ Չհաջողվեց ավարտել դասացուցակի տեղափոխումը" });
+    }
+  });
 
 app.use('/api/reset', require('./routes/resetPasswordRoutes'));
 app.use("/api", require("./routes/editRoutes"));

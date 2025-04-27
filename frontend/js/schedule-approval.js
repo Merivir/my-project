@@ -177,41 +177,24 @@ function showLoadingPopup() {
       
       if (confirmBtn) {
         confirmBtn.addEventListener("click", function () {
-          // Ցուցադրում ենք բեռնման անիմացիա
-          const dashboardContainer = document.querySelector('.dashboard-container');
-          if (dashboardContainer) {
-            showLoading(dashboardContainer, 'Դասացուցակի հաստատում...');
-          }
-          
-          // Ուղարկում ենք հարցում սերվերին
-          fetch("/api/approve-schedule?role=admin", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            }
-          })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error("Հաստատման սխալ");
-            }
-            return response.json();
-          })
-          .then(data => {
-            showToast('success', 'Հաստատված է', 'Դասացուցակը հաջողությամբ հաստատվել է');
-            setTimeout(() => {
-              window.location.href = "/guest";
-            }, 1500);
-          })
-          .catch(error => {
-            console.error("Error approving schedule:", error);
-            showToast('error', 'Սխալ', 'Չհաջողվեց հաստատել դասացուցակը');
-            // Վերականգնում ենք նախկին տեսքը
-            fetch("/schedule_approval")
-              .then(response => response.json())
-              .then(data => renderSchedule(data))
-              .catch(error => console.error("Error refetching data:", error));
-          });
-        });
+            fetch("/admin/finalize-schedule", { method: "POST" })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error("Finalize error");
+                }
+                return response.json();
+              })
+              .then(data => {
+                showToast('success', 'Հաստատված է', data.message || 'Դասացուցակը տեղափոխվեց Schedule');
+                setTimeout(() => {
+                  window.location.href = "/guest";
+                }, 1500);
+              })
+              .catch(error => {
+                console.error("Error finalizing schedule:", error);
+                showToast('error', 'Սխալ', 'Չհաջողվեց հաստատել դասացուցակը');
+              });
+          });          
       }
 
       if (rejectBtn) {
@@ -453,11 +436,17 @@ function showLoadingPopup() {
       this.classList.add('dragging');
     }, 0);
   }
-  
   // Ստուգում ենք դասախոսի բախումը
-  function checkTeacherConflict(teacher, day, timeSlot, weekType) {
+function checkTeacherConflict(teacher, day, timeSlot, weekType) {
+    // Եթե դասախոսը «Անորոշ» կամ «Հայտնի չէ» է, ապա բախումը չենք դիտարկում
+    if (teacher === "Անորոշ" || teacher === "Հայտնի չէ") {
+      return false;
+    }
+    
     const conflictingLessons = scheduleData.filter(lesson => 
       lesson.teacher === teacher && 
+      lesson.teacher !== "Անորոշ" &&
+      lesson.teacher !== "Հայտնի չէ" &&
       lesson.day === day && 
       lesson.time_slot === timeSlot &&
       (lesson.week_type === weekType || lesson.week_type === "երկուսն էլ" || weekType === "երկուսն էլ")
@@ -468,8 +457,15 @@ function showLoadingPopup() {
   
   // Ստուգում ենք լսարանի բախումը
   function checkRoomConflict(room, day, timeSlot, weekType) {
+    // Եթե լսարանը «Անորոշ» կամ «Հայտնի չէ» է, ապա բախումը չենք դիտարկում
+    if (room === "Անորոշ" || room === "Հայտնի չէ") {
+      return false;
+    }
+    
     const conflictingLessons = scheduleData.filter(lesson => 
       lesson.room === room && 
+      lesson.room !== "Անորոշ" &&
+      lesson.room !== "Հայտնի չէ" &&
       lesson.day === day && 
       lesson.time_slot === timeSlot &&
       (lesson.week_type === weekType || lesson.week_type === "երկուսն էլ" || weekType === "երկուսն էլ")
@@ -477,7 +473,6 @@ function showLoadingPopup() {
     
     return conflictingLessons.length > 0;
   }
-  
   // Ստուգում ենք դասի տիպի բախումը
   function checkTypeConflict(classType, existingClassType) {
     if (!classType || !existingClassType) return false;

@@ -250,10 +250,14 @@ def split_by_week_type(data):
 # 4) Կոնֆլիկտային գրաֆի կառուցում
 # ─────────────────────────────────────────────────────────────────────────
 # Գլոբալ պարամետրեր և տիպեր բաժնում ավելացնենք լեզվական առարկաների ցանկ
+# Ավելացնենք հետևյալ փոփոխությունները build_conflict_graph ֆունկցիայում
+
+# Գլոբալ պարամետրեր և տիպեր բաժնում ավելացնենք լեզվական առարկաների ցանկ
 LANGUAGE_SUBJECTS = {
     "Խորացված անգլերեն",
     # կարող եք ավելացնել այլ լեզվական առարկաներ
 }
+
 def build_conflict_graph(entries, teacher_availability=None):
     """
     Կառուցում է կոնֆլիկտային գրաֆ, որտեղ node-երը դասերն են,
@@ -311,12 +315,12 @@ def build_conflict_graph(entries, teacher_availability=None):
             
             conflict = False
             
-            # 1. Նույն դասախոս
-            if a["teacher"] == b["teacher"]:
+            # 1. Նույն դասախոս - ստուգենք, որ "Անորոշ" և "Հայտնի չէ" դասախոսները չդիտարկվեն կոնֆլիկտային
+            if a["teacher"] == b["teacher"] and a["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
                 conflict = True
             
-            # 2. Նույն լսարան
-            if a["room"] == b["room"]:
+            # 2. Նույն լսարան - ստուգենք, որ "Անորոշ" և "Հայտնի չէ" լսարանները չդիտարկվեն կոնֆլիկտային
+            if a["room"] == b["room"] and a["room"] not in ["Անորոշ", "Հայտնի չէ"]:
                 conflict = True
             
             # 3. Նույն կուրս և նույն դասի տեսակի կոնֆլիկտ
@@ -326,6 +330,8 @@ def build_conflict_graph(entries, teacher_availability=None):
                     a["subject"] in LANGUAGE_SUBJECTS and 
                     b["subject"] in LANGUAGE_SUBJECTS and
                     a["subject"] == b["subject"] and
+                    a["type"] == "Գործ" and  # Միայն "Գործ" տիպի համար
+                    b["type"] == "Գործ" and
                     a["teacher"] != b["teacher"]  # Տարբեր դասախոսներ
                 )
                 
@@ -336,7 +342,7 @@ def build_conflict_graph(entries, teacher_availability=None):
                         conflict = True
             
             # 4. Հատուկ դեպք՝ նույն առարկա և նույն դասախոս
-            if a["subject"] == b["subject"] and a["teacher"] == b["teacher"]:
+            if a["subject"] == b["subject"] and a["teacher"] == b["teacher"] and a["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
                 conflict = True
             
             # Եթե կա կոնֆլիկտ, ավելացնենք կապ
@@ -625,7 +631,6 @@ def find_conflicts(schedule):
                     })
     
     return conflicts
-
 def prepare_schedule_for_db(G1, G2):
     """
     Պատրաստում է վերջնական տվյալներն SQL բազայի համար
@@ -659,13 +664,26 @@ def prepare_schedule_for_db(G1, G2):
             logger.warning(f"Բաց թողնված տվյալներ {data.get('subject')}-ի համար")
             continue
         
+        # Որոշելու mapped_type-ը
+        class_type = data.get("type", "")
+        mapped_type = TYPE_CATEGORIES.get(class_type, "")
+        
+        # Եթե mapped_type դատարկ է, օգտագործենք class_type-ը կամ լռելյայն "Դաս" արժեքը
+        if not mapped_type:
+            if class_type in ["Դաս", "Գործ", "Լաբ"]:
+                mapped_type = class_type
+            else:
+                # Բոլոր այլ դեպքերի համար՝ լռելյայն "Դաս"
+                mapped_type = "Դաս"
+            logger.info(f"Լռելյայն mapped_type={mapped_type} տրվել է {data.get('subject')}-ին")
+        
         # Ավելացնենք դասը վերջնական ցուցակին
         schedule.append({
             "level": data.get("level"),
             "course": data.get("course"),
             "subject": data.get("subject"),
-            "type": data.get("type", ""),
-            "mapped_type": TYPE_CATEGORIES.get(data.get("type", ""), ""),
+            "type": class_type,
+            "mapped_type": mapped_type,  # Երաշխավորում ենք, որ այն լրացված է
             "teachers": json.dumps([data.get("teacher", "")], ensure_ascii=False),
             "rooms": json.dumps([data.get("room", "")], ensure_ascii=False),
             "day_of_week": data.get("assigned_day"),
@@ -685,13 +703,26 @@ def prepare_schedule_for_db(G1, G2):
             logger.warning(f"Բաց թողնված տվյալներ {data.get('subject')}-ի համար")
             continue
         
+        # Որոշելու mapped_type-ը
+        class_type = data.get("type", "")
+        mapped_type = TYPE_CATEGORIES.get(class_type, "")
+        
+        # Եթե mapped_type դատարկ է, օգտագործենք class_type-ը կամ լռելյայն "Դաս" արժեքը
+        if not mapped_type:
+            if class_type in ["Դաս", "Գործ", "Լաբ"]:
+                mapped_type = class_type
+            else:
+                # Բոլոր այլ դեպքերի համար՝ լռելյայն "Դաս"
+                mapped_type = "Դաս"
+            logger.info(f"Լռելյայն mapped_type={mapped_type} տրվել է {data.get('subject')}-ին")
+        
         # Ավելացնենք դասը վերջնական ցուցակին
         schedule.append({
             "level": data.get("level"),
             "course": data.get("course"),
             "subject": data.get("subject"),
-            "type": data.get("type", ""),
-            "mapped_type": TYPE_CATEGORIES.get(data.get("type", ""), ""),
+            "type": class_type,
+            "mapped_type": mapped_type,  # Երաշխավորում ենք, որ այն լրացված է
             "teachers": json.dumps([data.get("teacher", "")], ensure_ascii=False),
             "rooms": json.dumps([data.get("room", "")], ensure_ascii=False),
             "day_of_week": data.get("assigned_day"),
@@ -702,7 +733,6 @@ def prepare_schedule_for_db(G1, G2):
     
     logger.info(f"Պատրաստվել է {len(schedule)} դաս բազայի համար")
     return schedule
-
 def save_schedule_to_db(schedule: list[dict]) -> None:
     if not schedule:
         logger.warning("Չկա որևէ գրառում պահպանելու համար")
@@ -726,18 +756,20 @@ def save_schedule_to_db(schedule: list[dict]) -> None:
             # Հիմնական պարտադիր սյունակներ
             cur.execute("""
                 INSERT INTO created_schedule
-                (level, course, subject, type, teachers, rooms, day_of_week, time_of_day, week_type)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (level, course, subject, type, mapped_type, teachers, rooms, day_of_week, time_of_day, week_type, preferred_slots)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             row["level"],
             row["course"],
             row["subject"],
             row["type"],
+            row["mapped_type"],       # ավելացված է mapped_type սյունակը
             row["teachers"],          # JSON string
             row["rooms"],             # JSON string
             row["day_of_week"],
             row["time_of_day"],
-            row["week_type"]
+            row["week_type"],
+            row["preferred_slots"]    # ավելացված է preferred_slots սյունակը
             )
 
         conn.commit()
@@ -748,8 +780,6 @@ def save_schedule_to_db(schedule: list[dict]) -> None:
         raise
     finally:
         conn.close()
-
-
 
 def main():
     # 1. Բեռնում ենք դասախոսների հասանելիությունը ու schedule_editable-ը
