@@ -1,20 +1,20 @@
 import json
-import networkx as nx
-import pyodbc
+import logging
 import random
 from collections import defaultdict
-import logging
 from pathlib import Path
+import pyodbc
 
-# Կարգավորում ենք logging-ը
+# Configure logging
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # ─────────────────────────────────────────────────────────────────────────
-# 1) Գլոբալ պարամետրեր և տիպեր
+# 1) Global parameters and types
 # ─────────────────────────────────────────────────────────────────────────
 
+# Class type categories
 TYPE_CATEGORIES = {
     "Լաբ1": "Լաբ",
     "Լաբ2": "Լաբ",
@@ -27,7 +27,7 @@ TYPE_CATEGORIES = {
     "Դաս": "Դաս"
 }
 
-# Դասի տիպերի բախում
+# Class type conflicts
 CONFLICTS = {
     "Դաս": {"Դաս", "Գործ", "Գործ1", "Գործ2", "Գործ3", "Լաբ1", "Լաբ2", "Լաբ3", "Լաբ4"},
     "Գործ": {"Դաս", "Գործ", "Գործ1", "Գործ2", "Գործ3", "Լաբ1", "Լաբ2", "Լաբ3", "Լաբ4"},
@@ -40,49 +40,106 @@ CONFLICTS = {
     "Լաբ4": {"Լաբ4", "Գործ", "Գործ3", "Դաս"}
 }
 
-# Լսարանների տեսակներ
-ROOM_TYPES = {
-    # 5-րդ մասնաշենք, 3-րդ հարկ
-    "5301": "Լաբ",
-    "5302": "Լաբ",
-    "5306": "Լաբ", 
-    "5308": "Լաբ",
-    "5307": "Դաս",
-    # Այլ լսարաններ
-    "9602": "Գործ",
-    "9910": "Գործ",
-    # Դուք կարող եք ավելացնել մնացած լսարանները
+# Language subjects list
+LANGUAGE_SUBJECTS = {
+    "Խորացված անգլերեն",
+    # You can add other language subjects here
 }
 
-# Օրերի և ժամերի առաջնահերթություններ (մեծ թիվը = ավելի լավ)
-DAY_PRIORITIES = {
-    1: 5,  # Երկուշաբթի
-    2: 4,  # Երեքշաբթի
-    3: 3,  # Չորեքշաբթի
-    4: 2,  # Հինգշաբթի
-    5: 1,  # Ուրբաթ
-}
+# Definition of room types
+ROOM_TYPES = {}
 
-HOUR_PRIORITIES = {
-    1: 4,  # Առաջին ժամ (09:30-10:50)
-    2: 5,  # Երկրորդ ժամ (11:00-12:20)
-    3: 3,  # Երրորդ ժամ (12:50-14:10)
-    4: 2,  # Չորրորդ ժամ (14:20-15:40)
-}
+# Add "Դաս" type rooms
+for building, rooms in {
+    "121": ["12103"],
+    "12": ["1212"],
+    "122": ["12208"],
+    "123": ["12305"],
+    "14": ["1401", "1403"],
+    "174": ["17413"],
+    "22": ["2241"],
+    "23": ["2342", "2344", "2359", "2361"],
+    "24": ["2431", "2435", "2444"],
+    "50": ["5014"],
+    "52": ["5202", "5205", "5207"],
+    "54": ["5402", "5404"],
+    "56": ["5601", "5602", "5604", "5606", "5608", "5609"],
+    "58": ["5802"],
+    "91": ["9104", "9110"],
+    "92": ["9205", "9206", "9208"],
+    "94": ["9402", "9410"],
+    "96": ["9602", "9607", "9611"],
+    "97": ["9712"],
+    "special": ["Անորոշ", "ՕԼ"]
+}.items():
+    for room in rooms:
+        ROOM_TYPES[room] = "Դաս"
+
+# Add "Գործ" type rooms
+for building, rooms in {
+    "11": ["1104"],
+    "12": ["1201"],
+    "121": ["12102", "12103", "12105", "12106"],
+    "122": ["12201"],
+    "123": ["12305"],
+    "14": ["1406", "1407"],
+    "174": ["17413"],
+    "21": ["2127ա", "2127բ", "2141ա"],
+    "22": ["2259", "2261", "2261բ"],
+    "23": ["2338", "2344", "2346", "2353", "2353ա", "2359", "2361"],
+    "24": ["2430", "2434", "2436", "2438", "2440", "2441ա", "2443", "2443ա"],
+    "33": ["3305"],
+    "510": ["51006", "51009"],
+    "51": ["5117", "5118", "5120", "5121", "5122"],
+    "52": ["5202", "5212"],
+    "54": ["5402", "5404"],
+    "56": ["5601", "5602", "5604", "5606", "5608", "5609"],
+    "57": ["5706"],
+    "59": ["5901", "5902"],
+    "91": ["9101", "9104", "9107", "9110", "9112"],
+    "92": ["9204", "9205", "9206", "9207", "9210"],
+    "93": ["9301", "9302", "9303", "9309", "9310", "9315"],
+    "94": ["9402", "9404", "9405", "9406", "9409", "9410", "9411", "9412"],
+    "95": ["9502"],
+    "96": ["9601", "9602", "9603", "9604", "9607", "9608", "9610", "9611"],
+    "97": ["9703", "9705", "9706", "9708", "9711", "9717"],
+    "99": ["9903", "9904", "9905ա", "9906", "9907ա", "9907բ", "9908", "9909ա", "9909բ", "9910", "9911", "9913"],
+    "special": ["Անորոշ", "Ֆիզկուլտուրա"]
+}.items():
+    for room in rooms:
+        ROOM_TYPES[room] = "Գործ"
+
+# Add "Լաբ" type rooms
+for building, rooms in {
+    "103": ["10306"],
+    "122": ["12206"],
+    "13": ["1313", "1316"],
+    "22": ["2235"],
+    "510": ["51001", "51002", "51006"],
+    "51": ["5103", "5117", "5118", "5119", "5120", "5121", "5122"],
+    "52": ["5212", "5218"],
+    "57": ["5706", "5710"],
+    "59": ["5901", "5902"],
+    "71": ["7101", "7102"],
+    "92": ["9201", "9204"],
+    "94": ["9404"]
+}.items():
+    for room in rooms:
+        ROOM_TYPES[room] = "Լաբ"
 
 # ─────────────────────────────────────────────────────────────────────────
-# 2) Օժանդակ ֆունկցիաներ
+# 2) Helper functions
 # ─────────────────────────────────────────────────────────────────────────
 
 def get_week_type(slot: int) -> str:
     """
-    Եթե slot-ը զույգ է, week_type="հայտարար",
-    եթե կենտ է, week_type="համարիչ".
+    If slot is even, week_type="հայտարար",
+    if odd, week_type="համարիչ".
     """
     return "հայտարար" if slot % 2 == 0 else "համարիչ"
 
 def get_db_connection():
-    """Տվյալների բազայի կապ"""
+    """Database connection"""
     try:
         conn = pyodbc.connect(
             "DRIVER={ODBC Driver 17 for SQL Server};"
@@ -93,13 +150,13 @@ def get_db_connection():
         )
         return conn
     except Exception as e:
-        logger.error(f"DB կապի սխալ: {e}")
+        logger.error(f"DB connection error: {e}")
         raise
 
 def load_teacher_availability():
     """
-    Բեռնում է դասախոսների հասանելիությունը PrimaryAvailability և 
-    BackupAvailability աղյուսակներից
+    Loads teacher availability from PrimaryAvailability and 
+    BackupAvailability tables
     """
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -124,7 +181,7 @@ def load_teacher_availability():
     """)
     backup = cursor.fetchall()
     
-    # Մշակում
+    # Processing
     availability = defaultdict(lambda: {'primary': [], 'backup': []})
     
     for teacher, day, time_slot, priority in primary:
@@ -143,7 +200,7 @@ def load_teacher_availability():
     return availability
 
 def get_day_index(day_name):
-    """Օրվա անունից ստանում ենք ինդեքսը"""
+    """Get index from day name"""
     day_map = {
         'Երկուշաբթի': 1,
         'Երեքշաբթի': 2,
@@ -154,7 +211,7 @@ def get_day_index(day_name):
     return day_map.get(day_name)
 
 def get_hour_index(time_slot):
-    """Ժամի տողից ստանում ենք ինդեքսը"""
+    """Get index from time slot"""
     hour_map = {
         '09:30-10:50': 1,
         '11:00-12:20': 2,
@@ -165,8 +222,8 @@ def get_hour_index(time_slot):
 
 def get_course_prefix(course_code):
     """
-    Վերադարձնում է կուրսի կոդի նախածանցը (օր․ "ՏՏ420" -> "ՏՏ")
-    Օգտագործվում է նմանատիպ կուրսերը մեկտեղ խմբավորելու համար
+    Returns the course code prefix (e.g. "ՏՏ420" -> "ՏՏ")
+    Used to group similar courses together
     """
     for i, char in enumerate(course_code):
         if char.isdigit():
@@ -174,12 +231,12 @@ def get_course_prefix(course_code):
     return course_code
 
 # ─────────────────────────────────────────────────────────────────────────
-# 3) Տվյալների բեռնում
+# 3) Data loading
 # ─────────────────────────────────────────────────────────────────────────
 
 def load_schedule_data():
     """
-    Բեռնում է schedule_editable աղյուսակից դասերի տվյալները
+    Loads class data from the schedule_editable table
     """
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -196,8 +253,8 @@ def load_schedule_data():
             s.day_id,
             s.time_slot_id,
             CASE
-                WHEN we.type = 'weekly' THEN 1  -- Ամեն շաբաթ
-                ELSE 2                          -- Երկու շաբաթը մեկ
+                WHEN we.type = 'weekly' THEN 1  -- Every week
+                ELSE 2                          -- Every two weeks
             END AS weekly_frequency
         FROM schedule_editable s
         JOIN Levels l ON s.level_id = l.id
@@ -218,21 +275,21 @@ def load_schedule_data():
 
 def split_by_week_type(data):
     """
-    Բաժանում է դասերն ըստ շաբաթների՝ համարիչ, հայտարար, երկուսն էլ
+    Splits classes by week type: numerator, denominator, both
     """
-    week1 = []  # համարիչ
-    week2 = []  # հայտարար
-    both = []   # երկուսն էլ
+    week1 = []  # numerator (համարիչ)
+    week2 = []  # denominator (հայտարար)
+    both = []   # both weeks
     
     for row in data:
         wtype = row.get("week_type", "համարիչ").strip()
         weekly_freq = row.get("weekly_frequency", 2)
         
-        # Եթե ամեն շաբաթ է անցկացվում (weekly_frequency=1)
+        # If class is held every week (weekly_frequency=1)
         if weekly_freq == 1:
             both.append(row)
         else:
-            # Եթե երկու շաբաթը մեկ
+            # If class is held every two weeks
             if wtype == "համարիչ":
                 week1.append(row)
             elif wtype == "հայտարար":
@@ -240,355 +297,426 @@ def split_by_week_type(data):
             elif wtype == "երկուսն էլ":
                 both.append(row)
     
-    logger.info(f"Համարիչ շաբաթ: {len(week1)} դաս")
-    logger.info(f"Հայտարար շաբաթ: {len(week2)} դաս")
-    logger.info(f"Երկու շաբաթներում: {len(both)} դաս")
+    logger.info(f"Numerator week: {len(week1)} classes")
+    logger.info(f"Denominator week: {len(week2)} classes")
+    logger.info(f"Both weeks: {len(both)} classes")
     
     return week1, week2, both
 
-# ─────────────────────────────────────────────────────────────────────────
-# 4) Կոնֆլիկտային գրաֆի կառուցում
-# ─────────────────────────────────────────────────────────────────────────
-# Գլոբալ պարամետրեր և տիպեր բաժնում ավելացնենք լեզվական առարկաների ցանկ
-# Ավելացնենք հետևյալ փոփոխությունները build_conflict_graph ֆունկցիայում
-
-# Գլոբալ պարամետրեր և տիպեր բաժնում ավելացնենք լեզվական առարկաների ցանկ
-LANGUAGE_SUBJECTS = {
-    "Խորացված անգլերեն",
-    # կարող եք ավելացնել այլ լեզվական առարկաներ
-}
-
-def build_conflict_graph(entries, teacher_availability=None):
+def group_by_course(classes):
     """
-    Կառուցում է կոնֆլիկտային գրաֆ, որտեղ node-երը դասերն են,
-    իսկ edge-երը՝ կոնֆլիկտները նրանց միջև
+    Groups classes by course
     """
-    G = nx.Graph()
+    course_groups = defaultdict(list)
     
-    # Առաջնահերթություն հատկանիշ
-    class_priorities = {}
+    for cls in classes:
+        course_code = cls["course"]
+        course_groups[course_code].append(cls)
     
-    # Յուրաքանչյուր դասին հաշվարկենք առաջնահերթություն
-    for i, row in enumerate(entries):
-        priority = 0
-        
-        # 1. Դասի տիպի առաջնահերթություն
-        if row["type"] == "Դաս":
-            priority += 10  # Դասախոսություններն ավելի կարևոր են
-        elif row["type"].startswith("Գործ"):
-            priority += 5   # Հետո գործնականները
-        else:
-            priority += 2   # Լաբերը
-        
-        # 2. Կուրսի առաջնահերթություն՝ ավելի բարձր կուրսերը
-        course_num = ''.join(filter(str.isdigit, row["course"]))
-        try:
-            year = int(course_num[0])
-            priority += year  # Ավելի բարձր կուրսերն ավելի կարևոր են
-        except (ValueError, IndexError):
-            pass
-        
-        # 3. Դասախոսի հասանելիություն
-        if teacher_availability and row["teacher"] in teacher_availability:
-            # Եթե կա primary հասանելիություն, ավելացնենք առաջնահերթություն
-            if teacher_availability[row["teacher"]]['primary']:
-                priority += 3
-        
-        class_priorities[i] = priority
-        
-        # Ավելացնենք նոդը գրաֆում
-        # Ստանում ենք course_prefix հատկությունը
-        course_prefix = get_course_prefix(row["course"])
-        G.add_node(i, **row, course_prefix=course_prefix, priority=priority)
+    logger.info(f"Classes grouped for {len(course_groups)} courses")
+    return course_groups
+
+# ─────────────────────────────────────────────────────────────────────────
+# 4) Improved Scheduling Algorithm
+# ─────────────────────────────────────────────────────────────────────────
+
+def create_empty_schedule():
+    """
+    Creates an empty schedule for 5 days with 4 time slots each
+    Returns a dictionary with (day, hour) tuples as keys and empty lists as values
+    """
+    return {(day, hour): [] for day in range(1, 6) for hour in range(1, 5)}
+
+def calculate_class_priority(class_data):
+    """
+    Calculate priority for a class based on type and course year
+    Higher priority classes are scheduled first
+    """
+    priority = 0
     
-    # Տեսակավորենք դասերն ըստ առաջնահերթության
-    sorted_classes = sorted(class_priorities.items(), key=lambda x: x[1], reverse=True)
+    # Priority by class type
+    if class_data["type"] == "Դաս":
+        priority += 10  # Lectures are more important
+    elif class_data["type"].startswith("Գործ"):
+        priority += 5   # Then practical classes
+    else:
+        priority += 2   # Then laboratory classes
     
-    # Որոշենք կոնֆլիկտները
-    for i, _ in sorted_classes:
-        for j, _ in sorted_classes:
-            if i >= j:
-                continue
-                
-            a = G.nodes[i]
-            b = G.nodes[j]
-            
-            conflict = False
-            
-            # 1. Նույն դասախոս - ստուգենք, որ "Անորոշ" և "Հայտնի չէ" դասախոսները չդիտարկվեն կոնֆլիկտային
-            if a["teacher"] == b["teacher"] and a["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
-                conflict = True
-            
-            # 2. Նույն լսարան - ստուգենք, որ "Անորոշ" և "Հայտնի չէ" լսարանները չդիտարկվեն կոնֆլիկտային
-            if a["room"] == b["room"] and a["room"] not in ["Անորոշ", "Հայտնի չէ"]:
-                conflict = True
-            
-            # 3. Նույն կուրս և նույն դասի տեսակի կոնֆլիկտ
-            if a["course"] == b["course"]:
-                # Լեզվի առարկաների կարևոր բացառությունը
+    # Priority by course year - higher years get higher priority
+    course_num = ''.join(filter(str.isdigit, class_data["course"]))
+    try:
+        year = int(course_num[0])
+        priority += year
+    except (ValueError, IndexError):
+        pass
+    
+    return priority
+
+def is_teacher_available(teacher, day, hour, teacher_availability):
+    """
+    Check if teacher is available at the given time
+    """
+    # If teacher is "Unknown", consider them available
+    if teacher in ["Անորոշ", "Հայտնի չէ"]:
+        return True
+    
+    # If we don't have information about this teacher, consider them available
+    if not teacher_availability or teacher not in teacher_availability:
+        return True
+    
+    teacher_avail = teacher_availability[teacher]
+    
+    # First check "primary" availability
+    if (day, hour) in teacher_avail.get('primary', []):
+        return True
+    
+    # Then check "backup" availability
+    if (day, hour) in teacher_avail.get('backup', []):
+        return True
+    
+    # If teacher has availability data but this time is not in their list
+    return False
+
+def check_type_conflict(class1_type, class2_type):
+    """
+    Check if there is a conflict between two class types
+    """
+    if class1_type in CONFLICTS and class2_type in CONFLICTS[class1_type]:
+        return True
+    return False
+
+def find_suitable_slot(class_data, schedule, teacher_availability, occupied_slots_by_teacher, conflict_stats=None):
+    """
+    Find a suitable time slot for a class using a simplified approach:
+    - Try each of the 20 time slots sequentially
+    - Check for teacher availability and class type conflicts
+    - Ignore room conflicts as requested
+    - Tracks occupied slots by teacher to prevent teacher conflicts
+    - Optionally tracks conflict statistics for debugging
+    """
+    # Get all time slots in order but shuffle them to improve distribution
+    all_slots = [(day, hour) for day in range(1, 6) for hour in range(1, 5)]
+    random.shuffle(all_slots)  # Randomize slot order to better distribute classes
+    
+    # Initialize conflict counter if stats are requested
+    if conflict_stats is not None:
+        slot_conflicts = {slot: 0 for slot in all_slots}
+    
+    # Try all 20 slots
+    for slot in all_slots:
+        day, hour = slot
+        
+        # Check if this teacher is already occupied at this time
+        teacher = class_data["teacher"]
+        if teacher not in ["Անորոշ", "Հայտնի չէ"] and slot in occupied_slots_by_teacher.get(teacher, set()):
+            if conflict_stats is not None:
+                conflict_stats["teacher_conflict"] += 1
+                slot_conflicts[slot] += 1
+            continue
+        
+        # Check teacher availability from preference data
+        if not is_teacher_available(teacher, day, hour, teacher_availability):
+            if conflict_stats is not None:
+                conflict_stats["availability_conflict"] += 1
+                slot_conflicts[slot] += 1
+            continue
+        
+        # Check for type conflicts with already scheduled classes
+        conflict_found = False
+        
+        for existing_class in schedule[slot]:
+            # Type 1: Check conflicts for the same course
+            if existing_class["course"] == class_data["course"]:
+                # Special case for language subjects
                 is_language_exception = (
-                    a["subject"] in LANGUAGE_SUBJECTS and 
-                    b["subject"] in LANGUAGE_SUBJECTS and
-                    a["subject"] == b["subject"] and
-                    a["type"] == "Գործ" and  # Միայն "Գործ" տիպի համար
-                    b["type"] == "Գործ" and
-                    a["teacher"] != b["teacher"]  # Տարբեր դասախոսներ
+                    existing_class["subject"] in LANGUAGE_SUBJECTS and 
+                    class_data["subject"] in LANGUAGE_SUBJECTS and
+                    existing_class["subject"] == class_data["subject"] and
+                    existing_class["type"] == "Գործ" and
+                    class_data["type"] == "Գործ" and
+                    existing_class["teacher"] != class_data["teacher"]
                 )
                 
-                # Եթե լեզվի խմբային դասեր չեն, ապա կոնֆլիկտ ենք ստուգում
-                if not is_language_exception:
-                    # Ստուգենք տիպերը
-                    if a["type"] in CONFLICTS and b["type"] in CONFLICTS[a["type"]]:
-                        conflict = True
+                # If not a language exception, check for type conflict
+                if not is_language_exception and check_type_conflict(class_data["type"], existing_class["type"]):
+                    conflict_found = True
+                    if conflict_stats is not None:
+                        conflict_stats["same_course_type_conflict"] += 1
+                    break
             
-            # 4. Հատուկ դեպք՝ նույն առարկա և նույն դասախոս
-            if a["subject"] == b["subject"] and a["teacher"] == b["teacher"] and a["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
-                conflict = True
+            # Type 2: Special case - all lecture-type classes conflict with each other
+            elif class_data["type"] == "Դաս" and existing_class["type"] == "Դաս":
+                conflict_found = True
+                if conflict_stats is not None:
+                    conflict_stats["lecture_conflict"] += 1
+                break
+                
+            # Type 3: Check for same subject and teacher
+            elif (class_data["subject"] == existing_class["subject"] and 
+                  class_data["teacher"] == existing_class["teacher"] and 
+                  class_data["teacher"] not in ["Անորոշ", "Հայտնի չէ"]):
+                conflict_found = True
+                if conflict_stats is not None:
+                    conflict_stats["subject_teacher_conflict"] += 1
+                break
+        
+        if not conflict_found:
+            # Slot is suitable, track it and return
+            if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+                occupied_slots_by_teacher.setdefault(teacher, set()).add(slot)
             
-            # Եթե կա կոնֆլիկտ, ավելացնենք կապ
-            if conflict:
-                G.add_edge(i, j)
+            hour_index = (day - 1) * 4 + (hour - 1)  # Calculate index for determining week type
+            return day, hour, get_week_type(hour_index)
+        
+        if conflict_stats is not None:
+            slot_conflicts[slot] += 1
     
-    logger.info(f"Կառուցվեց գրաֆ {G.number_of_nodes()} նոդերով և {G.number_of_edges()} կապերով")
+    # If we collected statistics, log the most conflicted slots
+    if conflict_stats is not None:
+        conflict_stats["all_slots_failed"] += 1
+        # Log the slots with the most conflicts
+        most_conflicted = sorted(slot_conflicts.items(), key=lambda x: x[1], reverse=True)[:5]
+        conflict_stats["most_conflicted_slots"].append(most_conflicted)
     
-    return G
+    # If no suitable slot found after trying all 20 possibilities,
+    # Find the slot with the least conflicts
+    least_conflicted_slot = min(all_slots, key=lambda s: len(schedule[s]))
+    day, hour = least_conflicted_slot
+    hour_index = (day - 1) * 4 + (hour - 1)
+    
+    logger.warning(f"No ideal slot found for {class_data['subject']} ({class_data['type']}), using least conflicted slot ({day},{hour})")
+    return day, hour, get_week_type(hour_index)
+
+def improved_schedule_algorithm(all_classes, teacher_availability):
+    """
+    Main scheduling function that follows the simplified approach:
+    1. Sort classes by priority
+    2. For each class, try to find a suitable slot
+    3. Add the class to the schedule
+    
+    The algorithm tries to evenly distribute classes across all available time slots
+    while respecting constraints.
+    """
+    # Create empty schedule
+    schedule = create_empty_schedule()
+    
+    # Track occupied slots by teacher to prevent conflicts
+    occupied_slots_by_teacher = {}
+    
+    # Set up conflict tracking for diagnostics
+    conflict_stats = {
+        "teacher_conflict": 0,
+        "availability_conflict": 0,
+        "same_course_type_conflict": 0,
+        "lecture_conflict": 0,
+        "subject_teacher_conflict": 0,
+        "all_slots_failed": 0,
+        "most_conflicted_slots": []
+    }
+    
+    # Calculate priority for each class and sort
+    classes_with_priority = [(cls, calculate_class_priority(cls)) for cls in all_classes]
+    sorted_classes = sorted(classes_with_priority, key=lambda x: x[1], reverse=True)
+    
+    # Group classes by course for better distribution
+    courses = {}
+    for class_data, priority in sorted_classes:
+        course = class_data["course"]
+        if course not in courses:
+            courses[course] = []
+        courses[course].append((class_data, priority))
+    
+    # Final result with assigned slots
+    result = []
+    
+    # Process each course separately to ensure better distribution
+    for course, course_classes in courses.items():
+        logger.info(f"Scheduling classes for course: {course}")
+        
+        # Sort classes within each course by priority
+        course_classes.sort(key=lambda x: x[1], reverse=True)
+        
+        # Track slots used by this course to promote spreading
+        course_slots_used = set()
+        
+        # Process each class for this course
+        for class_data, priority in course_classes:
+            # Find suitable slot
+            day, hour, week_type = find_suitable_slot(
+                class_data, 
+                schedule, 
+                teacher_availability,
+                occupied_slots_by_teacher,
+                conflict_stats
+            )
+            
+            # Preserve the original week_type if it exists, otherwise use the calculated one
+            if "week_type" in class_data:
+                week_type = class_data["week_type"]
+            
+            # Add to schedule for conflict checking
+            schedule[(day, hour)].append(class_data)
+            course_slots_used.add((day, hour))
+            
+            # Prepare result entry
+            result_entry = class_data.copy()
+            result_entry.update({
+                "assigned_day": day,
+                "assigned_hour": hour,
+                "week_type": week_type
+            })
+            
+            result.append(result_entry)
+    
+    # Log slot distribution statistics
+    slot_counts = {slot: len(classes) for slot, classes in schedule.items()}
+    filled_slots = sum(1 for count in slot_counts.values() if count > 0)
+    max_classes = max(slot_counts.values()) if slot_counts else 0
+    avg_classes = sum(slot_counts.values()) / len(slot_counts) if slot_counts else 0
+    
+    logger.info(f"Scheduled {len(result)} classes across {filled_slots}/20 time slots")
+    logger.info(f"Max classes per slot: {max_classes}, Average: {avg_classes:.2f}")
+    logger.info(f"Conflict stats: {conflict_stats}")
+    
+    return result
+
+def schedule_all_courses(raw_data, teacher_availability):
+    """
+    Creates schedules for all courses, handling week types correctly
+    """
+    # Split data by week type
+    week1_data, week2_data, both_weeks = split_by_week_type(raw_data)
+    
+    # Schedule each week separately
+    
+    # 1. Numerator week (week1_data)
+    week1_schedule = improved_schedule_algorithm(week1_data, teacher_availability)
+    
+    # 2. Denominator week (week2_data)
+    week2_schedule = improved_schedule_algorithm(week2_data, teacher_availability)
+    
+    # 3. Both weeks (both_weeks)
+    both_schedule = improved_schedule_algorithm(both_weeks, teacher_availability)
+    # Mark these classes as for both weeks
+    for cls in both_schedule:
+        cls["week_type"] = "երկուսն էլ"
+    
+    # Combine all schedules
+    final_schedule = week1_schedule + week2_schedule + both_schedule
+    
+    return final_schedule
+
 # ─────────────────────────────────────────────────────────────────────────
-# 5) Ժամանակի սլոթների նշանակում
+# 5) Database operations and conflict detection
 # ─────────────────────────────────────────────────────────────────────────
 
-def calculate_slot_score(node_data, day, hour, teacher_availability=None):
+def prepare_schedule_for_db(schedule):
     """
-    Հաշվարկում է տվյալ (օր, ժամ) զույգի համապատասխանության միավորը
-    տվյալ դասի համար՝ հաշվի առնելով տարբեր գործոններ
+    Prepares the final data for SQL database
     """
-    score = 0
+    result = []
     
-    # 1. Օրվա և ժամի ընդհանուր առաջնահերթություններ
-    score += DAY_PRIORITIES.get(day, 0)
-    score += HOUR_PRIORITIES.get(hour, 0)
-    
-    # 2. Դասախոսի հասանելիություն
-    if teacher_availability and node_data["teacher"] in teacher_availability:
-        teacher_avail = teacher_availability[node_data["teacher"]]
+    for entry in schedule:
+        # Check if all required fields are present
+        if not all(key in entry for key in ["assigned_day", "assigned_hour", "week_type"]):
+            logger.warning(f"Missing data for {entry.get('subject')}")
+            continue
         
-        # Առաջնային հասանելիության ժամեր
-        if (day, hour) in teacher_avail['primary']:
-            score += 10
+        # Determine mapped_type
+        class_type = entry.get("type", "")
+        mapped_type = TYPE_CATEGORIES.get(class_type, "")
         
-        # Պահուստային հասանելիության ժամեր
-        if (day, hour) in teacher_avail['backup']:
-            score += 5
-    
-    # 3. Դասի տիպին համապատասխան ժամ
-    if node_data["type"] == "Դաս":
-        # Դասախոսություններն ավելի լավ է անցկացնել առավոտյան
-        if hour == 1 or hour == 2:
-            score += 3
-    elif node_data["type"].startswith("Լաբ"):
-        # Լաբորատորներն ավելի լավ է անցկացնել ուշ ժամերին
-        if hour == 3 or hour == 4:
-            score += 3
-    
-    # 4. Լսարանի հատուկ սահմանափակումներ
-    room = node_data["room"]
-    if room in ROOM_TYPES:
-        room_type = ROOM_TYPES[room]
-        class_type = TYPE_CATEGORIES.get(node_data["type"], "Unknown")
-        
-        # Լսարանը համապատասխանում է դասի տիպին
-        if room_type == class_type:
-            score += 4
-    
-    return score
-def assign_optimized_time_slots(G, teacher_availability=None):
-    """
-    Յուրաքանչյուր դասի համար գտնում է լավագույն ժամանակային սլոթ
-    """
-    days = [1, 2, 3, 4, 5]  # Երկուշաբթի - Ուրբաթ
-    hours = [1, 2, 3, 4]    # 4 դասաժամ
-    
-    # Առկա սլոթների ցուցակ
-    available_slots = {(d, h): True for d in days for h in hours}
-    
-    # Ստուգենք և ապահովենք, որ բոլոր նոդերն ունեն priority
-    for node in G.nodes:
-        if "priority" not in G.nodes[node]:
-            # Հաշվարկենք default առաջնահերթություն, եթե չկա
-            row = G.nodes[node]
-            priority = 0
-            
-            # Հիմնական առաջնահերթություն ըստ տիպի
-            if row.get("type") == "Դաս":
-                priority += 10
-            elif row.get("type", "").startswith("Գործ"):
-                priority += 5
+        # If mapped_type is empty, use class_type or default "Դաս"
+        if not mapped_type:
+            if class_type in ["Դաս", "Գործ", "Լաբ"]:
+                mapped_type = class_type
             else:
-                priority += 2
-                
-            G.nodes[node]["priority"] = priority
-    
-    # Ըստ առաջնահերթության տեսակավորենք նոդերը
-    nodes_by_priority = sorted(G.nodes, key=lambda n: G.nodes[n]["priority"], reverse=True)
-    
-    # Մնացած կոդը անփոփոխ...
-    
-    for node in nodes_by_priority:
-        node_data = G.nodes[node]
-        best_slot = None
-        best_score = -float('inf')
+                # Default to "Դաս" for all other cases
+                mapped_type = "Դաս"
+            logger.info(f"Default mapped_type={mapped_type} given to {entry.get('subject')}")
         
-        # Պարզենք արդեն զբաղված սլոթները հարևան նոդերի կողմից
-        occupied_slots = set()
-        for neighbor in G.neighbors(node):
-            if "assigned_day" in G.nodes[neighbor] and "assigned_hour" in G.nodes[neighbor]:
-                occupied_slots.add((G.nodes[neighbor]["assigned_day"], G.nodes[neighbor]["assigned_hour"]))
-        
-        # Փորձենք գտնել լավագույն սլոթը
-        for day in days:
-            for hour in hours:
-                if (day, hour) in occupied_slots:
-                    continue
-                
-                # Հաշվարկենք այս սլոթի միավորը
-                score = calculate_slot_score(node_data, day, hour, teacher_availability)
-                
-                # Եթե միավորն ավելի բարձր է, պահպանենք
-                if score > best_score:
-                    best_score = score
-                    best_slot = (day, hour)
-        
-        # Եթե գտանք հարմար սլոթ, նշանակենք
-        if best_slot:
-            G.nodes[node]["assigned_day"] = best_slot[0]
-            G.nodes[node]["assigned_hour"] = best_slot[1]
-            
-            # Հաշվարկենք ինդեքսը week_type որոշելու համար
-            slot_index = (best_slot[0] - 1) * 4 + (best_slot[1] - 1)
-            
-            # Եթե week_type արդեն կար, պահպանենք այն, հակառակ դեպքում՝ որոշենք
-            if "week_type" not in node_data:
-                G.nodes[node]["week_type"] = get_week_type(slot_index)
-            
-            # Նշենք որ այս սլոթն այլևս հասանելի չէ
-            available_slots[(best_slot[0], best_slot[1])] = False
-            
-        else:
-            # Fallback: Եթե բոլոր սլոթները զբաղված են, գտնենք պատահական ազատ սլոթ
-            free_slots = [(d, h) for (d, h), free in available_slots.items() if free]
-            if free_slots:
-                fallback_slot = random.choice(free_slots)
-                G.nodes[node]["assigned_day"] = fallback_slot[0]
-                G.nodes[node]["assigned_hour"] = fallback_slot[1]
-                
-                slot_index = (fallback_slot[0] - 1) * 4 + (fallback_slot[1] - 1)
-                if "week_type" not in node_data:
-                    G.nodes[node]["week_type"] = get_week_type(slot_index)
-                
-                available_slots[fallback_slot] = False
-            else:
-                # Ամենավատ դեպքը: բոլոր սլոթները զբաղված են
-                logger.warning(f"Չկարողացանք գտնել սլոթ {node_data['subject']}-ի համար")
-                random_day = random.choice(days)
-                random_hour = random.choice(hours)
-                G.nodes[node]["assigned_day"] = random_day
-                G.nodes[node]["assigned_hour"] = random_hour
-                
-                slot_index = (random_day - 1) * 4 + (random_hour - 1)
-                if "week_type" not in node_data:
-                    G.nodes[node]["week_type"] = get_week_type(slot_index)
+        # Add class to final list
+        result.append({
+            "level": entry.get("level"),
+            "course": entry.get("course"),
+            "subject": entry.get("subject"),
+            "type": class_type,
+            "mapped_type": mapped_type,
+            "teachers": json.dumps([entry.get("teacher", "")], ensure_ascii=False),
+            "rooms": json.dumps([entry.get("room", "")], ensure_ascii=False),
+            "day_of_week": entry.get("assigned_day"),
+            "time_of_day": entry.get("assigned_hour"),
+            "week_type": entry.get("week_type"),
+            "preferred_slots": json.dumps([], ensure_ascii=False)  # Empty preferred_slots
+        })
     
-    return G
+    logger.info(f"Prepared {len(result)} classes for database")
+    return result
 
-# ─────────────────────────────────────────────────────────────────────────
-# 6) Շաբաթների միավորում
-# ─────────────────────────────────────────────────────────────────────────
-def merge_both_weeks(G1, G2, both_classes):
-    """
-    "Երկուսն էլ" դասերն ավելացնում ենք երկու գրաֆներում
-    """
-    # Գտնենք հաջորդ հասանելի node_id-ն
-    max_id1 = max(G1.nodes, default=-1) + 1
-    max_id2 = max(G2.nodes, default=-1) + 1
-    next_id = max(max_id1, max_id2)
-    
-    # Ավելացնենք "երկուսն էլ" դասերը երկու գրաֆներում
-    for row in both_classes:
-        # Նշենք որ սա "երկուսն էլ" շաբաթների դաս է
-        row["original_week_type"] = "երկուսն էլ"
-        
-        # Հաշվարկենք առաջնահերթություն
-        priority = 0
-        if row["type"] == "Դաս":
-            priority += 10
-        elif row["type"].startswith("Գործ"):
-            priority += 5
-        else:
-            priority += 2
-            
-        # Կուրսի առաջնահերթություն
-        course_num = ''.join(filter(str.isdigit, row["course"]))
-        try:
-            year = int(course_num[0])
-            priority += year
-        except (ValueError, IndexError):
-            pass
-            
-        # Ավելացնենք priority հատկությունը
-        row["priority"] = priority
-        
-        # Ավելացնենք առաջին գրաֆում
-        G1.add_node(next_id, **row)
-        
-        # Ավելացնենք երկրորդ գրաֆում
-        G2.add_node(next_id, **row)
-        
-        # Կոնֆլիկտային կապեր
-        # ... [նույն կոդը]
-        
-        # Կոնֆլիկտային կապեր երկու գրաֆներում
-        for graph in [G1, G2]:
-            for other_node in list(graph.nodes):
-                if other_node == next_id:
-                    continue
-                
-                conflict = False
-                
-                # Ստանդարտ կոնֆլիկտներ
-                if row["teacher"] == graph.nodes[other_node]["teacher"]:
-                    conflict = True
-                if row["room"] == graph.nodes[other_node]["room"]:
-                    conflict = True
-                    
-                # Դասի տիպերի կոնֆլիկտներ
-                if row["type"] in CONFLICTS and graph.nodes[other_node]["type"] in CONFLICTS[row["type"]]:
-                    conflict = True
-                
-                if conflict:
-                    graph.add_edge(next_id, other_node)
-        
-        next_id += 1
-    
-    logger.info(f"Միավորվեց {len(both_classes)} դաս երկու շաբաթների համար")
-    
-    return G1, G2
+def save_schedule_to_db(schedule: list[dict]) -> None:
+    if not schedule:
+        logger.warning("No records to save")
+        return
 
-# ─────────────────────────────────────────────────────────────────────────
-# 7) Վերջնական դասացուցակի պատրաստում
-# ─────────────────────────────────────────────────────────────────────────
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    try:
+        # Clear old auto-generated schedule
+        cur.execute("DELETE FROM created_schedule")
+        conn.commit()
+
+        # Check table columns
+        cur.execute("SELECT TOP 0 * FROM created_schedule")
+        columns = [col[0].lower() for col in cur.description]
+        logger.info(f"created_schedule columns: {columns}")
+
+        # Add our rows according to available columns
+        for row in schedule:
+            # Main required columns
+            cur.execute("""
+                INSERT INTO created_schedule
+                (level, course, subject, type, mapped_type, teachers, rooms, day_of_week, time_of_day, week_type, preferred_slots)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            row["level"],
+            row["course"],
+            row["subject"],
+            row["type"],
+            row["mapped_type"],       # added mapped_type column
+            row["teachers"],          # JSON string
+            row["rooms"],             # JSON string
+            row["day_of_week"],
+            row["time_of_day"],
+            row["week_type"],
+            row["preferred_slots"]    # added preferred_slots column
+            )
+
+        conn.commit()
+        logger.info("✅ created_schedule table updated")
+    except Exception as exc:
+        conn.rollback()
+        logger.error(f"❌ INSERT error: {exc}")
+        raise
+    finally:
+        conn.close()
 
 def find_conflicts(schedule):
     """
-    Հայտնաբերում է բախումները վերջնական դասացուցակում
+    Finds conflicts in the final schedule
     """
     conflicts = []
     
-    # Դասավորենք դասերն ըստ օր/ժամի
+    # Organize classes by slot
     schedule_by_slot = defaultdict(list)
-    for i, entry in enumerate(schedule):
-        key = (entry["day_of_week"], entry["time_of_day"], entry["week_type"])
-        schedule_by_slot[key].append((i, entry))
     
-    # Ստուգենք բախումները
+    for i, entry in enumerate(schedule):
+        # Check if all required fields are present
+        if all(key in entry for key in ["assigned_day", "assigned_hour", "week_type"]):
+            key = (entry["assigned_day"], entry["assigned_hour"], entry["week_type"])
+            schedule_by_slot[key].append((i, entry))
+    
+    # Check for conflicts
     for slot, entries in schedule_by_slot.items():
         day, hour, week = slot
         
@@ -597,27 +725,38 @@ def find_conflicts(schedule):
                 idx1, entry1 = entries[i]
                 idx2, entry2 = entries[j]
                 
-                # Ստուգենք հնարավոր կոնֆլիկտները
+                # Check possible conflicts
                 conflict_reason = None
                 
-                # 1. Նույն դասախոս, նույն ժամ
-                if any(teacher in json.loads(entry2["teachers"]) for teacher in json.loads(entry1["teachers"])):
-                    conflict_reason = "Դասախոսի բախում"
+                # 1. Same teacher, same time
+                if entry1["teacher"] == entry2["teacher"] and entry1["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
+                    conflict_reason = "Teacher conflict"
                 
-                # 2. Նույն լսարան, նույն ժամ
-                if any(room in json.loads(entry2["rooms"]) for room in json.loads(entry1["rooms"])):
-                    conflict_reason = "Լսարանի բախում"
+                # 2. Same room, same time (now less important as requested)
+                # Only log but don't count as critical conflict
+                if entry1["room"] == entry2["room"] and entry1["room"] not in ["Անորոշ", "Հայտնի չէ"]:
+                    logger.info(f"Room conflict (non-critical): {entry1['room']} for {entry1['subject']} and {entry2['subject']}")
                 
-                # 3. Նույն կուրս, նույն ժամ, բայց տարբեր դասեր
+                # 3. Same course, same time, but different classes
                 if entry1["course"] == entry2["course"]:
-                    # Ստուգենք դասի տիպերի բախումները
-                    type1 = entry1["type"]
-                    type2 = entry2["type"]
+                    # Check for language subject exception
+                    is_language_exception = (
+                        entry1["subject"] in LANGUAGE_SUBJECTS and 
+                        entry2["subject"] in LANGUAGE_SUBJECTS and
+                        entry1["subject"] == entry2["subject"] and
+                        entry1["type"] == "Գործ" and  # Only for "Գործ" type
+                        entry2["type"] == "Գործ" and
+                        entry1["teacher"] != entry2["teacher"]  # Different teachers
+                    )
                     
-                    if type1 in CONFLICTS and type2 in CONFLICTS[type1]:
-                        conflict_reason = f"Խմբերի բախում: {type1}-ը չի կարող համակցվել {type2}-ի հետ"
+                    # If not a language group class, check for conflict
+                    if not is_language_exception:
+                        type1 = entry1["type"]
+                        type2 = entry2["type"]
+                        if type1 in CONFLICTS and type2 in CONFLICTS[type1]:
+                            conflict_reason = f"Group conflict: {type1} cannot be combined with {type2}"
                 
-                # Եթե կա կոնֆլիկտ, ավելացնենք 
+                # If there's a conflict, add it
                 if conflict_reason:
                     conflicts.append({
                         "course1": entry1["course"],
@@ -631,190 +770,89 @@ def find_conflicts(schedule):
                     })
     
     return conflicts
-def prepare_schedule_for_db(G1, G2):
-    """
-    Պատրաստում է վերջնական տվյալներն SQL բազայի համար
-    """
-    schedule = []
-    added_keys = set()
-    
-    # Համարիչ շաբաթվա դասերը
-    for node, data in G1.nodes(data=True):
-        # "Երկուսն էլ" դասերի համար ստուգենք է արդեն ավելացված
-        if data.get("original_week_type") == "երկուսն էլ":
-            key = (
-                data.get("level"),
-                data.get("course"),
-                data.get("subject"),
-                data.get("type"),
-                data.get("teacher"),
-                data.get("room"),
-                data.get("assigned_day"),
-                data.get("assigned_hour")
-            )
-            
-            if key in added_keys:
-                continue
-                
-            added_keys.add(key)
-            data["week_type"] = "երկուսն էլ"
-        
-        # Ստուգենք, որ բոլոր անհրաժեշտ դաշտերը լրացված են
-        if not all(key in data for key in ["assigned_day", "assigned_hour", "week_type"]):
-            logger.warning(f"Բաց թողնված տվյալներ {data.get('subject')}-ի համար")
-            continue
-        
-        # Որոշելու mapped_type-ը
-        class_type = data.get("type", "")
-        mapped_type = TYPE_CATEGORIES.get(class_type, "")
-        
-        # Եթե mapped_type դատարկ է, օգտագործենք class_type-ը կամ լռելյայն "Դաս" արժեքը
-        if not mapped_type:
-            if class_type in ["Դաս", "Գործ", "Լաբ"]:
-                mapped_type = class_type
-            else:
-                # Բոլոր այլ դեպքերի համար՝ լռելյայն "Դաս"
-                mapped_type = "Դաս"
-            logger.info(f"Լռելյայն mapped_type={mapped_type} տրվել է {data.get('subject')}-ին")
-        
-        # Ավելացնենք դասը վերջնական ցուցակին
-        schedule.append({
-            "level": data.get("level"),
-            "course": data.get("course"),
-            "subject": data.get("subject"),
-            "type": class_type,
-            "mapped_type": mapped_type,  # Երաշխավորում ենք, որ այն լրացված է
-            "teachers": json.dumps([data.get("teacher", "")], ensure_ascii=False),
-            "rooms": json.dumps([data.get("room", "")], ensure_ascii=False),
-            "day_of_week": data.get("assigned_day"),
-            "time_of_day": data.get("assigned_hour"),
-            "week_type": data.get("week_type"),
-            "preferred_slots": json.dumps([], ensure_ascii=False)  # Դատարկ preferred_slots
-        })
-    
-    # Հայտարար շաբաթվա դասերը
-    for node, data in G2.nodes(data=True):
-        # Ստուգենք արդեն ավելացված "երկուսն էլ" դասերը
-        if data.get("original_week_type") == "երկուսն էլ":
-            continue  # Արդեն ավելացված են G1-ից
-        
-        # Ստուգենք անհրաժեշտ դաշտերը
-        if not all(key in data for key in ["assigned_day", "assigned_hour", "week_type"]):
-            logger.warning(f"Բաց թողնված տվյալներ {data.get('subject')}-ի համար")
-            continue
-        
-        # Որոշելու mapped_type-ը
-        class_type = data.get("type", "")
-        mapped_type = TYPE_CATEGORIES.get(class_type, "")
-        
-        # Եթե mapped_type դատարկ է, օգտագործենք class_type-ը կամ լռելյայն "Դաս" արժեքը
-        if not mapped_type:
-            if class_type in ["Դաս", "Գործ", "Լաբ"]:
-                mapped_type = class_type
-            else:
-                # Բոլոր այլ դեպքերի համար՝ լռելյայն "Դաս"
-                mapped_type = "Դաս"
-            logger.info(f"Լռելյայն mapped_type={mapped_type} տրվել է {data.get('subject')}-ին")
-        
-        # Ավելացնենք դասը վերջնական ցուցակին
-        schedule.append({
-            "level": data.get("level"),
-            "course": data.get("course"),
-            "subject": data.get("subject"),
-            "type": class_type,
-            "mapped_type": mapped_type,  # Երաշխավորում ենք, որ այն լրացված է
-            "teachers": json.dumps([data.get("teacher", "")], ensure_ascii=False),
-            "rooms": json.dumps([data.get("room", "")], ensure_ascii=False),
-            "day_of_week": data.get("assigned_day"),
-            "time_of_day": data.get("assigned_hour"),
-            "week_type": data.get("week_type"),
-            "preferred_slots": json.dumps([], ensure_ascii=False)
-        })
-    
-    logger.info(f"Պատրաստվել է {len(schedule)} դաս բազայի համար")
-    return schedule
-def save_schedule_to_db(schedule: list[dict]) -> None:
-    if not schedule:
-        logger.warning("Չկա որևէ գրառում պահպանելու համար")
-        return
-
-    conn = get_db_connection()
-    cur = conn.cursor()
-
-    try:
-        # Մաքրում ենք հին ավտոգեներացվածը
-        cur.execute("DELETE FROM created_schedule")
-        conn.commit()
-
-        # Ստուգում ենք աղյուսակի սյունակները
-        cur.execute("SELECT TOP 0 * FROM created_schedule")
-        columns = [col[0].lower() for col in cur.description]
-        logger.info(f"created_schedule սյունակները: {columns}")
-
-        # Ավելացնում ենք մեր տողերը՝ ըստ առկա սյունակների
-        for row in schedule:
-            # Հիմնական պարտադիր սյունակներ
-            cur.execute("""
-                INSERT INTO created_schedule
-                (level, course, subject, type, mapped_type, teachers, rooms, day_of_week, time_of_day, week_type, preferred_slots)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            row["level"],
-            row["course"],
-            row["subject"],
-            row["type"],
-            row["mapped_type"],       # ավելացված է mapped_type սյունակը
-            row["teachers"],          # JSON string
-            row["rooms"],             # JSON string
-            row["day_of_week"],
-            row["time_of_day"],
-            row["week_type"],
-            row["preferred_slots"]    # ավելացված է preferred_slots սյունակը
-            )
-
-        conn.commit()
-        logger.info("✅ created_schedule աղյուսակը թարմացվեց")
-    except Exception as exc:
-        conn.rollback()
-        logger.error(f"❌ INSERT սխալ․ {exc}")
-        raise
-    finally:
-        conn.close()
 
 def main():
-    # 1. Բեռնում ենք դասախոսների հասանելիությունը ու schedule_editable-ը
-    teacher_avail = load_teacher_availability()
-    raw_data      = load_schedule_data()
-
-    # 2. Տարանջատում շաբաթների
-    week1_data, week2_data, both_weeks = split_by_week_type(raw_data)
-
-    # 3. Կոնֆլիկտային գրաֆեր
-    G1 = build_conflict_graph(week1_data, teacher_avail)   # համարիչ
-    G2 = build_conflict_graph(week2_data, teacher_avail)   # հայտարար
-
-    # 4. Ավելացնենք «երկուսն էլ» դասերը երկու գրաֆերում
-    G1, G2 = merge_both_weeks(G1, G2, both_weeks)
-
-    # 5. Օպտիմալ ժամանակային սլոթեր
-    G1 = assign_optimized_time_slots(G1, teacher_avail)
-    G2 = assign_optimized_time_slots(G2, teacher_avail)
-
-    # 6. Վերջնական ցուցակ + գրանցում բազայում
-    final_schedule = prepare_schedule_for_db(G1, G2)
-    save_schedule_to_db(final_schedule)              # ← այստեղ է իրական INSERT-ը
-
-    # 7. Ընդհանուր բախումներ (լոգ / json ֆայլ)
-    clashes = find_conflicts(final_schedule)
-    if clashes:
-        Path("conflicts.json").write_text(
-            json.dumps(clashes, ensure_ascii=False, indent=2),
+    """
+    Main function that sequentially performs schedule creation
+    """
+    try:
+        # 1. Load teacher availability and class data
+        logger.info("Loading data...")
+        teacher_avail = load_teacher_availability()
+        raw_data = load_schedule_data()
+        logger.info(f"Loaded {len(raw_data)} classes")
+        
+        # Count classes by type for better understanding
+        types_count = {}
+        for cls in raw_data:
+            cls_type = cls.get("type", "Unknown")
+            types_count[cls_type] = types_count.get(cls_type, 0) + 1
+        
+        logger.info(f"Class types distribution: {types_count}")
+        
+        # 2. Create schedule for all courses (new approach)
+        logger.info("Creating schedule...")
+        final_schedule = schedule_all_courses(raw_data, teacher_avail)
+        logger.info(f"Created overall schedule with {len(final_schedule)} classes")
+        
+        # Analyze schedule distribution
+        slots_used = set((cls["assigned_day"], cls["assigned_hour"]) for cls in final_schedule)
+        logger.info(f"Schedule uses {len(slots_used)}/20 time slots")
+        
+        # Count classes per day
+        classes_by_day = {}
+        for cls in final_schedule:
+            day = cls["assigned_day"]
+            classes_by_day[day] = classes_by_day.get(day, 0) + 1
+        
+        for day in range(1, 6):
+            logger.info(f"Day {day}: {classes_by_day.get(day, 0)} classes")
+        
+        # 3. Prepare and save results
+        logger.info("Preparing data for database...")
+        db_schedule = prepare_schedule_for_db(final_schedule)
+        
+        # Save raw schedule for debugging if needed
+        Path("schedule_output.json").write_text(
+            json.dumps(final_schedule, ensure_ascii=False, indent=2),
             encoding='utf-8'
         )
+        logger.info("Raw schedule saved to schedule_output.json")
+        
+        logger.info("Saving data to database...")
+        save_schedule_to_db(db_schedule)
+        logger.info(f"Saved {len(db_schedule)} classes to database")
+        
+        # 4. Check for conflicts
+        logger.info("Checking for conflicts...")
+        clashes = find_conflicts(final_schedule)
+        
+        if clashes:
+            Path("conflicts.json").write_text(
+                json.dumps(clashes, ensure_ascii=False, indent=2),
+                encoding='utf-8'
+            )
+            
+            # Count different types of conflicts
+            conflict_types = {}
+            for clash in clashes:
+                issue = clash.get("issue", "Unknown")
+                conflict_types[issue] = conflict_types.get(issue, 0) + 1
+            
+            logger.warning(f"❗️ Found {len(clashes)} conflicts, see ./conflicts.json")
+            logger.warning(f"Conflict types: {conflict_types}")
+        else:
+            logger.info("✅ No conflicts detected")
+        
+        logger.info("Schedule successfully created")
+        return True
+    
+    except Exception as e:
+        logger.error(f"❌ ERROR: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return False
 
-        logger.warning("❗️ Հայտնաբերվել է %d բախում, տես ./conflicts.json", len(clashes))
-    else:
-        logger.info("✅ Բախումներ չեն հայտնաբերվել")
 
 if __name__ == "__main__":
     main()
