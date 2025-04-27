@@ -293,10 +293,10 @@ router.post("/admin/finalize-schedule", async (req, res) => {
       JOIN Weeks w ON w.type = cs.week_type;
     `);
 
-    res.status(200).json({ message: "✅ Դասացուցակը հաջողությամբ հաստատվել է և տեղափոխվել է Schedule աղյուսակ" });
+    res.status(200).json({ message: "Դասացուցակը հաջողությամբ հաստատվել է և տեղափոխվել է Schedule աղյուսակ" });
   } catch (error) {
     console.error("Finalize schedule error:", error);
-    res.status(500).json({ error: "❌ Չհաջողվեց ավարտել դասացուցակի տեղափոխումը" });
+    res.status(500).json({ error: "Չհաջողվեց ավարտել դասացուցակի տեղափոխումը" });
   }
 });
 
