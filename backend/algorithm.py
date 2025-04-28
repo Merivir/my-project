@@ -850,33 +850,534 @@ def try_backtracking(class_data, schedule, result, result_by_slot, teacher_avail
     
     logger.warning(f"Backtracking failed for {class_data['subject']}, using least conflicted slot ({day},{hour})")
     return False, day, hour, get_week_type(hour_index)
-
 def schedule_all_courses(raw_data, teacher_availability):
     """
     Creates schedules for all courses, handling week types correctly
+    and correctly applying the CONFLICTS dictionary to check for type conflicts
     """
     # Split data by week type
     week1_data, week2_data, both_weeks = split_by_week_type(raw_data)
     
-    # Schedule each week separately
+    # Group all data by course for better organization
+    courses_week1 = group_by_course(week1_data)
+    courses_week2 = group_by_course(week2_data)
+    courses_both = group_by_course(both_weeks)
     
-    # 1. Numerator week (week1_data)
-    week1_schedule = improved_schedule_algorithm(week1_data, teacher_availability)
+    # Create empty schedule for all slots
+    schedule = create_empty_schedule()
     
-    # 2. Denominator week (week2_data)
-    week2_schedule = improved_schedule_algorithm(week2_data, teacher_availability)
+    # Track occupied slots by teacher to prevent double-booking
+    occupied_slots_by_teacher = {}
     
-    # 3. Both weeks (both_weeks)
-    both_schedule = improved_schedule_algorithm(both_weeks, teacher_availability)
-    # Mark these classes as for both weeks
-    for cls in both_schedule:
-        cls["week_type"] = "երկուսն էլ"
+    # Final result with assigned slots
+    result = []
     
-    # Combine all schedules
-    final_schedule = week1_schedule + week2_schedule + both_schedule
+    # Process all courses sequentially, starting with "both weeks" classes
+    # since they have the most constraints
+    logger.info("Scheduling 'both weeks' classes first...")
+    for course, classes in courses_both.items():
+        process_course_classes(
+            course, 
+            classes, 
+            "երկուսն էլ", 
+            schedule, 
+            result, 
+            teacher_availability, 
+            occupied_slots_by_teacher
+        )
     
-    return final_schedule
+    # Then process "համարիչ" week classes
+    logger.info("Scheduling 'համարիչ' week classes...")
+    for course, classes in courses_week1.items():
+        process_course_classes(
+            course, 
+            classes, 
+            "համարիչ", 
+            schedule, 
+            result, 
+            teacher_availability, 
+            occupied_slots_by_teacher
+        )
+    
+    # Finally process "հայտարար" week classes
+    logger.info("Scheduling 'հայտարար' week classes...")
+    for course, classes in courses_week2.items():
+        process_course_classes(
+            course, 
+            classes, 
+            "հայտարար", 
+            schedule, 
+            result, 
+            teacher_availability, 
+            occupied_slots_by_teacher
+        )
+    
+    # Log summary statistics
+    slot_counts = {}
+    for class_data in result:
+        slot_key = (class_data["assigned_day"], class_data["assigned_hour"], class_data["week_type"])
+        slot_counts[slot_key] = slot_counts.get(slot_key, 0) + 1
+    
+    filled_slots = len(slot_counts)
+    max_classes = max(slot_counts.values()) if slot_counts else 0
+    avg_classes = sum(slot_counts.values()) / len(slot_counts) if slot_counts else 0
+    
+    logger.info(f"Scheduled {len(result)} classes across {filled_slots} time slots")
+    logger.info(f"Max classes per slot: {max_classes}, Average: {avg_classes:.2f}")
+    
+    # Mark "երկուսն էլ" week classes explicitly
+    for cls in result:
+        if cls["week_type"] == "երկուսն էլ":
+            logger.info(f"Class {cls['subject']} ({cls['type']}) scheduled for both weeks")
+    
+    return result
 
+def process_course_classes(course, classes, week_type, schedule, result, teacher_availability, occupied_slots_by_teacher):
+    """
+    Process all classes for a specific course and week type
+    """
+    logger.info(f"Processing course {course} for {week_type} week")
+    
+    # Sort classes by priority (lectures first, then practicals, then labs)
+    sorted_classes = sorted(classes, key=calculate_class_priority, reverse=True)
+    
+    # Process each class for this course
+    for class_data in sorted_classes:
+        # Get class type for easier reference
+        class_type = class_data["type"]
+        subject = class_data["subject"]
+        
+        logger.info(f"  Scheduling {subject} ({class_type}) for {course}")
+        
+        # First try to find a slot with no conflicts
+        day, hour, success = find_slot_without_type_conflicts(
+            class_data, 
+            schedule, 
+            week_type, 
+            teacher_availability, 
+            occupied_slots_by_teacher
+        )
+        
+        # If no conflict-free slot was found, try resolving conflicts
+        # by trying to move existing classes
+        if not success:
+            logger.info(f"  Could not find conflict-free slot for {subject} ({class_type}), attempting resolution...")
+            day, hour, success = resolve_type_conflicts(
+                class_data, 
+                schedule, 
+                week_type, 
+                result, 
+                teacher_availability, 
+                occupied_slots_by_teacher
+            )
+        
+        # If we still couldn't find a suitable slot, use the least conflicted one
+        if not success:
+            logger.info(f"  Conflict resolution failed for {subject} ({class_type}), using least conflicted slot")
+            day, hour = find_least_conflicted_slot(class_data, schedule, week_type)
+        
+        # Add class to schedule and result
+        add_class_to_schedule(
+            class_data, 
+            day, 
+            hour, 
+            week_type, 
+            schedule, 
+            result, 
+            occupied_slots_by_teacher
+        )
+        
+        logger.info(f"  Scheduled {subject} ({class_type}) at day {day}, hour {hour}")
+
+def check_type_conflict(class1_type, class2_type):
+    """
+    Check if there is a conflict between two class types 
+    using the CONFLICTS dictionary
+    """
+    if class1_type in CONFLICTS and class2_type in CONFLICTS[class1_type]:
+        return True
+    return False
+
+def find_slot_without_type_conflicts(class_data, schedule, week_type, teacher_availability, occupied_slots_by_teacher):
+    """
+    Try to find a slot without any conflicts, prioritizing teacher availability
+    """
+    # Get teacher info
+    teacher = class_data["teacher"]
+    class_type = class_data["type"]
+    course = class_data["course"]
+    
+    # Get all possible slots
+    all_slots = [(day, hour) for day in range(1, 6) for hour in range(1, 5)]
+    
+    # Shuffle slots to improve distribution
+    random.shuffle(all_slots)
+    
+    # Try all slots
+    for day, hour in all_slots:
+        # Skip if teacher is already occupied
+        if teacher not in ["Անորոշ", "Հայտնի չէ"] and (day, hour) in occupied_slots_by_teacher.get(teacher, set()):
+            continue
+        
+        # Skip if teacher is not available at this time
+        if not is_teacher_available(teacher, day, hour, teacher_availability):
+            continue
+        
+        # Check for type conflicts with already scheduled classes for this course
+        conflict_found = False
+        slot_key = (day, hour)
+        
+        for existing_class in schedule[slot_key]:
+            existing_week_type = existing_class.get("week_type", "համարիչ")
+            existing_type = existing_class["type"]
+            
+            # Skip if weeks don't overlap
+            if existing_week_type != week_type and existing_week_type != "երկուսն էլ" and week_type != "երկուսն էլ":
+                continue
+                
+            # If same course, check type conflicts from CONFLICTS dictionary
+            if existing_class["course"] == course:
+                # Special case for language subjects (Խորացված անգլերեն)
+                is_language_exception = (
+                    existing_class["subject"] in LANGUAGE_SUBJECTS and 
+                    class_data["subject"] in LANGUAGE_SUBJECTS and
+                    existing_class["subject"] == class_data["subject"] and
+                    existing_type == "Գործ" and
+                    class_type == "Գործ" and
+                    existing_class["teacher"] != teacher
+                )
+                
+                # Check if types conflict unless it's a language exception
+                if not is_language_exception and check_type_conflict(class_type, existing_type):
+                    logger.info(f"  Type conflict: {class_type} conflicts with {existing_type}")
+                    conflict_found = True
+                    break
+            
+            # Special case - all lecture-type classes conflict with each other regardless of course
+            elif class_type == "Դաս" and existing_type == "Դաս":
+                logger.info(f"  Lecture conflict: {class_data['subject']} with {existing_class['subject']}")
+                conflict_found = True
+                break
+        
+        if not conflict_found:
+            return day, hour, True
+        
+        # If we couldn't move all classes, roll back any moves we made
+        if moved_classes:
+            logger.info(f"  Could not move all classes, rolling back {len(moved_classes)} moves")
+            for move in moved_classes:
+                # Roll back the move
+                remove_from_schedule(move["class"], move["new_day"], move["new_hour"], schedule, occupied_slots_by_teacher)
+                add_to_schedule(move["class"], move["old_day"], move["old_hour"], schedule, occupied_slots_by_teacher)
+    
+    # If we couldn't resolve any slot
+    logger.info("  Could not resolve any conflicts")
+    return None, None, False
+
+def find_alternative_slot(class_data, current_day, current_hour, schedule, week_type, teacher_availability, occupied_slots_by_teacher):
+    """
+    Find an alternative slot for a class that needs to be moved
+    """
+    teacher = class_data["teacher"]
+    class_type = class_data["type"]
+    course = class_data["course"]
+    
+    # Get all possible slots
+    all_slots = [(day, hour) for day in range(1, 6) for hour in range(1, 5)]
+    
+    # Remove current slot
+    if (current_day, current_hour) in all_slots:
+        all_slots.remove((current_day, current_hour))
+    
+    # Shuffle slots to improve distribution
+    random.shuffle(all_slots)
+    
+    # Try all slots
+    for day, hour in all_slots:
+        # Skip if teacher is already occupied
+        if teacher not in ["Անորոշ", "Հայտնի չէ"] and (day, hour) in occupied_slots_by_teacher.get(teacher, set()):
+            continue
+        
+        # Skip if teacher is not available at this time
+        if not is_teacher_available(teacher, day, hour, teacher_availability):
+            continue
+        
+        # Check for conflicts
+        conflict_found = False
+        
+        for existing_class in schedule[(day, hour)]:
+            existing_week_type = existing_class.get("week_type", "համարիչ")
+            existing_type = existing_class["type"]
+            
+            # Skip if weeks don't overlap
+            if existing_week_type != week_type and existing_week_type != "երկուսն էլ" and week_type != "երկուսն էլ":
+                continue
+            
+            # If same course, check type conflicts
+            if existing_class["course"] == course:
+                # Special case for language subjects
+                is_language_exception = (
+                    existing_class["subject"] in LANGUAGE_SUBJECTS and 
+                    class_data["subject"] in LANGUAGE_SUBJECTS and
+                    existing_class["subject"] == class_data["subject"] and
+                    existing_type == "Գործ" and
+                    class_type == "Գործ" and
+                    existing_class["teacher"] != teacher
+                )
+                
+                if not is_language_exception and check_type_conflict(class_type, existing_type):
+                    conflict_found = True
+                    break
+            
+            # Special case - all lecture-type classes conflict with each other
+            elif class_type == "Դաս" and existing_type == "Դաս":
+                conflict_found = True
+                break
+        
+        if not conflict_found:
+            return day, hour, True
+    
+    # No alternative slot found
+    return None, None, False
+
+def find_least_conflicted_slot(class_data, schedule, week_type):
+    """
+    Find the slot with the least conflicts for a class
+    """
+    class_type = class_data["type"]
+    course = class_data["course"]
+    
+    # Track conflicts for each slot
+    slot_conflicts = {}
+    
+    for day in range(1, 6):
+        for hour in range(1, 5):
+            slot_key = (day, hour)
+            conflicts = 0
+            
+            for existing_class in schedule[slot_key]:
+                existing_week_type = existing_class.get("week_type", "համարիչ")
+                
+                # Skip if weeks don't overlap
+                if existing_week_type != week_type and existing_week_type != "երկուսն էլ" and week_type != "երկուսն էլ":
+                    continue
+                
+                # Count type conflicts for the same course
+                if existing_class["course"] == course:
+                    # Special case for language subjects
+                    is_language_exception = (
+                        existing_class["subject"] in LANGUAGE_SUBJECTS and 
+                        class_data["subject"] in LANGUAGE_SUBJECTS and
+                        existing_class["subject"] == class_data["subject"] and
+                        existing_class["type"] == "Գործ" and
+                        class_type == "Գործ" and
+                        existing_class["teacher"] != class_data["teacher"]
+                    )
+                    
+                    if not is_language_exception and check_type_conflict(class_type, existing_class["type"]):
+                        conflicts += 1
+                
+                # Count lecture conflicts
+                elif class_type == "Դաս" and existing_class["type"] == "Դաս":
+                    conflicts += 1
+            
+            slot_conflicts[slot_key] = conflicts
+    
+    # Find the slot with the least conflicts
+    least_conflicted = min(slot_conflicts.items(), key=lambda x: x[1])
+    return least_conflicted[0]
+
+# Helper functions for schedule manipulation
+
+def remove_from_schedule(class_data, day, hour, schedule, occupied_slots_by_teacher):
+    """Remove a class from a schedule slot"""
+    slot_key = (day, hour)
+    if class_data in schedule[slot_key]:
+        schedule[slot_key].remove(class_data)
+    
+    # Update teacher occupied slots
+    teacher = class_data["teacher"]
+    if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+        if slot_key in occupied_slots_by_teacher.get(teacher, set()):
+            occupied_slots_by_teacher[teacher].remove(slot_key)
+
+def add_to_schedule(class_data, day, hour, schedule, occupied_slots_by_teacher):
+    """Add a class to a schedule slot"""
+    slot_key = (day, hour)
+    schedule[slot_key].append(class_data)
+    
+    # Update teacher occupied slots
+    teacher = class_data["teacher"]
+    if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+        occupied_slots_by_teacher.setdefault(teacher, set()).add(slot_key)
+
+def update_result(class_data, old_day, old_hour, new_day, new_hour, result):
+    """Update a class in the result list"""
+    for i, entry in enumerate(result):
+        if (entry.get("id", None) == class_data.get("id", None) or
+            (entry.get("subject") == class_data.get("subject") and
+             entry.get("teacher") == class_data.get("teacher") and
+             entry.get("type") == class_data.get("type") and
+             entry.get("assigned_day") == old_day and
+             entry.get("assigned_hour") == old_hour)):
+            result[i]["assigned_day"] = new_day
+            result[i]["assigned_hour"] = new_hour
+            return True
+    return False
+
+def add_class_to_schedule(class_data, day, hour, week_type, schedule, result, occupied_slots_by_teacher):
+    """
+    Add a class to both schedule and result lists
+    """
+    # Add to schedule
+    slot_key = (day, hour)
+    schedule[slot_key].append(class_data)
+    
+    # Mark teacher's slot as occupied
+    teacher = class_data["teacher"]
+    if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+        occupied_slots_by_teacher.setdefault(teacher, set()).add(slot_key)
+    
+    # Create result entry
+    result_entry = class_data.copy()
+    result_entry.update({
+        "assigned_day": day,
+        "assigned_hour": hour,
+        "week_type": week_type if "week_type" not in class_data else class_data["week_type"]
+    })
+    
+    result.append(result_entry) 
+    
+    # If no suitable slot found
+    return None, None, False
+
+def resolve_type_conflicts(class_data, schedule, week_type, result, teacher_availability, occupied_slots_by_teacher):
+    """
+    Try to resolve conflicts by moving existing classes to make room for the new one
+    """
+    class_type = class_data["type"]
+    course = class_data["course"]
+    logger.info(f"Attempting to resolve conflicts for {class_data['subject']} ({class_type})")
+    
+    # Get all slots with minimal conflicts
+    conflict_slots = []
+    
+    for day in range(1, 6):
+        for hour in range(1, 5):
+            slot_key = (day, hour)
+            
+            # Check teacher availability
+            teacher = class_data["teacher"]
+            if teacher not in ["Անորոշ", "Հայտնի չէ"] and slot_key in occupied_slots_by_teacher.get(teacher, set()):
+                continue
+            
+            if not is_teacher_available(teacher, day, hour, teacher_availability):
+                continue
+            
+            # Find type conflicts in this slot
+            conflicts = []
+            
+            for existing_class in schedule[slot_key]:
+                existing_week_type = existing_class.get("week_type", "համարիչ")
+                existing_type = existing_class["type"]
+                
+                # Skip if weeks don't overlap
+                if existing_week_type != week_type and existing_week_type != "երկուսն էլ" and week_type != "երկուսն էլ":
+                    continue
+                
+                # Check conflicts only for same course
+                if existing_class["course"] == course:
+                    # Special case for language subjects
+                    is_language_exception = (
+                        existing_class["subject"] in LANGUAGE_SUBJECTS and 
+                        class_data["subject"] in LANGUAGE_SUBJECTS and
+                        existing_class["subject"] == class_data["subject"] and
+                        existing_type == "Գործ" and
+                        class_type == "Գործ" and
+                        existing_class["teacher"] != teacher
+                    )
+                    
+                    # If not a language exception and there's a conflict, add to conflicts list
+                    if not is_language_exception and check_type_conflict(class_type, existing_type):
+                        conflicts.append(existing_class)
+                
+                # Special case - all lecture-type classes conflict with each other
+                elif class_type == "Դաս" and existing_type == "Դաս":
+                    conflicts.append(existing_class)
+            
+            # If we found conflicts that might be resolvable
+            if conflicts:
+                # Calculate mobility score for this slot
+                mobility_score = sum([
+                    # Prefer moving lower priority classes
+                    10 - calculate_class_priority(c) + 
+                    # Prefer moving non-lectures if our class is a lecture
+                    (5 if class_type == "Դաս" and c["type"] != "Դաս" else 0) +
+                    # Prefer moving practicals and labs over lectures
+                    (3 if c["type"].startswith("Գործ") or c["type"].startswith("Լաբ") else 0)
+                    for c in conflicts
+                ])
+                
+                conflict_slots.append((day, hour, conflicts, mobility_score))
+    
+    # Sort slots by mobility score (highest first - easiest to resolve)
+    conflict_slots.sort(key=lambda x: x[3], reverse=True)
+    
+    # Try to resolve each slot by moving conflicting classes
+    for day, hour, conflicts, _ in conflict_slots[:5]:  # Try top 5 candidates
+        logger.info(f"  Trying to resolve conflicts at day {day}, hour {hour} with {len(conflicts)} conflicts")
+        
+        # Try moving each conflict class
+        moved_classes = []
+        all_moved = True
+        
+        for conflict_class in conflicts:
+            # Find an alternative slot for this conflict class
+            alt_day, alt_hour, move_success = find_alternative_slot(
+                conflict_class,
+                day,
+                hour,
+                schedule,
+                conflict_class.get("week_type", week_type),
+                teacher_availability,
+                occupied_slots_by_teacher
+            )
+            
+            if move_success:
+                logger.info(f"    Successfully found alternative slot ({alt_day},{alt_hour}) for {conflict_class['subject']}")
+                # Temporarily move the class
+                moved_classes.append({
+                    "class": conflict_class,
+                    "old_day": day,
+                    "old_hour": hour,
+                    "new_day": alt_day,
+                    "new_hour": alt_hour
+                })
+                
+                # Perform the move in the schedule
+                remove_from_schedule(conflict_class, day, hour, schedule, occupied_slots_by_teacher)
+                add_to_schedule(conflict_class, alt_day, alt_hour, schedule, occupied_slots_by_teacher)
+            else:
+                logger.info(f"    Could not find alternative for {conflict_class['subject']} ({conflict_class['type']})")
+                all_moved = False
+                break
+        
+        # If we successfully moved all conflicting classes
+        if all_moved and moved_classes:
+            logger.info(f"  Successfully resolved all conflicts, slot ({day},{hour}) is now available")
+            
+            # Update the result list for all moved classes
+            for move in moved_classes:
+                update_result(
+                    move["class"],
+                    move["old_day"],
+                    move["old_hour"],
+                    move["new_day"],
+                    move["new_hour"],
+                    result
+                )
+            
+            return day, hour,
 # ─────────────────────────────────────────────────────────────────────────
 # 5) Database operations and conflict detection
 # ─────────────────────────────────────────────────────────────────────────
