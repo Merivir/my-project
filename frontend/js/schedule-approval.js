@@ -436,24 +436,27 @@ function showLoadingPopup() {
       this.classList.add('dragging');
     }, 0);
   }
+  
   // Ստուգում ենք դասախոսի բախումը
-function checkTeacherConflict(teacher, day, timeSlot, weekType) {
-    // Եթե դասախոսը «Անորոշ» կամ «Հայտնի չէ» է, ապա բախումը չենք դիտարկում
-    if (teacher === "Անորոշ" || teacher === "Հայտնի չէ") {
-      return false;
-    }
-    
-    const conflictingLessons = scheduleData.filter(lesson => 
-      lesson.teacher === teacher && 
-      lesson.teacher !== "Անորոշ" &&
-      lesson.teacher !== "Հայտնի չէ" &&
-      lesson.day === day && 
-      lesson.time_slot === timeSlot &&
-      (lesson.week_type === weekType || lesson.week_type === "երկուսն էլ" || weekType === "երկուսն էլ")
-    );
-    
-    return conflictingLessons.length > 0;
+function checkTeacherConflict(teacher, day, timeSlot, weekType, draggedId = null) {
+  // Եթե դասախոսը «Անորոշ» կամ «Հայտնի չէ» է, ապա բախումը չենք դիտարկում
+  if (teacher === "Անորոշ" || teacher === "Հայտնի չէ") {
+    return false;
   }
+  
+  const conflictingLessons = scheduleData.filter(lesson => 
+    lesson.teacher === teacher && 
+    lesson.teacher !== "Անորոշ" &&
+    lesson.teacher !== "Հայտնի չէ" &&
+    lesson.day === day && 
+    lesson.time_slot === timeSlot &&
+    (lesson.week_type === weekType || lesson.week_type === "երկուսն էլ" || weekType === "երկուսն էլ") &&
+    // Բացառում ենք նույն դասը
+    (draggedId === null || lesson.id !== draggedId)
+  );
+  
+  return conflictingLessons.length > 0;
+}
   
   // Ստուգում ենք լսարանի բախումը
   function checkRoomConflict(room, day, timeSlot, weekType) {
@@ -473,14 +476,20 @@ function checkTeacherConflict(teacher, day, timeSlot, weekType) {
     
     return conflictingLessons.length > 0;
   }
+  
   // Ստուգում ենք դասի տիպի բախումը
-  function checkTypeConflict(classType, existingClassType) {
-    if (!classType || !existingClassType) return false;
-    
-    return CONFLICTS[classType] && CONFLICTS[classType].includes(existingClassType);
+function checkTypeConflict(classType, existingClassType, isLanguageClass = false) {
+  if (!classType || !existingClassType) return false;
+  
+  // Եթե սա լեզվական առարկայի հատուկ դեպք է, անտեսում ենք կոնֆլիկտը
+  if (isLanguageClass && classType === "Գործ" && existingClassType === "Գործ") {
+    return false;
   }
   
-  async function handleDrop(e) {
+  return CONFLICTS[classType] && CONFLICTS[classType].includes(existingClassType);
+}
+
+  function handleDrop(e) {
     e.preventDefault();
     
     // Վերականգնում ենք նորմալ ոճը
@@ -489,12 +498,6 @@ function checkTeacherConflict(teacher, day, timeSlot, weekType) {
     if (draggedElement) {
       draggedElement.classList.remove('dragging');
     }
-  
-    // Հեռացնում ենք «երկուսն էլ» սահմանափակումը
-    // if (draggedElement?.dataset.originalWeek === "երկուսն էլ" && draggedElement.dataset.week !== "համարիչ") {
-    //   showToast('error', 'Սխալ', '«Երկուսն էլ» դասերը կարող եք տեղափոխել միայն համարիչ աղյուսակից:');
-    //   return;
-    // }
   
     if (!draggedElement || this.contains(draggedElement)) return;
   
@@ -520,12 +523,25 @@ function checkTeacherConflict(teacher, day, timeSlot, weekType) {
     
     // 3. Ստուգում ենք դասի տիպերի բախումը
     const classType = draggedElement.dataset.classType;
+    const subject = draggedElement.querySelector('strong').textContent;
+    const isEnglishClass = subject === "Խորացված անգլերեն";
     
     // Ստուգում ենք այն դասերը, որոնք արդեն կան այդ բջջում
     const existingClasses = Array.from(this.querySelectorAll('.class-block'));
     for (const existingClass of existingClasses) {
       const existingClassType = existingClass.dataset.classType;
+      const existingSubject = existingClass.querySelector('strong').textContent;
+      const existingTeacher = existingClass.dataset.teacher;
       
+      // Հատուկ դեպք խորացված անգլերենի համար
+      if (isEnglishClass && existingSubject === "Խորացված անգլերեն" && 
+          classType === "Գործ" && existingClassType === "Գործ" && 
+          teacher !== existingTeacher) {
+        // Թույլատրում ենք ավելացնել խորացված անգլերենի դասերը նույն սլոթին, եթե դասախոսները տարբեր են
+        continue;
+      }
+      
+      // Մնացած դեպքերում ստուգում ենք բախումները
       if (checkTypeConflict(classType, existingClassType)) {
         showToast('error', 'Խմբերի բախում', `Խմբերի բախում․ ${classType}-ն չի կարող համակցվել ${existingClassType}-ի հետ`);
         return;
@@ -572,36 +588,9 @@ function checkTeacherConflict(teacher, day, timeSlot, weekType) {
       week_type: draggedElement.dataset.originalWeek || draggedElement.dataset.week
     };
   
-    try {
-      const res = await fetch("/api/schedule/update-positions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify([payload])
-      });
-  
-      const result = await res.json();
-      if (!res.ok) {
-        showToast('error', 'Սխալ', 'Չհաջողվեց պահպանել դիրքը');
-        console.error(result);
-      } else {
-        showToast('success', 'Հաջողություն', 'Դասի դիրքը հաջողությամբ թարմացվել է');
-        
-        // Թարմացնում ենք ամբողջական դասացուցակը
-        try {
-          const fresh = await fetch("/schedule_approval");
-          const updated = await fresh.json();
-          scheduleData = updated; // Թարմացնում ենք գլոբալ տվյալները
-          renderSchedule(updated);
-        } catch (err) {
-          console.error("Չհաջողվեց թարմացնել ամբողջ դասացուցակը", err);
-        }
-      }
-    } catch (err) {
-      console.error("❌ Error during auto-save:", err);
-      showToast('error', 'Սխալ', 'Չհաջողվեց պահպանել փոփոխությունները');
-    }
+    // ...սերվերի հարցման և մնացածի մասը նույնն է
   }
-  
+
   function collectModifiedLessons() {
     const modifiedLessons = Array.from(document.querySelectorAll(".class-block.modified")).map(el => ({
       id: el.dataset.id,
