@@ -486,24 +486,21 @@ def find_suitable_slot(class_data, schedule, teacher_availability, occupied_slot
     
     logger.warning(f"No ideal slot found for {class_data['subject']} ({class_data['type']}), using least conflicted slot ({day},{hour})")
     return day, hour, get_week_type(hour_index)
-
 def improved_schedule_algorithm(all_classes, teacher_availability):
     """
-    Main scheduling function that follows the simplified approach:
-    1. Sort classes by priority
-    2. For each class, try to find a suitable slot
-    3. Add the class to the schedule
-    
-    The algorithm tries to evenly distribute classes across all available time slots
-    while respecting constraints.
+    Բարելավված ալգորիթմ հետևյալ մոտեցմամբ:
+    1. Դասավորել դասերը ըստ առաջնահերթության
+    2. Յուրաքանչյուր դասի համար փորձել գտնել հարմար սլոթ
+    3. Եթե հարմար սլոթ չի գտնվում, փորձել վերադասավորել արդեն գոյություն ունեցող դասերը
+    4. Ավելացնել դասը ժամանակացույցին
     """
-    # Create empty schedule
+    # Ստեղծել դատարկ ժամանակացույց
     schedule = create_empty_schedule()
     
-    # Track occupied slots by teacher to prevent conflicts
+    # Հետևել դասախոսների զբաղված սլոթներին
     occupied_slots_by_teacher = {}
     
-    # Set up conflict tracking for diagnostics
+    # Հաշվել բախումները դիագնոստիկայի համար
     conflict_stats = {
         "teacher_conflict": 0,
         "availability_conflict": 0,
@@ -511,14 +508,16 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
         "lecture_conflict": 0,
         "subject_teacher_conflict": 0,
         "all_slots_failed": 0,
-        "most_conflicted_slots": []
+        "most_conflicted_slots": [],
+        "backtracking_attempts": 0,
+        "successful_backtracking": 0
     }
     
-    # Calculate priority for each class and sort
+    # Հաշվել առաջնահերթությունը յուրաքանչյուր դասի համար և դասավորել
     classes_with_priority = [(cls, calculate_class_priority(cls)) for cls in all_classes]
     sorted_classes = sorted(classes_with_priority, key=lambda x: x[1], reverse=True)
     
-    # Group classes by course for better distribution
+    # Խմբավորել դասերը ըստ առարկայի՝ ավելի լավ բաշխման համար
     courses = {}
     for class_data, priority in sorted_classes:
         course = class_data["course"]
@@ -526,23 +525,25 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
             courses[course] = []
         courses[course].append((class_data, priority))
     
-    # Final result with assigned slots
+    # Վերջնական արդյունք՝ նշանակված սլոթներով
     result = []
+    # Պահել դասերի ինդեքսները ըստ սլոթների՝ վերադասավորման համար
+    result_by_slot = {(day, hour): [] for day in range(1, 6) for hour in range(1, 5)}
     
-    # Process each course separately to ensure better distribution
+    # Մշակել յուրաքանչյուր դասընթացը առանձին՝ ավելի լավ բաշխում ապահովելու համար
     for course, course_classes in courses.items():
         logger.info(f"Scheduling classes for course: {course}")
         
-        # Sort classes within each course by priority
+        # Դասավորել դասերը յուրաքանչյուր դասընթացի մեջ ըստ առաջնահերթության
         course_classes.sort(key=lambda x: x[1], reverse=True)
         
-        # Track slots used by this course to promote spreading
+        # Հետևել այս դասընթացի կողմից օգտագործված սլոթներին
         course_slots_used = set()
         
-        # Process each class for this course
+        # Մշակել յուրաքանչյուր դաս այս դասընթացի համար
         for class_data, priority in course_classes:
-            # Find suitable slot
-            day, hour, week_type = find_suitable_slot(
+            # Փորձել տեղավորել դասը առանց վերադասավորման
+            slot_found, day, hour, week_type = try_find_slot(
                 class_data, 
                 schedule, 
                 teacher_availability,
@@ -550,15 +551,40 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
                 conflict_stats
             )
             
-            # Preserve the original week_type if it exists, otherwise use the calculated one
+            # Եթե սլոթ չի գտնվել, փորձել վերադասավորել արդեն գոյություն ունեցող դասերը
+            if not slot_found:
+                logger.info(f"Attempting backtracking for {class_data['subject']} ({class_data['type']})")
+                conflict_stats["backtracking_attempts"] += 1
+                
+                # Փորձել վերադասավորում՝ առաջնահերթությունը հաշվի առնելով
+                slot_found, day, hour, week_type = try_backtracking(
+                    class_data,
+                    schedule,
+                    result,
+                    result_by_slot,
+                    teacher_availability,
+                    occupied_slots_by_teacher,
+                    conflict_stats
+                )
+                
+                if slot_found:
+                    conflict_stats["successful_backtracking"] += 1
+                    logger.info(f"Backtracking successful for {class_data['subject']}")
+            
+            # Պահպանել սկզբնական week_type-ը, եթե այն գոյություն ունի
             if "week_type" in class_data:
                 week_type = class_data["week_type"]
             
-            # Add to schedule for conflict checking
+            # Ավելացնել ժամանակացույցին՝ բախումների ստուգման համար
             schedule[(day, hour)].append(class_data)
             course_slots_used.add((day, hour))
             
-            # Prepare result entry
+            # Դասախոսի սլոթը նշել որպես զբաղված
+            teacher = class_data["teacher"]
+            if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+                occupied_slots_by_teacher.setdefault(teacher, set()).add((day, hour))
+            
+            # Պատրաստել արդյունքի գրառումը
             result_entry = class_data.copy()
             result_entry.update({
                 "assigned_day": day,
@@ -566,9 +592,12 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
                 "week_type": week_type
             })
             
+            # Պահպանել արդյունքը և ինդեքսը
+            result_index = len(result)
             result.append(result_entry)
+            result_by_slot[(day, hour)].append(result_index)
     
-    # Log slot distribution statistics
+    # Գրանցել սլոթերի բաշխման վիճակագրությունը
     slot_counts = {slot: len(classes) for slot, classes in schedule.items()}
     filled_slots = sum(1 for count in slot_counts.values() if count > 0)
     max_classes = max(slot_counts.values()) if slot_counts else 0
@@ -579,6 +608,248 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
     logger.info(f"Conflict stats: {conflict_stats}")
     
     return result
+
+def try_find_slot(class_data, schedule, teacher_availability, occupied_slots_by_teacher, conflict_stats=None):
+    """
+    Փորձում է գտնել հարմար սլոթ դասի համար:
+    - Փորձում է 20 սլոթներից յուրաքանչյուրը
+    - Ստուգում է դասախոսի հասանելիությունը և դասի տիպի բախումները
+    - Վերադարձնում է (գտնվել_է, օր, ժամ, շաբաթի_տիպ) քառյակ
+    """
+    # Վերցնել բոլոր սլոթները, բայց խառնել բաշխումը բարելավելու համար
+    all_slots = [(day, hour) for day in range(1, 6) for hour in range(1, 5)]
+    random.shuffle(all_slots)
+    
+    # Սկզբնավորել բախումների հաշվիչը, եթե վիճակագրություն է հարկավոր
+    if conflict_stats is not None:
+        slot_conflicts = {slot: 0 for slot in all_slots}
+    
+    # Փորձել բոլոր 20 սլոթները
+    for slot in all_slots:
+        day, hour = slot
+        
+        # Ստուգել, արդյոք այս դասախոսն արդեն զբաղված է այս ժամին
+        teacher = class_data["teacher"]
+        if teacher not in ["Անորոշ", "Հայտնի չէ"] and slot in occupied_slots_by_teacher.get(teacher, set()):
+            if conflict_stats is not None:
+                conflict_stats["teacher_conflict"] += 1
+                slot_conflicts[slot] += 1
+            continue
+        
+        # Ստուգել դասախոսի հասանելիությունը նախապատվության տվյալներից
+        if not is_teacher_available(teacher, day, hour, teacher_availability):
+            if conflict_stats is not None:
+                conflict_stats["availability_conflict"] += 1
+                slot_conflicts[slot] += 1
+            continue
+        
+        # Ստուգել արդեն նշանակված դասերի հետ տիպի բախումները
+        conflict_found = False
+        
+        for existing_class in schedule[slot]:
+            # Տիպ 1: Ստուգել նույն առարկայի բախումները
+            if existing_class["course"] == class_data["course"]:
+                # Հատուկ դեպք լեզվի առարկաների համար
+                is_language_exception = (
+                    existing_class["subject"] in LANGUAGE_SUBJECTS and 
+                    class_data["subject"] in LANGUAGE_SUBJECTS and
+                    existing_class["subject"] == class_data["subject"] and
+                    existing_class["type"] == "Գործ" and
+                    class_data["type"] == "Գործ" and
+                    existing_class["teacher"] != class_data["teacher"]
+                )
+                
+                # Եթե չի լեզվի բացառություն, ստուգել տիպի բախում
+                if not is_language_exception and check_type_conflict(class_data["type"], existing_class["type"]):
+                    conflict_found = True
+                    if conflict_stats is not None:
+                        conflict_stats["same_course_type_conflict"] += 1
+                    break
+            
+            # Տիպ 2: Հատուկ դեպք - բոլոր "Դաս" տիպի դասերը բախվում են միմյանց հետ
+            elif class_data["type"] == "Դաս" and existing_class["type"] == "Դաս":
+                conflict_found = True
+                if conflict_stats is not None:
+                    conflict_stats["lecture_conflict"] += 1
+                break
+                
+            # Տիպ 3: Ստուգել նույն առարկայի և դասախոսի համար
+            elif (class_data["subject"] == existing_class["subject"] and 
+                  class_data["teacher"] == existing_class["teacher"] and 
+                  class_data["teacher"] not in ["Անորոշ", "Հայտնի չէ"]):
+                conflict_found = True
+                if conflict_stats is not None:
+                    conflict_stats["subject_teacher_conflict"] += 1
+                break
+        
+        if not conflict_found:
+            # Սլոթը հարմար է, վերադարձնել
+            hour_index = (day - 1) * 4 + (hour - 1)  # Հաշվել ինդեքսը շաբաթվա տիպը որոշելու համար
+            return True, day, hour, get_week_type(hour_index)
+    
+    # Եթե բախումների վիճակագրություն է հավաքվել, գրանցել ամենաշատ բախում ունեցող սլոթները
+    if conflict_stats is not None:
+        conflict_stats["all_slots_failed"] += 1
+        most_conflicted = sorted(slot_conflicts.items(), key=lambda x: x[1], reverse=True)[:5]
+        conflict_stats["most_conflicted_slots"].append(most_conflicted)
+    
+    # Եթե հարմար սլոթ չի գտնվել բոլոր 20 հնարավորություններից հետո,
+    # Գտնել նվազագույն բախումներ ունեցող սլոթը
+    least_conflicted_slot = min(all_slots, key=lambda s: len(schedule[s]))
+    day, hour = least_conflicted_slot
+    hour_index = (day - 1) * 4 + (hour - 1)
+    
+    logger.warning(f"No ideal slot found for {class_data['subject']} ({class_data['type']}), using least conflicted slot ({day},{hour})")
+    return False, day, hour, get_week_type(hour_index)
+
+def try_backtracking(class_data, schedule, result, result_by_slot, teacher_availability, occupied_slots_by_teacher, conflict_stats):
+    """
+    Փորձում է վերադասավորել արդեն նշանակված դասերը՝ տեղ ազատելու համար նոր դասի համար
+    Վերադարձնում է (հաջողվել_է, օր, ժամ, շաբաթվա_տիպ) քառյակ
+    """
+    # Գտնել պոտենցիալ սլոթներ հիմնական բախումներով
+    potential_slots = []
+    
+    # Վերցնել բոլոր սլոթները հերթականությամբ, բայց խառնել դրանք
+    all_slots = [(day, hour) for day in range(1, 6) for hour in range(1, 5)]
+    random.shuffle(all_slots)
+    
+    for slot in all_slots:
+        day, hour = slot
+        conflicts = []
+        
+        # Ստուգել դասախոսի բախումները
+        teacher = class_data["teacher"]
+        if teacher not in ["Անորոշ", "Հայտնի չէ"] and slot in occupied_slots_by_teacher.get(teacher, set()):
+            conflicts.append("teacher")
+            
+        # Ստուգել դասի տիպի բախումները
+        for existing_class in schedule[slot]:
+            # Նույն առարկայի դեպքում
+            if existing_class["course"] == class_data["course"]:
+                is_language_exception = (
+                    existing_class["subject"] in LANGUAGE_SUBJECTS and 
+                    class_data["subject"] in LANGUAGE_SUBJECTS and
+                    existing_class["subject"] == class_data["subject"] and
+                    existing_class["type"] == "Գործ" and
+                    class_data["type"] == "Գործ" and
+                    existing_class["teacher"] != class_data["teacher"]
+                )
+                
+                if not is_language_exception and check_type_conflict(class_data["type"], existing_class["type"]):
+                    conflicts.append("course_type")
+                    
+            # Բոլոր դասախոսությունները բախվում են միմյանց հետ
+            elif class_data["type"] == "Դաս" and existing_class["type"] == "Դաս":
+                conflicts.append("lecture")
+                
+            # Նույն առարկա և դասախոս
+            elif (class_data["subject"] == existing_class["subject"] and 
+                  class_data["teacher"] == existing_class["teacher"] and 
+                  class_data["teacher"] not in ["Անորոշ", "Հայտնի չէ"]):
+                conflicts.append("subject_teacher")
+        
+        # Եթե չկան բախումներ
+        if not conflicts:
+            # Անմիջապես վերադարձնել այս սլոթը
+            hour_index = (day - 1) * 4 + (hour - 1)
+            return True, day, hour, get_week_type(hour_index)
+        else:
+            # Պահել սլոթը և բախումները
+            potential_slots.append((slot, conflicts, len(schedule[slot])))
+    
+    # Դասավորել սլոթները՝ ըստ բախումների քանակի (նվազման կարգով)
+    # և արդեն նշանակված դասերի քանակի (նվազման կարգով)
+    potential_slots.sort(key=lambda x: (len(x[1]), x[2]))
+    
+    # Առաջնահերթության ցածր արժեք ունեցող դասերը, որոնք կարող են տեղափոխվել
+    MAX_CLASSES_TO_MOVE = 2  # Առավելագույնը քանի դաս կփորձենք տեղափոխել
+    MAX_BACKTRACKING_DEPTH = 3  # Առավելագույնը որքան խորությամբ կփորձենք վերադասավորել
+    
+    # Փորձել յուրաքանչյուր պոտենցիալ սլոթ
+    for slot, conflicts, slot_class_count in potential_slots[:5]:  # Սահմանափակել փորձարկումները 5-ով
+        day, hour = slot
+        
+        # Գտնել տվյալ սլոթում դասերը, որոնք կարող են տեղափոխվել (ըստ արդյունքի ինդեքսի)
+        classes_to_move = []
+        for idx in result_by_slot[slot]:
+            classes_to_move.append((idx, calculate_class_priority(result[idx])))
+        
+        # Դասավորել ըստ առաջնահերթության (ցածրից բարձր)
+        classes_to_move.sort(key=lambda x: x[1])
+        
+        # Փորձել տեղափոխել ցածր առաջնահերթություն ունեցող դասերը
+        for idx, _ in classes_to_move[:MAX_CLASSES_TO_MOVE]:
+            class_to_move = result[idx]
+            old_day = class_to_move["assigned_day"]
+            old_hour = class_to_move["assigned_hour"]
+            
+            # Հեռացնել դասը ժամանակավորապես
+            temp_class = class_to_move.copy()
+            schedule[(old_day, old_hour)].remove(temp_class)
+            
+            # Հեռացնել ինդեքսը
+            result_by_slot[(old_day, old_hour)].remove(idx)
+            
+            # Ազատել դասախոսի սլոթը
+            if temp_class["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
+                if (old_day, old_hour) in occupied_slots_by_teacher.get(temp_class["teacher"], set()):
+                    occupied_slots_by_teacher[temp_class["teacher"]].remove((old_day, old_hour))
+            
+            # Փորձել գտնել նոր սլոթ հեռացված դասի համար
+            success, new_day, new_hour, new_week_type = try_find_slot(
+                temp_class,
+                schedule,
+                teacher_availability,
+                occupied_slots_by_teacher,
+                conflict_stats
+            )
+            
+            # Փորձել ավելացնել մեր նոր դասը (class_data) այժմ ազատված սլոթում
+            class_data_copy = class_data.copy()
+            slot_free, _, _, _ = try_find_slot(
+                class_data_copy,
+                schedule,
+                teacher_availability,
+                occupied_slots_by_teacher,
+                conflict_stats
+            )
+            
+            if slot_free:
+                # Եթե հաջողվել է, թարմացնել հեռացված դասը նոր սլոթով
+                result[idx]["assigned_day"] = new_day
+                result[idx]["assigned_hour"] = new_hour
+                result[idx]["week_type"] = new_week_type if "week_type" not in temp_class else temp_class["week_type"]
+                
+                # Թարմացնել ժամանակացույցը
+                schedule[(new_day, new_hour)].append(temp_class)
+                result_by_slot[(new_day, new_hour)].append(idx)
+                
+                # Նշանակել դասախոսի նոր սլոթը
+                if temp_class["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
+                    occupied_slots_by_teacher.setdefault(temp_class["teacher"], set()).add((new_day, new_hour))
+                
+                logger.info(f"Successfully moved {temp_class['subject']} from ({old_day},{old_hour}) to ({new_day},{new_hour})")
+                
+                # Վերադարձնել հաջողված բակտրեքինգի արդյունքը
+                hour_index = (day - 1) * 4 + (hour - 1)
+                return True, day, hour, get_week_type(hour_index)
+            else:
+                # Վերադարձնել ժամանակացույցը նախկին վիճակին
+                schedule[(old_day, old_hour)].append(temp_class)
+                result_by_slot[(old_day, old_hour)].append(idx)
+                
+                # Վերականգնել դասախոսի սլոթը
+                if temp_class["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
+                    occupied_slots_by_teacher.setdefault(temp_class["teacher"], set()).add((old_day, old_hour))
+    
+    # Եթե բակտրեքինգը չի հաջողվել, վերադարձնել լավագույն սլոթը
+    least_conflicted_slot = min(all_slots, key=lambda s: len(schedule[s]))
+    day, hour = least_conflicted_slot
+    hour_index = (day - 1) * 4 + (hour - 1)
+    
+    logger.warning(f"Backtracking failed for {class_data['subject']}, using least conflicted slot ({day},{hour})")
+    return False, day, hour, get_week_type(hour_index)
 
 def schedule_all_courses(raw_data, teacher_availability):
     """
