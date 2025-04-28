@@ -458,139 +458,199 @@ function checkTeacherConflict(teacher, day, timeSlot, weekType, draggedId = null
   return conflictingLessons.length > 0;
 }
   
-  // Ստուգում ենք լսարանի բախումը
-  function checkRoomConflict(room, day, timeSlot, weekType) {
-    // Եթե լսարանը «Անորոշ» կամ «Հայտնի չէ» է, ապա բախումը չենք դիտարկում
-    if (room === "Անորոշ" || room === "Հայտնի չէ") {
-      return false;
-    }
-    
-    const conflictingLessons = scheduleData.filter(lesson => 
-      lesson.room === room && 
-      lesson.room !== "Անորոշ" &&
-      lesson.room !== "Հայտնի չէ" &&
-      lesson.day === day && 
-      lesson.time_slot === timeSlot &&
-      (lesson.week_type === weekType || lesson.week_type === "երկուսն էլ" || weekType === "երկուսն էլ")
-    );
-    
-    return conflictingLessons.length > 0;
+// handleDrop ֆունկցիայի թարմացված տարբերակը
+function handleDrop(e) {
+  e.preventDefault();
+  
+  // Վերականգնում ենք նորմալ ոճը
+  this.style.backgroundColor = "";
+  
+  if (draggedElement) {
+    draggedElement.classList.remove('dragging');
   }
-  
-  // Ստուգում ենք դասի տիպի բախումը
-function checkTypeConflict(classType, existingClassType, isLanguageClass = false) {
-  if (!classType || !existingClassType) return false;
-  
-  // Եթե սա լեզվական առարկայի հատուկ դեպք է, անտեսում ենք կոնֆլիկտը
-  if (isLanguageClass && classType === "Գործ" && existingClassType === "Գործ") {
-    return false;
-  }
-  
-  return CONFLICTS[classType] && CONFLICTS[classType].includes(existingClassType);
-}
 
-  function handleDrop(e) {
-    e.preventDefault();
+  if (!draggedElement || this.contains(draggedElement)) return;
+
+  const newDay = this.dataset.day;
+  const newSlot = this.dataset.slot;
+  const newWeekType = this.dataset.weekType;
+  const draggedId = draggedElement.dataset.id;
+  
+  // Բախման ստուգումներ
+  
+  // 1. Ստուգում ենք դասախոսի բախումը
+  const teacher = draggedElement.dataset.teacher;
+  if (checkTeacherConflict(teacher, newDay, newSlot, newWeekType, draggedId)) {
+    showToast('error', 'Դասախոսի բախում', 'Դասախոսը արդեն այդ ժամին դաս ունի');
+    return;
+  }
+  
+  // 2. Ստուգում ենք լսարանի բախումը
+  const room = draggedElement.dataset.room;
+  if (checkRoomConflict(room, newDay, newSlot, newWeekType)) {
+    showToast('error', 'Լսարանի բախում', 'Լսարանը զբաղված է տվյալ ժամին');
+    return;
+  }
+  
+  // 3. Ստուգում ենք դասի տիպերի բախումը
+  const classType = draggedElement.dataset.classType;
+  const subject = draggedElement.querySelector('strong').textContent;
+  const isEnglishClass = subject === "Խորացված անգլերեն";
+  
+  // Ստուգում ենք այն դասերը, որոնք արդեն կան այդ բջջում
+  const existingClasses = Array.from(this.querySelectorAll('.class-block'));
+  for (const existingClass of existingClasses) {
+    const existingClassType = existingClass.dataset.classType;
+    const existingSubject = existingClass.querySelector('strong').textContent;
+    const existingTeacher = existingClass.dataset.teacher;
     
-    // Վերականգնում ենք նորմալ ոճը
-    this.style.backgroundColor = "";
-    
-    if (draggedElement) {
-      draggedElement.classList.remove('dragging');
+    // Հատուկ դեպք խորացված անգլերենի համար
+    if (isEnglishClass && existingSubject === "Խորացված անգլերեն" && 
+        classType === "Գործ" && existingClassType === "Գործ" && 
+        teacher !== existingTeacher) {
+      // Թույլատրում ենք ավելացնել խորացված անգլերենի դասերը նույն սլոթին, եթե դասախոսները տարբեր են
+      continue;
     }
-  
-    if (!draggedElement || this.contains(draggedElement)) return;
-  
-    const newDay = this.dataset.day;
-    const newSlot = this.dataset.slot;
-    const newWeekType = this.dataset.weekType;
     
-    // Բախման ստուգումներ
-    
-    // 1. Ստուգում ենք դասախոսի բախումը
-    const teacher = draggedElement.dataset.teacher;
-    if (checkTeacherConflict(teacher, newDay, newSlot, newWeekType)) {
-      showToast('error', 'Դասախոսի բախում', 'Դասախոսը արդեն այդ ժամին դաս ունի');
+    // Մնացած դեպքերում ստուգում ենք բախումները
+    if (checkTypeConflict(classType, existingClassType)) {
+      showToast('error', 'Խմբերի բախում', `Խմբերի բախում․ ${classType}-ն չի կարող համակցվել ${existingClassType}-ի հետ`);
       return;
     }
-    
-    // 2. Ստուգում ենք լսարանի բախումը
-    const room = draggedElement.dataset.room;
-    if (checkRoomConflict(room, newDay, newSlot, newWeekType)) {
-      showToast('error', 'Լսարանի բախում', 'Լսարանը զբաղված է տվյալ ժամին');
-      return;
-    }
-    
-    // 3. Ստուգում ենք դասի տիպերի բախումը
-    const classType = draggedElement.dataset.classType;
-    const subject = draggedElement.querySelector('strong').textContent;
-    const isEnglishClass = subject === "Խորացված անգլերեն";
-    
-    // Ստուգում ենք այն դասերը, որոնք արդեն կան այդ բջջում
-    const existingClasses = Array.from(this.querySelectorAll('.class-block'));
-    for (const existingClass of existingClasses) {
-      const existingClassType = existingClass.dataset.classType;
-      const existingSubject = existingClass.querySelector('strong').textContent;
-      const existingTeacher = existingClass.dataset.teacher;
-      
-      // Հատուկ դեպք խորացված անգլերենի համար
-      if (isEnglishClass && existingSubject === "Խորացված անգլերեն" && 
-          classType === "Գործ" && existingClassType === "Գործ" && 
-          teacher !== existingTeacher) {
-        // Թույլատրում ենք ավելացնել խորացված անգլերենի դասերը նույն սլոթին, եթե դասախոսները տարբեր են
-        continue;
-      }
-      
-      // Մնացած դեպքերում ստուգում ենք բախումները
-      if (checkTypeConflict(classType, existingClassType)) {
-        showToast('error', 'Խմբերի բախում', `Խմբերի բախում․ ${classType}-ն չի կարող համակցվել ${existingClassType}-ի հետ`);
-        return;
-      }
-    }
+  }
+
+  // Թարմացնում ենք էլեմենտի տվյալները
+  draggedElement.dataset.day = newDay;
+  draggedElement.dataset.slot = newSlot;
+  draggedElement.classList.add("modified");
   
-    draggedElement.dataset.day = newDay;
-    draggedElement.dataset.slot = newSlot;
-    draggedElement.classList.add("modified");
-    
-    // Ավելացնում ենք անիմացիա
-    draggedElement.style.animation = 'none';
-    setTimeout(() => {
-      draggedElement.style.animation = '';
-    }, 10);
-    
-    this.appendChild(draggedElement);
+  // Ավելացնում ենք անիմացիա
+  draggedElement.style.animation = 'none';
+  setTimeout(() => {
+    draggedElement.style.animation = '';
+  }, 10);
   
-    const id = draggedElement.dataset.id;
-    if (window._dualWeekLessonsMap?.has(id)) {
-      const related = window._dualWeekLessonsMap.get(id);
-      related.forEach(copy => {
+  this.appendChild(draggedElement);
+
+  const id = draggedElement.dataset.id;
+  const originalWeekType = draggedElement.dataset.originalWeek;
+  
+  // Համապատասխան փոփոխությունները նաև հակառակ շաբաթում, եթե դասը "երկուսն էլ" տիպի է
+  if (window._dualWeekLessonsMap?.has(id)) {
+    const related = window._dualWeekLessonsMap.get(id);
+    related.forEach(copy => {
+      if(copy !== draggedElement) { // Միայն եթե տարբեր օբյեկտներ են
         copy.dataset.day = newDay;
         copy.dataset.slot = newSlot;
         copy.innerHTML = draggedElement.innerHTML;
         copy.classList.add("modified");
-  
-        const cellId = `cell-${newDay}-${newSlot}-${copy.dataset.course}-${copy.dataset.week}`;
+
+        // Գտնում ենք նոր բջիջը հակառակ շաբաթի համար
+        const otherWeekType = copy.dataset.week;
+        const cellId = `cell-${newDay}-${newSlot}-${copy.dataset.course}-${otherWeekType}`;
         const cell = document.getElementById(cellId);
+        
         if (cell && copy.parentNode !== cell) {
-          copy.parentNode?.removeChild(copy);
+          // Հեռացնում ենք հին տեղից
+          if (copy.parentNode) {
+            copy.parentNode.removeChild(copy);
+          }
+          // Ավելացնում ենք նոր վայրում
           cell.appendChild(copy);
         }
-      });
-    }
-  
-    showToast('success', 'Թարմացվում է', 'Դասի դիրքը թարմացվում է...');
-  
-    const payload = {
-      id,
-      new_day: newDay,
-      new_slot: newSlot,
-      course: draggedElement.dataset.course,
-      week_type: draggedElement.dataset.originalWeek || draggedElement.dataset.week
-    };
-  
-    // ...սերվերի հարցման և մնացածի մասը նույնն է
+      }
+    });
   }
 
+  showToast('success', 'Թարմացվում է', 'Դասի դիրքը թարմացվում է...');
+
+  // Պատրաստում ենք տվյալները սերվերին ուղարկելու համար
+  const payload = {
+    id,
+    new_day: newDay,
+    new_slot: newSlot,
+    course: draggedElement.dataset.course,
+    week_type: originalWeekType || draggedElement.dataset.week
+  };
+
+  // Ուղարկում ենք տվյալները սերվերին
+  fetch("/api/schedule/update-positions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify([payload])
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Failed to update position");
+    }
+    return res.json();
+  })
+  .then(result => {
+    showToast('success', 'Հաջողություն', 'Դասի դիրքը հաջողությամբ թարմացվել է');
+    
+    // Թարմացնում ենք ամբողջական դասացուցակը
+    return fetch("/schedule_approval");
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(freshData => {
+    // Թարմացնում ենք գլոբալ տվյալները
+    scheduleData = freshData;
+    
+    // Վերարտադրում ենք դասացուցակը (սա կհեռացնի "modified" նշանները)
+    renderSchedule(freshData);
+  })
+  .catch(error => {
+    console.error("Error updating position:", error);
+    showToast('error', 'Սխալ', 'Չհաջողվեց թարմացնել դասի դիրքը');
+  });
+}
+
+// Թարմացնում ենք նաև checkTeacherConflict ֆունկցիան՝ ավելացնելով draggedId պարամետրը
+function checkTeacherConflict(teacher, day, timeSlot, weekType, draggedId = null) {
+  // Եթե դասախոսը «Անորոշ» կամ «Հայտնի չէ» է, ապա բախումը չենք դիտարկում
+  if (teacher === "Անորոշ" || teacher === "Հայտնի չէ") {
+    return false;
+  }
+  
+  const conflictingLessons = scheduleData.filter(lesson => 
+    lesson.teacher === teacher && 
+    lesson.teacher !== "Անորոշ" &&
+    lesson.teacher !== "Հայտնի չէ" &&
+    lesson.day === day && 
+    lesson.time_slot === timeSlot &&
+    (lesson.week_type === weekType || lesson.week_type === "երկուսն էլ" || weekType === "երկուսն էլ") &&
+    // Բացառում ենք նույն դասը
+    (draggedId === null || String(lesson.id) !== String(draggedId))
+  );
+  
+  return conflictingLessons.length > 0;
+}
+
+// Ստուգում ենք լսարանի բախումը
+function checkRoomConflict(room, day, timeSlot, weekType, draggedId = null) {
+  // Եթե լսարանը «Անորոշ» կամ «Հայտնի չէ» է, ապա բախումը չենք դիտարկում
+  if (room === "Անորոշ" || room === "Հայտնի չէ") {
+    return false;
+  }
+  
+  const conflictingLessons = scheduleData.filter(lesson => 
+    lesson.room === room && 
+    lesson.room !== "Անորոշ" &&
+    lesson.room !== "Հայտնի չէ" &&
+    lesson.day === day && 
+    lesson.time_slot === timeSlot &&
+    (lesson.week_type === weekType || lesson.week_type === "երկուսն էլ" || weekType === "երկուսն էլ") &&
+    // Բացառում ենք նույն դասը
+    (draggedId === null || String(lesson.id) !== String(draggedId))
+  );
+  
+  return conflictingLessons.length > 0;
+}
   function collectModifiedLessons() {
     const modifiedLessons = Array.from(document.querySelectorAll(".class-block.modified")).map(el => ({
       id: el.dataset.id,
