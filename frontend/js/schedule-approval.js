@@ -457,7 +457,42 @@ function checkTeacherConflict(teacher, day, timeSlot, weekType, draggedId = null
   
   return conflictingLessons.length > 0;
 }
+
+
+const LANGUAGE_SUBJECTS = [
+  "Խորացված անգլերեն", 
+  "ArchiCAD",
+];
+
+
+// Ստուգում ենք՝ արդյոք առարկան պատկանում է հատուկ առարկաների ցանկին
+function isSpecialSubject(subject) {
+  return LANGUAGE_SUBJECTS.includes(subject);
+}
+
+// Ստուգում ենք դասերի տիպերի բախումը
+function checkTypeConflict(typeA, typeB, subjectA, subjectB, teacherA, teacherB) {
+  // Եթե երկու առարկաները հատուկ առարկաներ են, դասի տիպերը նույնն են (Գործ) և դասախոսները տարբեր են,
+  // թույլատրում ենք նրանց գոյակցել նույն սլոթում
+  if (isSpecialSubject(subjectA) && isSpecialSubject(subjectB) && 
+      typeA === "Գործ" && typeB === "Գործ" && 
+      teacherA !== teacherB) {
+    return false;
+  }
   
+  // Եթե տիպերը նույնն են, ապա բախում կա
+  if (typeA === typeB) return true;
+  
+  // Ստուգում ենք՝ արդյոք առաջին տիպը բախվում է երկրորդի հետ
+  if (CONFLICTS[typeA] && CONFLICTS[typeA].includes(typeB)) return true;
+  
+  // Ստուգում ենք՝ արդյոք երկրորդ տիպը բախվում է առաջինի հետ
+  if (CONFLICTS[typeB] && CONFLICTS[typeB].includes(typeA)) return true;
+  
+  // Բախում չկա
+  return false;
+}
+
 // handleDrop ֆունկցիայի թարմացված տարբերակը
 function handleDrop(e) {
   e.preventDefault();
@@ -495,7 +530,6 @@ function handleDrop(e) {
   // 3. Ստուգում ենք դասի տիպերի բախումը
   const classType = draggedElement.dataset.classType;
   const subject = draggedElement.querySelector('strong').textContent;
-  const isEnglishClass = subject === "Խորացված անգլերեն";
   
   // Ստուգում ենք այն դասերը, որոնք արդեն կան այդ բջջում
   const existingClasses = Array.from(this.querySelectorAll('.class-block'));
@@ -504,16 +538,8 @@ function handleDrop(e) {
     const existingSubject = existingClass.querySelector('strong').textContent;
     const existingTeacher = existingClass.dataset.teacher;
     
-    // Հատուկ դեպք խորացված անգլերենի համար
-    if (isEnglishClass && existingSubject === "Խորացված անգլերեն" && 
-        classType === "Գործ" && existingClassType === "Գործ" && 
-        teacher !== existingTeacher) {
-      // Թույլատրում ենք ավելացնել խորացված անգլերենի դասերը նույն սլոթին, եթե դասախոսները տարբեր են
-      continue;
-    }
-    
-    // Մնացած դեպքերում ստուգում ենք բախումները
-    if (checkTypeConflict(classType, existingClassType)) {
+    // Ստուգում ենք բախումները` փոխանցելով առարկաների անունները և դասախոսներին
+    if (checkTypeConflict(classType, existingClassType, subject, existingSubject, teacher, existingTeacher)) {
       showToast('error', 'Խմբերի բախում', `Խմբերի բախում․ ${classType}-ն չի կարող համակցվել ${existingClassType}-ի հետ`);
       return;
     }

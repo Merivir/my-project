@@ -44,6 +44,7 @@ CONFLICTS = {
 # Language subjects list
 LANGUAGE_SUBJECTS = {
     "Խորացված անգլերեն",
+    "ArchiCAD",
     # You can add other language subjects here
 }
 

@@ -66,13 +66,13 @@ router.put('/edit/:id', async (req, res) => {
             .input('type_id', sql.Int, type_id || null)
             .input('frequency', sql.NVarChar, frequency || "weekly")
             .query(`
-                UPDATE schedule_editable
-                SET 
-                    teacher_id = @teacher_id, 
-                    room_id = @room_id, 
-                    type_id = @type_id, 
-                    details = @frequency
-                WHERE id = @id;
+                  UPDATE schedule_editable
+                  SET
+                      teacher_id = @teacher_id,
+                      room_id = @room_id,
+                      type_id = @type_id,
+                      weekly_id = (SELECT id FROM Weekly WHERE type = @frequency)
+                  WHERE id = @id;
             `);
 
         console.log("Update success in schedule_editable, rows affected:", updateResult.rowsAffected);
