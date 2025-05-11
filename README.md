@@ -42,13 +42,13 @@ npm install
 * Create a database named `schedule`.
 * Run schema creation scripts to create all necessary tables.
 
-### 5. Run the Server
+### 4. Run the Server
 
 ```bash
 node app.js
 ```
 
-### 6. Generate Schedule
+### 5. Generate Schedule
 
 * Log in as admin.
 * Confirm teacher availability.
