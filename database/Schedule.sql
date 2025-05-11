@@ -32,6 +32,7 @@ ADD
   email NVARCHAR(255),
   verification_code NVARCHAR(6);
 
+
 -- Թարմացնում ենք բոլոր ուսուցիչների համար հատուկ login արժեքներ,
 -- օրինակ՝ polytech_teacher_001, polytech_teacher_002, ...
 UPDATE Teachers
@@ -52,6 +53,7 @@ CREATE UNIQUE INDEX IX_Teachers_login ON Teachers(login) WHERE login IS NOT NULL
 CREATE TABLE Rooms (
     id INT PRIMARY KEY IDENTITY(1,1),
     number NVARCHAR(50) UNIQUE NOT NULL
+	type_room NVARCHAR(50)
 );
 
 -- 🔹 3. Ստեղծում ենք Subjects (առարկաները)
@@ -181,3 +183,11 @@ SELECT COLUMN_NAME, DATA_TYPE
 FROM INFORMATION_SCHEMA.COLUMNS 
 WHERE TABLE_NAME = 'Subjects';
 
+-- Update das rooms
+UPDATE Rooms SET type_room = N'Դաս' WHERE number IN ('12103', '1212', '12208', '12305', '1401', '1403', '17413', '2241', '2342', '2344', '2359', '2361', '2431', '2435', '2444', '5014', '5202', '5205', '5207', '5402', '5404', '5601', '5602', '5604', '5606', '5608', '5609', '5802', '9104', '9110', '9205', '9206', '9208', '9402', '9410', '9602', '9607', '9611', '9712', N'Անորոշ', N'ՕԼ');
+
+-- Update lab rooms
+UPDATE Rooms SET type_room = N'Լաբ' WHERE number IN ('10306', '12206', '1313', '1316', '2235', '51001', '51002', '51006', '5103', '5117', '5118', '5119', '5120', '5121', '5122', '5212', '5218', '5706', '5710', '5901', '5902', '7101', '7102', '9201', '9204', '9404');
+
+-- Update gorc rooms (for remaining)
+UPDATE Rooms SET type_room = N'Գործ' WHERE type_room IS NULL;

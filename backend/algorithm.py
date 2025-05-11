@@ -51,83 +51,83 @@ LANGUAGE_SUBJECTS = {
 # Definition of room types
 ROOM_TYPES = {}
 
-# Add "Դաս" type rooms
-for building, rooms in {
-    "121": ["12103"],
-    "12": ["1212"],
-    "122": ["12208"],
-    "123": ["12305"],
-    "14": ["1401", "1403"],
-    "174": ["17413"],
-    "22": ["2241"],
-    "23": ["2342", "2344", "2359", "2361"],
-    "24": ["2431", "2435", "2444"],
-    "50": ["5014"],
-    "52": ["5202", "5205", "5207"],
-    "54": ["5402", "5404"],
-    "56": ["5601", "5602", "5604", "5606", "5608", "5609"],
-    "58": ["5802"],
-    "91": ["9104", "9110"],
-    "92": ["9205", "9206", "9208"],
-    "94": ["9402", "9410"],
-    "96": ["9602", "9607", "9611"],
-    "97": ["9712"],
-    "special": ["Անորոշ", "ՕԼ"]
-}.items():
-    for room in rooms:
-        ROOM_TYPES[room] = "Դաս"
+# # Add "Դաս" type rooms
+# for building, rooms in {
+#     "121": ["12103"],
+#     "12": ["1212"],
+#     "122": ["12208"],
+#     "123": ["12305"],
+#     "14": ["1401", "1403"],
+#     "174": ["17413"],
+#     "22": ["2241"],
+#     "23": ["2342", "2344", "2359", "2361"],
+#     "24": ["2431", "2435", "2444"],
+#     "50": ["5014"],
+#     "52": ["5202", "5205", "5207"],
+#     "54": ["5402", "5404"],
+#     "56": ["5601", "5602", "5604", "5606", "5608", "5609"],
+#     "58": ["5802"],
+#     "91": ["9104", "9110"],
+#     "92": ["9205", "9206", "9208"],
+#     "94": ["9402", "9410"],
+#     "96": ["9602", "9607", "9611"],
+#     "97": ["9712"],
+#     "special": ["Անորոշ", "ՕԼ"]
+# }.items():
+#     for room in rooms:
+#         ROOM_TYPES[room] = "Դաս"
 
-# Add "Գործ" type rooms
-for building, rooms in {
-    "11": ["1104"],
-    "12": ["1201"],
-    "121": ["12102", "12103", "12105", "12106"],
-    "122": ["12201"],
-    "123": ["12305"],
-    "14": ["1406", "1407"],
-    "174": ["17413"],
-    "21": ["2127ա", "2127բ", "2141ա"],
-    "22": ["2259", "2261", "2261բ"],
-    "23": ["2338", "2344", "2346", "2353", "2353ա", "2359", "2361"],
-    "24": ["2430", "2434", "2436", "2438", "2440", "2441ա", "2443", "2443ա"],
-    "33": ["3305"],
-    "510": ["51006", "51009"],
-    "51": ["5117", "5118", "5120", "5121", "5122"],
-    "52": ["5202", "5212"],
-    "54": ["5402", "5404"],
-    "56": ["5601", "5602", "5604", "5606", "5608", "5609"],
-    "57": ["5706"],
-    "59": ["5901", "5902"],
-    "91": ["9101", "9104", "9107", "9110", "9112"],
-    "92": ["9204", "9205", "9206", "9207", "9210"],
-    "93": ["9301", "9302", "9303", "9309", "9310", "9315"],
-    "94": ["9402", "9404", "9405", "9406", "9409", "9410", "9411", "9412"],
-    "95": ["9502"],
-    "96": ["9601", "9602", "9603", "9604", "9607", "9608", "9610", "9611"],
-    "97": ["9703", "9705", "9706", "9708", "9711", "9717"],
-    "99": ["9903", "9904", "9905ա", "9906", "9907ա", "9907բ", "9908", "9909ա", "9909բ", "9910", "9911", "9913"],
-    "special": ["Անորոշ", "Ֆիզկուլտուրա"]
-}.items():
-    for room in rooms:
-        ROOM_TYPES[room] = "Գործ"
+# # Add "Գործ" type rooms
+# for building, rooms in {
+#     "11": ["1104"],
+#     "12": ["1201"],
+#     "121": ["12102", "12103", "12105", "12106"],
+#     "122": ["12201"],
+#     "123": ["12305"],
+#     "14": ["1406", "1407"],
+#     "174": ["17413"],
+#     "21": ["2127ա", "2127բ", "2141ա"],
+#     "22": ["2259", "2261", "2261բ"],
+#     "23": ["2338", "2344", "2346", "2353", "2353ա", "2359", "2361"],
+#     "24": ["2430", "2434", "2436", "2438", "2440", "2441ա", "2443", "2443ա"],
+#     "33": ["3305"],
+#     "510": ["51006", "51009"],
+#     "51": ["5117", "5118", "5120", "5121", "5122"],
+#     "52": ["5202", "5212"],
+#     "54": ["5402", "5404"],
+#     "56": ["5601", "5602", "5604", "5606", "5608", "5609"],
+#     "57": ["5706"],
+#     "59": ["5901", "5902"],
+#     "91": ["9101", "9104", "9107", "9110", "9112"],
+#     "92": ["9204", "9205", "9206", "9207", "9210"],
+#     "93": ["9301", "9302", "9303", "9309", "9310", "9315"],
+#     "94": ["9402", "9404", "9405", "9406", "9409", "9410", "9411", "9412"],
+#     "95": ["9502"],
+#     "96": ["9601", "9602", "9603", "9604", "9607", "9608", "9610", "9611"],
+#     "97": ["9703", "9705", "9706", "9708", "9711", "9717"],
+#     "99": ["9903", "9904", "9905ա", "9906", "9907ա", "9907բ", "9908", "9909ա", "9909բ", "9910", "9911", "9913"],
+#     "special": ["Անորոշ", "Ֆիզկուլտուրա"]
+# }.items():
+#     for room in rooms:
+#         ROOM_TYPES[room] = "Գործ"
 
-# Add "Լաբ" type rooms
-for building, rooms in {
-    "103": ["10306"],
-    "122": ["12206"],
-    "13": ["1313", "1316"],
-    "22": ["2235"],
-    "510": ["51001", "51002", "51006"],
-    "51": ["5103", "5117", "5118", "5119", "5120", "5121", "5122"],
-    "52": ["5212", "5218"],
-    "57": ["5706", "5710"],
-    "59": ["5901", "5902"],
-    "71": ["7101", "7102"],
-    "92": ["9201", "9204"],
-    "94": ["9404"]
-}.items():
-    for room in rooms:
-        ROOM_TYPES[room] = "Լաբ"
+# # Add "Լաբ" type rooms
+# for building, rooms in {
+#     "103": ["10306"],
+#     "122": ["12206"],
+#     "13": ["1313", "1316"],
+#     "22": ["2235"],
+#     "510": ["51001", "51002", "51006"],
+#     "51": ["5103", "5117", "5118", "5119", "5120", "5121", "5122"],
+#     "52": ["5212", "5218"],
+#     "57": ["5706", "5710"],
+#     "59": ["5901", "5902"],
+#     "71": ["7101", "7102"],
+#     "92": ["9201", "9204"],
+#     "94": ["9404"]
+# }.items():
+#     for room in rooms:
+#         ROOM_TYPES[room] = "Լաբ"
 
 # ─────────────────────────────────────────────────────────────────────────
 # 2) Helper functions
@@ -174,6 +174,46 @@ def get_db_connection():
     except Exception as e:
         logger.error(f"DB connection error: {e}")
         raise
+
+def load_room_types():
+    """
+    Բեռնում է լսարանների տիպերը տվյալների բազայից
+    Վերադարձնում է բառարան, որտեղ բանալիները լսարանների համարներն են, 
+    իսկ արժեքները՝ տիպերը
+    """
+    logger.info("Բեռնում է լսարանների տիպերը բազայից...")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        # Հարցում է կատարում բազայի մեջ լսարանների մասին
+        cursor.execute("""
+            SELECT number, type_room
+            FROM Rooms
+            WHERE type_room IS NOT NULL
+        """)
+        
+        # Ստեղծում է բառարան լսարանների տիպերի համար
+        room_types = {}
+        for room_number, room_type in cursor.fetchall():
+            # Ստանդարտացնում է լսարանների տիպերը
+            if room_type in ["Դաս", "Գործ", "Լաբ"]:
+                room_types[room_number] = room_type
+            else:
+                # Լռելյան արժեք, եթե տիպը ստանդարտ չէ
+                logger.warning(f"Լսարան {room_number}-ը ունի ոչ ստանդարտ տիպ: {room_type}, սահմանվում է որպես 'Դաս'")
+                room_types[room_number] = "Դաս"
+        
+        logger.info(f"Բեռնված է {len(room_types)} լսարանների տիպեր բազայից")
+        return room_types
+    
+    except Exception as e:
+        logger.error(f"Սխալ լսարանների տիպերը բեռնելիս: {e}")
+        # Ձախողման դեպքում վերադարձնում է դատարկ բառարան
+        return {}
+    
+    finally:
+        conn.close()
 
 def load_teacher_availability():
     """
@@ -352,6 +392,200 @@ def create_empty_schedule():
     Returns a dictionary with (day, hour) tuples as keys and empty lists as values
     """
     return {(day, hour): [] for day in range(1, 6) for hour in range(1, 5)}
+
+def find_alternative_room(current_room, day, hour, week_type, schedule):
+    """
+    Գտնում է այլընտրանքային լսարան նույն մասնաշենքում նույն տիպի
+    
+    Args:
+        current_room: Ընթացիկ լսարանի համարը (օր.՝ "9104")
+        day: Շաբաթվա օրը (1-5)
+        hour: Օրվա ժամը (1-4)
+        week_type: Շաբաթվա տիպը ("համարիչ", "հայտարար", "երկուսն էլ")
+        schedule: Ընթացիկ ժամանակացույցի վիճակը
+        
+    Returns:
+        Այլընտրանքային լսարանի համարը կամ None, եթե այլընտրանք չի գտնվել
+    """
+    if current_room in ["Անորոշ", "Հայտնի չէ", "ՕԼ", "Ֆիզկուլտուրա"]:
+        return current_room  # Հատուկ լսարանների համար փոփոխության կարիք չկա
+    
+    # Ստանում է շենքի նախածանցը (առաջին 2 թվերը)
+    building_prefix = ""
+    for i in range(min(2, len(current_room))):
+        if current_room[i].isdigit():
+            building_prefix += current_room[i]
+        else:
+            break
+    
+    if not building_prefix:
+        logger.warning(f"Չի կարող որոշել շենքի նախածանցը {current_room} լսարանի համար")
+        return None
+    
+    # Ստանում է պահանջվող լսարանի տիպը
+    required_type = ROOM_TYPES.get(current_room)
+    if not required_type:
+        logger.warning(f"Լսարան {current_room}-ը չունի սահմանված տիպ")
+        return None
+    
+    logger.info(f"Փնտրում է լսարան {building_prefix} շենքում {required_type} տիպի")
+    
+    # Գտնում է բոլոր լսարանները նույն շենքում նույն տիպի
+    candidate_rooms = []
+    for room, room_type in ROOM_TYPES.items():
+        # Ստուգում է, արդյոք լսարանը նույն շենքում է
+        room_prefix = ""
+        for i in range(min(2, len(room))):
+            if room[i].isdigit():
+                room_prefix += room[i]
+            else:
+                break
+        
+        if room_prefix == building_prefix and room_type == required_type:
+            candidate_rooms.append(room)
+    
+    logger.info(f"Գտնվել է {len(candidate_rooms)} թեկնածու լսարաններ նույն շենքում նույն տիպի")
+    
+    # Ստուգում է, որ լսարանները հասանելի են նշված ժամանակում
+    available_rooms = []
+    for room in candidate_rooms:
+        is_available = True
+        
+        # Ստուգում է, արդյոք լսարանն արդեն օգտագործված է այս ժամանակահատվածում
+        for entry in schedule.get((day, hour), []):
+            entry_room = entry.get("room", "")
+            entry_week = entry.get("week_type", "համարիչ")
+            
+            # Ստուգում է, արդյոք շաբաթները համընկնում են
+            weeks_overlap = (
+                entry_week == week_type or 
+                entry_week == "երկուսն էլ" or 
+                week_type == "երկուսն էլ"
+            )
+            
+            if entry_room == room and weeks_overlap:
+                is_available = False
+                break
+        
+        if is_available:
+            available_rooms.append(room)
+    
+    logger.info(f"Գտնվել է {len(available_rooms)} հասանելի լսարաններ: {available_rooms}")
+    
+    # Ընտրում է լավագույն հասանելի լսարանը
+    if available_rooms:
+        # Խառնում է տարբերակների հավանականությունը
+        random.shuffle(available_rooms)
+        return available_rooms[0]
+    
+    # Եթե նույն շենքում ոչ մի լսարան հասանելի չէ, վերադարձնում է None
+    return None
+def find_room_conflicts(schedule_result):
+    """
+    Գտնում է այն իրավիճակները, երբ նույն լսարանը նշանակված է մի քանի դասերի
+    նույն ժամանակում
+    
+    Args:
+        schedule_result: Նշանակված սլոթներով դասերի ցուցակ
+        
+    Returns:
+        Կոնֆլիկտների ցուցակ մանրամասներով
+    """
+    conflicts = []
+    
+    # Խմբավորում է դասերը ըստ ժամանակի սլոթի և լսարանի
+    classes_by_slot_room = defaultdict(list)
+    
+    for idx, entry in enumerate(schedule_result):
+        day = entry.get("assigned_day")
+        hour = entry.get("assigned_hour")
+        room = entry.get("room", "")
+        week_type = entry.get("week_type", "համարիչ")
+        
+        if room not in ["Անորոշ", "Հայտնի չէ", "ՕԼ", "Ֆիզկուլտուրա"]:
+            slot_key = (day, hour, room)
+            classes_by_slot_room[slot_key].append((idx, entry, week_type))
+    
+    # Ստուգում է կոնֆլիկտները
+    for slot_key, entries in classes_by_slot_room.items():
+        day, hour, room = slot_key
+        
+        # Ստուգում է յուրաքանչյուր դասերի զույգը
+        for i in range(len(entries)):
+            for j in range(i+1, len(entries)):
+                idx1, entry1, week1 = entries[i]
+                idx2, entry2, week2 = entries[j]
+                
+                # Ստուգում է, արդյոք շաբաթները համընկնում են
+                weeks_overlap = (
+                    week1 == week2 or 
+                    week1 == "երկուսն էլ" or 
+                    week2 == "երկուսն էլ"
+                )
+                
+                if weeks_overlap:
+                    conflicts.append({
+                        "slot": (day, hour),
+                        "room": room,
+                        "entries": [(idx1, entry1), (idx2, entry2)],
+                        "week_types": [week1, week2]
+                    })
+    
+    logger.info(f"Գտնվել է {len(conflicts)} լսարանների կոնֆլիկտներ")
+    return conflicts
+
+def resolve_room_conflicts(conflicts, result, schedule):
+    """
+    Լուծում է լսարանների կոնֆլիկտները՝ գտնելով այլընտրանքային լսարաններ
+    
+    Args:
+        conflicts: Լուծելու ենթակա կոնֆլիկտների ցուցակ
+        result: Թարմացվելիք նշանակված դասերի ցուցակ
+        schedule: Ընթացիկ ժամանակացույցի վիճակը (հասանելիության ստուգման համար)
+    """
+    resolved_count = 0
+    
+    for conflict in conflicts:
+        day, hour = conflict["slot"]
+        room = conflict["room"]
+        entries = conflict["entries"]
+        week_types = conflict["week_types"]
+        
+        logger.info(f"Լուծում է {room} լսարանի կոնֆլիկտը օր {day}, ժամ {hour}")
+        
+        # Փորձում է լուծել յուրաքանչյուր գրառումը
+        for i, (idx, entry) in enumerate(entries):
+            # Բաց է թողնում առաջին գրառումը (պահում է այն սկզբնական լսարանում)
+            if i == 0:
+                continue
+            
+            week_type = week_types[i]
+            alternative_room = find_alternative_room(
+                room, 
+                day, 
+                hour, 
+                week_type, 
+                schedule
+            )
+            
+            if alternative_room:
+                logger.info(f"Գտնվել է այլընտրանքային {alternative_room} լսարան {entry['subject']} ({entry['type']})-ի համար")
+                
+                # Թարմացնում է լսարանը արդյունքների ցուցակում
+                result[idx]["room"] = alternative_room
+                
+                # Թարմացնում է նաև ժամանակացույցում հետագա կոնֆլիկտների ստուգման համար
+                for slot_entry in schedule[(day, hour)]:
+                    if (slot_entry.get("subject") == entry["subject"] and
+                        slot_entry.get("type") == entry["type"] and
+                        slot_entry.get("teacher") == entry["teacher"]):
+                        slot_entry["room"] = alternative_room
+                
+                resolved_count += 1
+            else:
+                logger.warning(f"Չհաջողվեց գտնել այլընտրանքային լսարան {entry['subject']} ({entry['type']})-ի համար")
+    
+    logger.info(f"Լուծվեց {resolved_count}/{len(conflicts)} լսարանների կոնֆլիկտներ")
 
 def calculate_class_priority(class_data):
     """
@@ -972,7 +1206,13 @@ def schedule_all_courses(raw_data, teacher_availability):
             teacher_availability, 
             occupied_slots_by_teacher
         )
+    logger.info("Checking for room conflicts...")
+    room_conflicts = find_room_conflicts(result)
     
+    if room_conflicts:
+        logger.info(f"Found {len(room_conflicts)} room conflicts, attempting to resolve...")
+        resolve_room_conflicts(room_conflicts, result, schedule)
+
     # Log summary statistics
     slot_counts = {}
     for class_data in result:
@@ -1629,7 +1869,6 @@ def find_conflicts(schedule):
                     })
     
     return conflicts
-
 def main():
     """
     Main function that sequentially performs schedule creation
@@ -1639,7 +1878,18 @@ def main():
     logger.info(f"Using master random seed: {master_seed}")
 
     try:
-        # 1. Load teacher availability and class data
+        # 1. Բեռնել լսարանների տիպերը բազայից
+        global ROOM_TYPES
+        ROOM_TYPES = load_room_types()
+        logger.info(f"Loaded {len(ROOM_TYPES)} room types from database")
+        
+        # Եթե տիպերը դատարկ են, օգտագործել backup տարբերակը
+        if not ROOM_TYPES:
+            logger.warning("No room types loaded from database, using backup definitions")
+            # Այստեղ կարող ենք օգտագործել հարկադրված backup տարբերակ
+            initialize_room_types_backup()
+
+        # 2. Load teacher availability and class data
         logger.info("Loading data...")
         teacher_avail = load_teacher_availability()
         raw_data = load_schedule_data()
@@ -1653,12 +1903,21 @@ def main():
         
         logger.info(f"Class types distribution: {types_count}")
         
-        # 2. Create schedule for all courses (new approach)
+        # 3. Create schedule for all courses (new approach)
         logger.info("Creating schedule...")
         final_schedule = schedule_all_courses(raw_data, teacher_avail)
         logger.info(f"Created overall schedule with {len(final_schedule)} classes")
         
-        # Analyze schedule distribution
+        # 4. Ստուգել և լուծել լսարանների կոնֆլիկտները
+        logger.info("Checking for room conflicts...")
+        room_conflicts = find_room_conflicts(final_schedule)
+        
+        if room_conflicts:
+            logger.info(f"Found {len(room_conflicts)} room conflicts, attempting to resolve...")
+            resolve_room_conflicts(room_conflicts, final_schedule, create_empty_schedule())
+            logger.info("Room conflicts resolution completed")
+        
+        # 5. Analyze schedule distribution
         slots_used = set((cls["assigned_day"], cls["assigned_hour"]) for cls in final_schedule)
         logger.info(f"Schedule uses {len(slots_used)}/20 time slots")
         
@@ -1671,7 +1930,7 @@ def main():
         for day in range(1, 6):
             logger.info(f"Day {day}: {classes_by_day.get(day, 0)} classes")
         
-        # 3. Prepare and save results
+        # 6. Prepare and save results
         logger.info("Preparing data for database...")
         db_schedule = prepare_schedule_for_db(final_schedule)
         
@@ -1686,8 +1945,8 @@ def main():
         save_schedule_to_db(db_schedule)
         logger.info(f"Saved {len(db_schedule)} classes to database")
         
-        # 4. Check for conflicts
-        logger.info("Checking for conflicts...")
+        # 7. Check for other conflicts
+        logger.info("Checking for timing conflicts...")
         clashes = find_conflicts(final_schedule)
         
         if clashes:
@@ -1705,7 +1964,7 @@ def main():
             logger.warning(f"❗️ Found {len(clashes)} conflicts, see ./conflicts.json")
             logger.warning(f"Conflict types: {conflict_types}")
         else:
-            logger.info("✅ No conflicts detected")
+            logger.info("✅ No timing conflicts detected")
         
         logger.info("Schedule successfully created")
         return True
@@ -1715,7 +1974,6 @@ def main():
         import traceback
         logger.error(traceback.format_exc())
         return False
-
 
 if __name__ == "__main__":
     main()
