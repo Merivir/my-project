@@ -79,7 +79,3 @@ root/
 ## License
 
 This project is developed as part of a university diploma thesis. Not intended for commercial distribution.
-
----
-
-Let me know if you want a version in Armenian or need this exported to PDF or Markdown.
