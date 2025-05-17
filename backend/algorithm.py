@@ -133,6 +133,556 @@ ROOM_TYPES = {}
 # 2) Helper functions
 # ─────────────────────────────────────────────────────────────────────────
 
+import concurrent.futures
+import threading
+from copy import deepcopy
+
+# Ընդհանուր սինխրոնիզացիայի համար
+schedule_lock = threading.Lock()
+course_loads_lock = threading.Lock()
+
+def schedule_single_course(course, course_classes, teacher_availability, shared_schedule):
+    """Մշակում է մեկ կուրսի դասերը առանձին թրեդում"""
+    
+    # Ստեղծում ենք տեղական պատճեններ
+    local_schedule = deepcopy(shared_schedule)
+    local_occupied_slots_by_teacher = {}
+    local_course_loads = initialize_course_load_balancer()
+    
+    local_result = []
+    local_result_by_slot = {(day, hour): [] for day in range(1, 6) for hour in range(1, 5)}
+    
+    # Հաշվարկել վիճակագրության ժամանակավոր օբյեկտ
+    local_conflict_stats = {
+        "teacher_conflict": 0,
+        "availability_conflict": 0,
+        "same_course_type_conflict": 0,
+        "lecture_conflict": 0,
+        "subject_teacher_conflict": 0,
+        "all_slots_failed": 0,
+        "most_conflicted_slots": [],
+        "backtracking_attempts": 0,
+        "successful_backtracking": 0,
+        "week_switches": initialize_week_switch_stats()
+    }
+    
+    # Դասավորել դասերը ըստ առաջնահերթության
+    sorted_classes = sorted(course_classes, key=lambda x: x[1], reverse=True)
+    
+    for class_data, priority in sorted_classes:
+        # Փորձել տեղավորել դասը
+        slot_found, day, hour, assigned_week_type = try_find_slot_enhanced(
+            class_data, 
+            local_schedule, 
+            teacher_availability,
+            local_occupied_slots_by_teacher,
+            local_course_loads,
+            local_conflict_stats
+        )
+        
+        # Եթե սլոթ չի գտնվել, փորձել backtracking
+        if not slot_found:
+            local_conflict_stats["backtracking_attempts"] += 1
+            
+            slot_found, day, hour, assigned_week_type = try_backtracking_enhanced(
+                class_data,
+                local_schedule,
+                local_result,
+                local_result_by_slot,
+                teacher_availability,
+                local_occupied_slots_by_teacher,
+                local_course_loads,
+                local_conflict_stats
+            )
+        
+        # Թարմացնել լոկալ ժամանակացույցը
+        local_schedule[(day, hour)].append(class_data)
+        
+        # Դասախոսի սլոթը նշել որպես զբաղված
+        teacher = class_data["teacher"]
+        if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+            local_occupied_slots_by_teacher.setdefault(teacher, set()).add((day, hour))
+        
+        # Պատրաստել արդյունքի գրառումը
+        result_entry = class_data.copy()
+        result_entry.update({
+            "assigned_day": day,
+            "assigned_hour": hour,
+            "week_type": assigned_week_type
+        })
+        
+        # Թարմացնել կուրսի ծանրաբեռնվածությունը
+        if assigned_week_type in ["համարիչ", "հայտարար", "երկուսն էլ"]:
+            local_course_loads[course][assigned_week_type] += 1
+            
+            # Եթե "երկուսն էլ" տիպի դաս է, հաշվել երկու շաբաթների համար
+            if assigned_week_type == "երկուսն էլ":
+                local_course_loads[course]["համարիչ"] += 1
+                local_course_loads[course]["հայտարար"] += 1
+        
+        # Պահպանել արդյունքը և ինդեքսը
+        result_index = len(local_result)
+        local_result.append(result_entry)
+        local_result_by_slot[(day, hour)].append(result_index)
+    
+    # Վերադարձնել արդյունքը որպես թրեդ-անվտանգ պատասխան
+    return {
+        "course": course,
+        "result": local_result,
+        "course_loads": local_course_loads[course],
+        "conflict_stats": local_conflict_stats
+    }
+
+def improved_schedule_algorithm_parallel(all_classes, teacher_availability, max_workers=None):
+    """
+    Բարելավված զուգահեռ ալգորիթմ, որը մշակում է յուրաքանչյուր կուրսը առանձին թրեդում
+    """
+    # Ստեղծում ենք դատարկ ժամանակացույց
+    schedule = create_empty_schedule()
+    
+    # Խմբավորել դասերը ըստ կուրսի
+    classes_with_priority = [(cls, calculate_class_priority(cls)) for cls in all_classes]
+    
+    # Մշակել պատահականությունը նման առաջնահերթությամբ դասերի միջև
+    for i in range(len(classes_with_priority) - 1):
+        if i < len(classes_with_priority) - 1:
+            if abs(classes_with_priority[i][1] - classes_with_priority[i+1][1]) <= 1 and random.random() < 0.4:
+                classes_with_priority[i], classes_with_priority[i+1] = classes_with_priority[i+1], classes_with_priority[i]
+    
+    courses = {}
+    for class_data, priority in classes_with_priority:
+        course = class_data["course"]
+        if course not in courses:
+            courses[course] = []
+        courses[course].append((class_data, priority))
+    
+    # Պատահականացնել կուրսերի հերթականությունը
+    course_keys = list(courses.keys())
+    random.shuffle(course_keys)
+    
+    # Որոշել աշխատողների առավելագույն քանակը
+    import os
+    if max_workers is None:
+        max_workers = min(os.cpu_count() or 4, len(course_keys), 8)  # Սահմանափակում 8-ով
+    
+    # Ընդհանուր արդյունքներ
+    result = []
+    course_loads = initialize_course_load_balancer()
+    conflict_stats = {
+        "teacher_conflict": 0,
+        "availability_conflict": 0,
+        "same_course_type_conflict": 0,
+        "lecture_conflict": 0,
+        "subject_teacher_conflict": 0,
+        "all_slots_failed": 0,
+        "most_conflicted_slots": [],
+        "backtracking_attempts": 0,
+        "successful_backtracking": 0,
+        "week_switches": initialize_week_switch_stats()
+    }
+    
+    # Զուգահեռ մշակել կուրսերը
+    logger.info(f"Processing {len(course_keys)} courses using {max_workers} parallel workers")
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Մշակել յուրաքանչյուր կուրսը առանձին թրեդում
+        future_to_course = {}
+        for course in course_keys:
+            future = executor.submit(
+                schedule_single_course,
+                course,
+                courses[course],
+                teacher_availability,
+                schedule  # Փոխանցում ենք դատարկ schedule, քանի որ յուրաքանչյուր թրեդ կստեղծի իր պատճենը
+            )
+            future_to_course[future] = course
+        
+        # Հավաքել բոլոր թրեդերի արդյունքները
+        for future in concurrent.futures.as_completed(future_to_course):
+            course = future_to_course[future]
+            try:
+                course_result = future.result()
+                
+                # Ավելացնել կուրսի արդյունքը ընդհանուր արդյունքին
+                with schedule_lock:
+                    result.extend(course_result["result"])
+                
+                # Թարմացնել կուրսի ծանրաբեռնվածությունը
+                with course_loads_lock:
+                    course_loads[course] = course_result["course_loads"]
+                
+                # Գումարել կոնֆլիկտների վիճակագրությունը
+                for key in conflict_stats:
+                    if key == "week_switches":
+                        for switch_key in conflict_stats["week_switches"]:
+                            conflict_stats["week_switches"][switch_key] += course_result["conflict_stats"]["week_switches"][switch_key]
+                    elif key == "most_conflicted_slots":
+                        conflict_stats[key].extend(course_result["conflict_stats"][key])
+                    else:
+                        conflict_stats[key] += course_result["conflict_stats"][key]
+                
+                logger.info(f"Finished scheduling course {course} with {len(course_result['result'])} classes")
+            
+            except Exception as e:
+                logger.error(f"Error scheduling course {course}: {e}")
+    
+    # Ստուգել և լուծել հնարավոր լսարանների կոնֆլիկտները
+    room_conflicts = find_room_conflicts(result)
+    if room_conflicts:
+        logger.info(f"Found {len(room_conflicts)} room conflicts, attempting to resolve...")
+        resolve_room_conflicts(room_conflicts, result, schedule)
+    
+    return result, course_loads
+
+def try_backtracking_enhanced_parallel(class_data, schedule, result, result_by_slot, 
+                                      teacher_availability, occupied_slots_by_teacher, 
+                                      course_loads, conflict_stats):
+    """
+    Փորձում է վերադասավորել դասերը և/կամ տեղափոխել մեկ շաբաթից մյուսը զուգահեռ,
+    հաշվի առնելով նաև կուրսի ծանրաբեռնվածությունը
+    """
+    # Ստուգում ենք, թե որքան հաճախ է դասը
+    weekly_frequency = class_data.get("weekly_frequency", 2)
+    course = class_data["course"]
+    original_week_type = class_data.get("week_type", "համարիչ")
+    
+    # Սահմանում ենք արդյունք հաշվիչ
+    result_found = threading.Event()
+    best_result = [None]  # Թրեդերի միջև արդյունքներ փոխանցելու համար
+    
+    def process_variant(variant_data, variant_week_type):
+        """Փորձում է մեկ տարբերակ և սահմանում արդյունքը եթե հաջողվել է"""
+        slot_found, day, hour, _ = try_backtracking(
+            variant_data, schedule, result, result_by_slot,
+            teacher_availability, occupied_slots_by_teacher, conflict_stats
+        )
+        
+        if slot_found and not result_found.is_set():
+            # Գրանցում ենք հաջողված արդյունքը և սահմանում դրոշակը
+            best_result[0] = (slot_found, day, hour, variant_week_type)
+            result_found.set()  # Սա ազդարարում է մյուս թրեդերին ավարտել
+    
+    # Ստեղծում ենք շաբաթների տարբերակների թրեդեր
+    threads = []
+    
+    # Օրիգինալ տարբերակի համար
+    original_thread = threading.Thread(
+        target=process_variant,
+        args=(class_data.copy(), original_week_type)
+    )
+    threads.append(original_thread)
+    
+    # Հակառակ շաբաթի տարբերակի համար
+    if weekly_frequency == 2 and original_week_type != "երկուսն էլ":
+        opposite_week_type = get_opposite_week_type(original_week_type)
+        if will_balance_be_maintained(course, course_loads, original_week_type, opposite_week_type):
+            temp_class_data = class_data.copy()
+            temp_class_data["week_type"] = opposite_week_type
+            
+            opposite_thread = threading.Thread(
+                target=process_variant,
+                args=(temp_class_data, opposite_week_type)
+            )
+            threads.append(opposite_thread)
+    
+    # Գործարկում ենք թրեդերը
+    for thread in threads:
+        thread.start()
+    
+    # Սահմանում ենք timeout բոլոր թրեդերի համար
+    timeout = 2.0  # 2 վայրկյան
+    
+    # Սպասում ենք մինչև որևէ թրեդ գտնի արդյունք կամ timeout լինի
+    result_found.wait(timeout)
+    
+    # Սպասում ենք թրեդերի ավարտին
+    for thread in threads:
+        thread.join(0.5)  # Տալիս ենք 0.5 վայրկյան ավարտի համար
+    
+    # Ստուգում ենք արդյունքը
+    if best_result[0]:
+        slot_found, day, hour, week_type = best_result[0]
+        
+        # Թարմացնում ենք վիճակագրությունը
+        if week_type != original_week_type:
+            # Նշանակում է, որ հակառակ շաբաթի տարբերակն է հաջողվել
+            if original_week_type == "համարիչ":
+                conflict_stats["week_switches"]["համարիչ_to_հայտարար"] += 1
+            else:
+                conflict_stats["week_switches"]["հայտարար_to_համարիչ"] += 1
+            conflict_stats["week_switches"]["successful_switches"] += 1
+        
+        return slot_found, day, hour, week_type
+    
+    # Եթե ոչ մի թրեդ չի գտել հարմար տարբերակ
+    return False, None, None, original_week_type
+
+def generate_multiple_schedules(raw_data, teacher_availability, attempts=4):
+    """
+    Զուգահեռ գեներացնում է մի քանի տարբերակ և ընտրում լավագույնը
+    
+    Args:
+        raw_data: Դասերի տվյալները
+        teacher_availability: Դասախոսների հասանելիության տվյալները
+        attempts: Քանի տարբեր ժամանակացույցներ փորձել
+        
+    Returns:
+        Լավագույն ժամանակացույցը և դրա ծանրաբեռնվածությունը
+    """
+    logger.info(f"Generating {attempts} parallel schedule variants")
+    
+    with concurrent.futures.ProcessPoolExecutor(max_workers=attempts) as executor:
+        # Ուղարկում է մի քանի փորձ զուգահեռ
+        futures = []
+        for i in range(attempts):
+            seed = int(time.time()) + i  # Տարբեր սերմեր
+            futures.append(executor.submit(
+                generate_single_schedule, 
+                raw_data.copy(), 
+                teacher_availability,
+                seed
+            ))
+        
+        # Հավաքել արդյունքները
+        all_results = []
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                schedule, course_loads, quality_score = future.result()
+                all_results.append((schedule, course_loads, quality_score))
+                logger.info(f"Completed schedule variant with quality score: {quality_score:.2f}")
+            except Exception as e:
+                logger.error(f"Error generating schedule variant: {e}")
+    
+    # Ընտրել լավագույն տարբերակը
+    if all_results:
+        best_schedule, best_course_loads, best_score = max(all_results, key=lambda x: x[2])
+        logger.info(f"Selected best schedule with quality score: {best_score:.2f}")
+        return best_schedule, best_course_loads
+    else:
+        logger.error("Failed to generate any valid schedules")
+        return None, None
+
+def generate_single_schedule(data, teacher_avail, seed):
+    """
+    Գեներացնում է մեկ ժամանակացույց և հաշվարկում որակի միավորը
+    
+    Args:
+        data: Դասերի տվյալները
+        teacher_avail: Դասախոսների հասանելիության տվյալները
+        seed: Պատահականության սերմը
+        
+    Returns:
+        Եռյակ (ժամանակացույց, ծանրաբեռնվածություն, որակի միավոր)
+    """
+    random.seed(seed)
+    schedule, course_loads = improved_schedule_algorithm(data, teacher_avail)
+    
+    # Հաշվարկում է որակի միավորը
+    quality_score = calculate_schedule_quality(schedule, course_loads)
+    return schedule, course_loads, quality_score
+
+def calculate_schedule_quality(schedule, course_loads):
+    """
+    Հաշվարկում է ժամանակացույցի որակը ըստ տարբեր չափանիշների
+    """
+    quality_score = 100  # Սկսում ենք հարյուրից և պակասեցնում
+    
+    # 1. Ստուգում ենք կուրսերի դասաժամերի հավասարաշռությունը
+    imbalance_penalty = 0
+    for course, loads in course_loads.items():
+        num_week1 = loads["համարիչ"]
+        num_week2 = loads["հայտարար"]
+        diff = abs(num_week1 - num_week2)
+        
+        # Պակասեցնում ենք 5 միավոր յուրաքանչյուր 3-ից ավել տարբերության համար
+        if diff > 3:
+            imbalance_penalty += min(20, (diff - 3) * 5)  # Առավելագույնը 20 միավոր
+    
+    quality_score -= imbalance_penalty / len(course_loads) if course_loads else 0
+    
+    # 2. Հաշվում ենք օրերի և ժամերի բաշխումը
+    slot_usage = {}
+    for entry in schedule:
+        day = entry.get("assigned_day")
+        hour = entry.get("assigned_hour")
+        
+        if day and hour:
+            slot = (day, hour)
+            slot_usage[slot] = slot_usage.get(slot, 0) + 1
+    
+    # Ստուգում ենք ժամերի տարածումը
+    distribution_penalty = 0
+    if slot_usage:
+        max_classes = max(slot_usage.values())
+        
+        # Պակասեցնում ենք 2 միավոր յուրաքանչյուր 5-ից ավել դասի համար մեկ սլոթում
+        if max_classes > 5:
+            distribution_penalty = min(30, (max_classes - 5) * 2)
+    
+    quality_score -= distribution_penalty
+    
+    # 3. Ստուգում ենք դասախոսների նախապատվությունները
+    teacher_preference_bonus = 0
+    teacher_assignments = {}
+    
+    for entry in schedule:
+        teacher = entry.get("teacher")
+        day = entry.get("assigned_day")
+        hour = entry.get("assigned_hour")
+        
+        if teacher and teacher not in ["Անորոշ", "Հայտնի չէ"] and day and hour:
+            teacher_assignments.setdefault(teacher, []).append((day, hour))
+    
+    # Հաշվում ենք, թե ընդհանուր քանի տոկոսն է նախընտրելի սլոթներում
+    # TODO: Այս մասը պետք է հարմարեցնել ձեր teacher_availability-ի կառուցվածքին
+    
+    quality_score += teacher_preference_bonus
+    
+    return max(0, quality_score)  # Բացասական միավորներից խուսափելու համար
+
+def find_conflicts_parallel(schedule):
+    """
+    Զուգահեռ գտնում է բախումները ժամանակացույցում
+    """
+    if not schedule:
+        return []
+    
+    # Բաժանում է ժամանակացույցը խմբերի՝ ըստ օրերի
+    schedule_by_day = {}
+    for i in range(1, 6):  # 5 օր
+        schedule_by_day[i] = [entry for entry in schedule if entry.get("assigned_day") == i]
+    
+    all_conflicts = []
+    
+    def find_day_conflicts(day_schedule, day):
+        """Գտնում է բախումները մեկ օրվա ժամանակացույցում"""
+        day_conflicts = []
+        
+        # Կազմակերպել դասերը ըստ սլոթի
+        schedule_by_slot = defaultdict(list)
+        
+        for i, entry in enumerate(day_schedule):
+            if "assigned_hour" in entry and "week_type" in entry:
+                key = (entry["assigned_hour"], entry["week_type"])
+                schedule_by_slot[key].append((i, entry))
+        
+        # Ստուգել բախումները
+        for slot, entries in schedule_by_slot.items():
+            hour, week = slot
+            
+            for i in range(len(entries)):
+                for j in range(i+1, len(entries)):
+                    idx1, entry1 = entries[i]
+                    idx2, entry2 = entries[j]
+                    
+                    # Ստուգել հնարավոր բախումները
+                    conflict_reason = None
+                    
+                    # 1. Նույն դասախոս, նույն ժամ
+                    if entry1["teacher"] == entry2["teacher"] and entry1["teacher"] not in ["Անորոշ", "Հայտնի չէ"]:
+                        conflict_reason = "Teacher conflict"
+                    
+                    # 2. Նույն կուրս, նույն ժամ, բայց տարբեր դասեր
+                    if entry1["course"] == entry2["course"]:
+                        # Ստուգել լեզվի առարկայի բացառությունը
+                        is_language_exception = (
+                            entry1["subject"] in LANGUAGE_SUBJECTS and 
+                            entry2["subject"] in LANGUAGE_SUBJECTS and
+                            entry1["subject"] == entry2["subject"] and
+                            entry1["type"] == "Գործ" and  
+                            entry2["type"] == "Գործ" and
+                            entry1["teacher"] != entry2["teacher"]
+                        )
+                        
+                        # Եթե չի լեզվի խմբի դաս, ստուգել բախումը
+                        if not is_language_exception:
+                            type1 = entry1["type"]
+                            type2 = entry2["type"]
+                            if type1 in CONFLICTS and type2 in CONFLICTS[type1]:
+                                conflict_reason = f"Group conflict: {type1} cannot be combined with {type2}"
+                    
+                    # Եթե կա բախում, ավելացնել այն
+                    if conflict_reason:
+                        day_conflicts.append({
+                            "course1": entry1["course"],
+                            "subject1": entry1["subject"],
+                            "course2": entry2["course"],
+                            "subject2": entry2["subject"],
+                            "issue": conflict_reason,
+                            "day": day,
+                            "hour": hour,
+                            "week": week
+                        })
+        
+        return day_conflicts
+    
+    # Զուգահեռ մշակում է ամեն օրվա բախումները
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_day = {executor.submit(find_day_conflicts, day_schedule, day): day 
+                        for day, day_schedule in schedule_by_day.items()}
+        
+        for future in concurrent.futures.as_completed(future_to_day):
+            day = future_to_day[future]
+            try:
+                day_conflicts = future.result()
+                all_conflicts.extend(day_conflicts)
+            except Exception as e:
+                logger.error(f"Սխալ {day} օրվա բախումների ստուգման ժամանակ: {e}")
+    
+    return all_conflicts
+
+def load_data_parallel():
+    """
+    Զուգահեռ բեռնում է տվյալները տարբեր աղբյուրներից
+    
+    Returns:
+        Եռյակ (դասախոսների հասանելիություն, դասերի տվյալներ, լսարանների տիպեր)
+    """
+    logger.info("Բեռնում է տվյալները զուգահեռաբար...")
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        # Ուղարկում է տարբեր բեռնման հարցումները զուգահեռ
+        future_teacher_avail = executor.submit(load_teacher_availability)
+        future_raw_data = executor.submit(load_schedule_data)
+        future_room_types = executor.submit(load_room_types)
+        
+        # Սպասում և ստանում է արդյունքները
+        try:
+            teacher_avail = future_teacher_avail.result(timeout=10)
+            logger.info("Դասախոսների հասանելիությունը բեռնված է")
+        except concurrent.futures.TimeoutError:
+            logger.error("Ժամանակի սպառում դասախոսների հասանելիության բեռնման ժամանակ")
+            teacher_avail = {}
+        except Exception as e:
+            logger.error(f"Սխալ դասախոսների հասանելիության բեռնման ժամանակ: {e}")
+            teacher_avail = {}
+        
+        try:
+            raw_data = future_raw_data.result(timeout=10)
+            logger.info(f"Բեռնված է {len(raw_data)} դասերի տվյալները")
+        except concurrent.futures.TimeoutError:
+            logger.error("Ժամանակի սպառում դասերի տվյալների բեռնման ժամանակ")
+            raw_data = []
+        except Exception as e:
+            logger.error(f"Սխալ դասերի տվյալների բեռնման ժամանակ: {e}")
+            raw_data = []
+        
+        try:
+            room_types = future_room_types.result(timeout=10)
+            logger.info(f"Բեռնված է {len(room_types)} լսարանների տիպեր")
+        except concurrent.futures.TimeoutError:
+            logger.error("Ժամանակի սպառում լսարանների տիպերի բեռնման ժամանակ")
+            room_types = {}
+        except Exception as e:
+            logger.error(f"Սխալ լսարանների տիպերի բեռնման ժամանակ: {e}")
+            room_types = {}
+    
+    return teacher_avail, raw_data, room_types
+
+
+
+
+
 def get_opposite_week_type(week_type):
     """
     Վերադարձնում է հակառակ շաբաթի տիպը։
@@ -2138,108 +2688,93 @@ def find_conflicts(schedule):
 
 def main():
     """
-    Main function that sequentially performs schedule creation
+    Գլխավոր ֆունկցիան, որն իրականացնում է ժամանակացույցի ստեղծումը բազմաթրեդային մոտեցմամբ
     """
     master_seed = int(time.time())
     random.seed(master_seed)
-    logger.info(f"Using master random seed: {master_seed}")
+    logger.info(f"Օգտագործվում է պատահականացման մաստեր սերմը՝ {master_seed}")
 
     try:
-        # 1. Բեռնել լսարանների տիպերը բազայից
-        global ROOM_TYPES
-        ROOM_TYPES = load_room_types()
-        logger.info(f"Loaded {len(ROOM_TYPES)} room types from database")
+        # 1. Զուգահեռաբար բեռնում է տվյալները
+        teacher_avail, raw_data, room_types_from_db = load_data_parallel()
         
-        # Եթե տիպերը դատարկ են, օգտագործել backup տարբերակը
-        if not ROOM_TYPES:
-            logger.warning("No room types loaded from database, using backup definitions")
+        # Ստուգում է արդյոք բեռնումը հաջող է եղել
+        if not raw_data:
+            logger.error("Չհաջողվեց բեռնել դասերի տվյալները, ավարտ")
+            return False
+        
+        # Օգտագործում է բեռնված լսարանների տիպերը
+        global ROOM_TYPES
+        if room_types_from_db:
+            ROOM_TYPES = room_types_from_db
+            logger.info(f"Օգտագործվում են {len(ROOM_TYPES)} լսարանների տիպեր բազայից")
+        else:
+            logger.warning("Չկան լսարանների տիպեր բազայից, օգտագործվում են սահմանված արժեքները")
             # Այստեղ կարող ենք օգտագործել հարկադրված backup տարբերակ
             initialize_room_types_backup()
-
-        # 2. Load teacher availability and class data
-        logger.info("Loading data...")
-        teacher_avail = load_teacher_availability()
-        raw_data = load_schedule_data()
-        logger.info(f"Loaded {len(raw_data)} classes")
         
-        # Count classes by type for better understanding
-        types_count = {}
-        for cls in raw_data:
-            cls_type = cls.get("type", "Unknown")
-            types_count[cls_type] = types_count.get(cls_type, 0) + 1
+        # 2. Գեներացնում է մի քանի զուգահեռ ժամանակացույցներ և ընտրում լավագույնը
+        logger.info("Գեներացնում է մի քանի ժամանակացույցեր...")
+        final_schedule, course_loads = generate_multiple_schedules(raw_data, teacher_avail, attempts=4)
         
-        logger.info(f"Class types distribution: {types_count}")
+        if not final_schedule:
+            logger.error("Չհաջողվեց ստեղծել ժամանակացույցը")
+            return False
         
-        # Ինիցիալիզացնել conflict_stats օբյեկտը հիմնական վիճակագրության համար
-        conflict_stats = {
-            "teacher_conflict": 0,
-            "availability_conflict": 0,
-            "same_course_type_conflict": 0,
-            "lecture_conflict": 0,
-            "subject_teacher_conflict": 0,
-            "all_slots_failed": 0,
-            "most_conflicted_slots": [],
-            "backtracking_attempts": 0,
-            "successful_backtracking": 0,
-            "week_switches": initialize_week_switch_stats()  # Ավելացնել շաբաթի փոփոխման վիճակագրությունը
-        }
+        logger.info(f"Ստեղծված է ժամանակացույց {len(final_schedule)} դասերով")
         
-        # 3. Create schedule for all courses (new approach)
-        logger.info("Creating schedule...")
-        final_schedule, course_loads = improved_schedule_algorithm(raw_data, teacher_avail)
-        logger.info(f"Created overall schedule with {len(final_schedule)} classes")
-        
-        # Արտահանում ենք կուրսերի ծանրաբեռնվածության տվյալները
+        # 3. Արտահանում է կուրսերի ծանրաբեռնվածության տվյալները
         export_course_load_balance(course_loads)
         
-        # 4. Ստուգել և լուծել լսարանների կոնֆլիկտները
-        logger.info("Checking for room conflicts...")
-        room_conflicts = find_room_conflicts(final_schedule)
+        # 4. Զուգահեռաբար ստուգում է բախումները
+        logger.info("Ստուգում է ժամանակացույցի բախումները...")
+        clashes = find_conflicts_parallel(final_schedule)
         
-        if room_conflicts:
-            logger.info(f"Found {len(room_conflicts)} room conflicts, attempting to resolve...")
-            resolve_room_conflicts(room_conflicts, final_schedule, create_empty_schedule())
-            logger.info("Room conflicts resolution completed")
-        
-        # 5. Analyze schedule distribution
-        slots_used = set((cls["assigned_day"], cls["assigned_hour"]) for cls in final_schedule)
-        logger.info(f"Schedule uses {len(slots_used)}/20 time slots")
-        
-        # Count classes per day
-        classes_by_day = {}
-        for cls in final_schedule:
-            day = cls["assigned_day"]
-            classes_by_day[day] = classes_by_day.get(day, 0) + 1
-        
-        for day in range(1, 6):
-            logger.info(f"Day {day}: {classes_by_day.get(day, 0)} classes")
+        if clashes:
+            Path("conflicts.json").write_text(
+                json.dumps(clashes, ensure_ascii=False, indent=2),
+                encoding='utf-8'
+            )
             
-        # Count classes by week type
-        classes_by_week = {"համարիչ": 0, "հայտարար": 0, "երկուսն էլ": 0}
-        for cls in final_schedule:
-            week_type = cls.get("week_type", "համարիչ")
-            classes_by_week[week_type] = classes_by_week.get(week_type, 0) + 1
+            # Հաշվում է բախումների տարբեր տիպերը
+            conflict_types = {}
+            for clash in clashes:
+                issue = clash.get("issue", "Unknown")
+                conflict_types[issue] = conflict_types.get(issue, 0) + 1
             
-        logger.info(f"Classes by week: համարիչ={classes_by_week['համարիչ']}, հայտարար={classes_by_week['հայտարար']}, երկուսն էլ={classes_by_week['երկուսն էլ']}")
+            logger.warning(f"❗ Գտնվել է {len(clashes)} բախումներ, տես ./conflicts.json")
+            logger.warning(f"Բախումների տիպեր՝ {conflict_types}")
+        else:
+            logger.info("✅ Բախումներ չեն հայտնաբերվել")
         
-        # 6. Prepare and save results
-        logger.info("Preparing data for database...")
+        # 5. Պատրաստում և պահպանում է արդյունքները
+        logger.info("Պատրաստում է տվյալները բազայի համար...")
         db_schedule = prepare_schedule_for_db(final_schedule)
         
-        # Save raw schedule for debugging if needed
+        # Պահպանում է նաև JSON տարբերակը
         Path("schedule_output.json").write_text(
             json.dumps(final_schedule, ensure_ascii=False, indent=2),
             encoding='utf-8'
         )
-        logger.info("Raw schedule saved to schedule_output.json")
+        logger.info("Ժամանակացույցը պահպանված է schedule_output.json ֆայլում")
         
-        # Արտահանել հավելյալ վիճակագրություն
+        # Արտահանում է հավելյալ վիճակագրություն
+        slots_used = set((cls["assigned_day"], cls["assigned_hour"]) for cls in final_schedule)
+        classes_by_day = {}
+        for cls in final_schedule:
+            day = cls["assigned_day"]
+            classes_by_day[day] = classes_by_day.get(day, 0) + 1
+            
+        classes_by_week = {"համարիչ": 0, "հայտարար": 0, "երկուսն էլ": 0}
+        for cls in final_schedule:
+            week_type = cls.get("week_type", "համարիչ")
+            classes_by_week[week_type] = classes_by_week.get(week_type, 0) + 1
+        
         stats = {
             "total_classes": len(final_schedule),
             "filled_slots": len(slots_used),
             "classes_by_day": classes_by_day,
             "classes_by_week": classes_by_week,
-            "week_switches": conflict_stats.get("week_switches", {}),
             "course_loads_summary": {
                 "balanced_courses": sum(1 for course, loads in course_loads.items() 
                                      if abs(loads["համարիչ"] - loads["հայտարար"]) <= 3),
@@ -2252,38 +2787,18 @@ def main():
             json.dumps(stats, ensure_ascii=False, indent=2),
             encoding='utf-8'
         )
-        logger.info("Schedule statistics saved to schedule_stats.json")
+        logger.info("Վիճակագրությունը պահպանված է schedule_stats.json ֆայլում")
         
-        logger.info("Saving data to database...")
+        # 6. Պահպանում է տվյալները բազայում
+        logger.info("Պահպանում է տվյալները բազայում...")
         save_schedule_to_db(db_schedule)
-        logger.info(f"Saved {len(db_schedule)} classes to database")
+        logger.info(f"Պահպանված է {len(db_schedule)} դասեր բազայում")
         
-        # 7. Check for other conflicts
-        logger.info("Checking for timing conflicts...")
-        clashes = find_conflicts(final_schedule)
-        
-        if clashes:
-            Path("conflicts.json").write_text(
-                json.dumps(clashes, ensure_ascii=False, indent=2),
-                encoding='utf-8'
-            )
-            
-            # Count different types of conflicts
-            conflict_types = {}
-            for clash in clashes:
-                issue = clash.get("issue", "Unknown")
-                conflict_types[issue] = conflict_types.get(issue, 0) + 1
-            
-            logger.warning(f"❗️ Found {len(clashes)} conflicts, see ./conflicts.json")
-            logger.warning(f"Conflict types: {conflict_types}")
-        else:
-            logger.info("✅ No timing conflicts detected")
-        
-        logger.info("Schedule successfully created")
+        logger.info("Ժամանակացույցը հաջողությամբ ստեղծված է")
         return True
     
     except Exception as e:
-        logger.error(f"❌ ERROR: {e}")
+        logger.error(f"❌ ՍԽԱԼ: {e}")
         import traceback
         logger.error(traceback.format_exc())
         return False
