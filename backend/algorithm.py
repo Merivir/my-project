@@ -133,6 +133,114 @@ ROOM_TYPES = {}
 # 2) Helper functions
 # ─────────────────────────────────────────────────────────────────────────
 
+def get_opposite_week_type(week_type):
+    """
+    Վերադարձնում է հակառակ շաբաթի տիպը։
+    "համարիչ" -> "հայտարար"
+    "հայտարար" -> "համարիչ"
+    "երկուսն էլ" մնում է "երկուսն էլ"
+    """
+    if week_type == "համարիչ":
+        return "հայտարար"
+    elif week_type == "հայտարար":
+        return "համարիչ"
+    else:
+        return "երկուսն էլ"  # "երկուսն էլ" չի փոխվում
+
+def initialize_course_load_balancer():
+    """
+    Ինիցիալիզացնում է կուրսերի ծանրաբեռնվածության հաշվիչը
+    Վերադարձնում է բառարան, որտեղ բանալիները կուրսերն են, իսկ արժեքները՝
+    համարիչ և հայտարար շաբաթների դասաժամերի քանակը
+    """
+    return defaultdict(lambda: {"համարիչ": 0, "հայտարար": 0, "երկուսն էլ": 0})
+
+def will_balance_be_maintained(course, current_course_loads, from_week, to_week, max_diff=3):
+    """
+    Ստուգում է, թե արդյոք շաբաթի տիպի փոփոխությունը կպահպանի հավասարակշռությունը
+    
+    Args:
+        course: Կուրսի կոդը
+        current_course_loads: Ընթացիկ ծանրաբեռնվածության բառարան
+        from_week: Սկզբնական շաբաթի տիպը ("համարիչ" կամ "հայտարար")
+        to_week: Նոր շաբաթի տիպը ("համարիչ" կամ "հայտարար")
+        max_diff: Առավելագույն թույլատրելի տարբերությունը դասաժամերի քանակի միջև
+        
+    Returns:
+        Boolean: True, եթե հավասարակշռությունը կպահպանվի, False՝ հակառակ դեպքում
+    """
+    # Եթե կուրսը դեռ չունի գրանցված դասեր
+    if course not in current_course_loads:
+        return True
+    
+    # Ստանում ենք ընթացիկ հաշվիչները
+    loads = current_course_loads[course]
+    num_week1 = loads["համարիչ"]
+    num_week2 = loads["հայտարար"]
+    
+    # Հաշվում ենք, թե ինչպես կփոխվեն արժեքները
+    new_week1 = num_week1
+    new_week2 = num_week2
+    
+    if from_week == "համարիչ" and to_week == "հայտարար":
+        new_week1 -= 1
+        new_week2 += 1
+    elif from_week == "հայտարար" and to_week == "համարիչ":
+        new_week1 += 1
+        new_week2 -= 1
+    
+    # Ստուգում ենք, թե արդյոք նոր տարբերությունը ընդունելի է
+    return abs(new_week1 - new_week2) <= max_diff
+
+def initialize_week_switch_stats():
+    """Ինիցիալիզացնում է շաբաթի փոփոխման վիճակագրությունը"""
+    return {
+        "համարիչ_to_հայտարար": 0,
+        "հայտարար_to_համարիչ": 0,
+        "total_attempts": 0,
+        "successful_switches": 0
+    }
+
+def export_course_load_balance(course_loads, filename="course_load_balance.json"):
+    """
+    Արտահանում է կուրսերի ծանրաբեռնվածության տվյալները JSON ֆորմատով
+    """
+    balance_data = {}
+    
+    for course, loads in course_loads.items():
+        num_week1 = loads["համարիչ"]
+        num_week2 = loads["հայտարար"]
+        diff = abs(num_week1 - num_week2)
+        
+        # Պահպանում ենք հիմնական տվյալները
+        balance_data[course] = {
+            "համարիչ": num_week1,
+            "հայտարար": num_week2,
+            "տարբերություն": diff,
+            "հավասարակշռված": diff <= 3
+        }
+    
+    # Ընդհանուր վիճակագրություն
+    total_imbalanced = sum(1 for data in balance_data.values() if not data["հավասարակշռված"])
+    balance_data["_summary"] = {
+        "total_courses": len(balance_data),
+        "balanced_courses": len(balance_data) - total_imbalanced,
+        "imbalanced_courses": total_imbalanced
+    }
+    
+    # Արտահանում որպես JSON
+    Path(filename).write_text(
+        json.dumps(balance_data, ensure_ascii=False, indent=2),
+        encoding='utf-8'
+    )
+    logger.info(f"Course load balance exported to {filename}")
+
+
+
+
+
+
+
 # Randomize the day order for more variety in schedules
 def get_randomized_days():
     """
@@ -776,6 +884,9 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
     # Հետևել դասախոսների զբաղված սլոթներին
     occupied_slots_by_teacher = {}
     
+    # Ստեղծում ենք ծանրաբեռնվածության հաշվիչը
+    course_loads = initialize_course_load_balancer()
+    
     # Հաշվել բախումները դիագնոստիկայի համար
     conflict_stats = {
         "teacher_conflict": 0,
@@ -786,7 +897,8 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
         "all_slots_failed": 0,
         "most_conflicted_slots": [],
         "backtracking_attempts": 0,
-        "successful_backtracking": 0
+        "successful_backtracking": 0,
+        "week_switches": initialize_week_switch_stats()  # Ավելացնել շաբաթի փոփոխման վիճակագրությունը
     }
     
     # Հաշվել առաջնահերթությունը յուրաքանչյուր դասի համար և դասավորել
@@ -834,11 +946,12 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
         # Մշակել յուրաքանչյուր դաս այս դասընթացի համար
         for class_data, priority in course_classes:
             # Փորձել տեղավորել դասը առանց վերադասավորման
-            slot_found, day, hour, week_type = try_find_slot(
+            slot_found, day, hour, assigned_week_type = try_find_slot_enhanced(
                 class_data, 
                 schedule, 
                 teacher_availability,
                 occupied_slots_by_teacher,
+                course_loads,  # Փոխանցել ծանրաբեռնվածության տվյալները
                 conflict_stats
             )
             
@@ -848,23 +961,20 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
                 conflict_stats["backtracking_attempts"] += 1
                 
                 # Փորձել վերադասավորում՝ առաջնահերթությունը հաշվի առնելով
-                slot_found, day, hour, week_type = try_backtracking(
+                slot_found, day, hour, assigned_week_type = try_backtracking_enhanced(
                     class_data,
                     schedule,
                     result,
                     result_by_slot,
                     teacher_availability,
                     occupied_slots_by_teacher,
+                    course_loads,  # Փոխանցել ծանրաբեռնվածության տվյալները
                     conflict_stats
                 )
                 
                 if slot_found:
                     conflict_stats["successful_backtracking"] += 1
                     logger.info(f"Backtracking successful for {class_data['subject']}")
-            
-            # Պահպանել սկզբնական week_type-ը, եթե այն գոյություն ունի
-            if "week_type" in class_data:
-                week_type = class_data["week_type"]
             
             # Ավելացնել ժամանակացույցին՝ բախումների ստուգման համար
             schedule[(day, hour)].append(class_data)
@@ -880,13 +990,34 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
             result_entry.update({
                 "assigned_day": day,
                 "assigned_hour": hour,
-                "week_type": week_type
+                "week_type": assigned_week_type  # Օգտագործել փոփոխված week_type
             })
+            
+            # Թարմացնել կուրսի ծանրաբեռնվածությունը
+            if assigned_week_type in ["համարիչ", "հայտարար", "երկուսն էլ"]:
+                course_loads[course][assigned_week_type] += 1
+                
+                # Եթե "երկուսն էլ" տիպի դաս է, հաշվել երկու շաբաթների համար
+                if assigned_week_type == "երկուսն էլ":
+                    course_loads[course]["համարիչ"] += 1
+                    course_loads[course]["հայտարար"] += 1
             
             # Պահպանել արդյունքը և ինդեքսը
             result_index = len(result)
             result.append(result_entry)
             result_by_slot[(day, hour)].append(result_index)
+    
+    # Վերջում արտածել կուրսի ծանրաբեռնվածության վիճակագրությունը
+    logger.info("Course load balance:")
+    for course, loads in course_loads.items():
+        num_week1 = loads["համարիչ"]
+        num_week2 = loads["հայտարար"]
+        diff = abs(num_week1 - num_week2)
+        logger.info(f"  Course {course}: համարիչ: {num_week1}, հայտարար: {num_week2}, Difference: {diff}")
+        
+        # Եթե տարբերությունը մեծ է, արտածել զգուշացում
+        if diff > 3:
+            logger.warning(f"  ⚠️ Course {course} has imbalanced loads (diff={diff})")
     
     # Գրանցել սլոթերի բաշխման վիճակագրությունը
     slot_counts = {slot: len(classes) for slot, classes in schedule.items()}
@@ -898,7 +1029,142 @@ def improved_schedule_algorithm(all_classes, teacher_availability):
     logger.info(f"Max classes per slot: {max_classes}, Average: {avg_classes:.2f}")
     logger.info(f"Conflict stats: {conflict_stats}")
     
-    return result
+    return result, course_loads  # Վերադարձնում ենք նաև կուրսերի ծանրաբեռնվածությունը
+
+def try_find_slot_enhanced(class_data, schedule, teacher_availability, occupied_slots_by_teacher, course_loads, conflict_stats=None):
+    """
+    Փորձում է գտնել հարմար սլոթ դասի համար, հաշվի առնելով նաև կուրսի ծանրաբեռնվածությունը
+    """
+    # Ստուգում ենք, թե որքան հաճախ է դասը
+    weekly_frequency = class_data.get("weekly_frequency", 2)
+    course = class_data["course"]
+    original_week_type = class_data.get("week_type", "համարիչ")
+    
+    # Օգտագործում ենք սկզբնական try_find_slot ֆունկցիան առաջին հերթին
+    slot_found, day, hour, assigned_week_type = try_find_slot(
+        class_data, 
+        schedule, 
+        teacher_availability,
+        occupied_slots_by_teacher,
+        conflict_stats
+    )
+    
+    # Եթե հաջողվեց, վերադարձնում ենք արդյունքը
+    if slot_found:
+        return slot_found, day, hour, assigned_week_type
+    
+    # Եթե չի հաջողվել և դասը երկու շաբաթը մեկ է
+    if weekly_frequency == 2 and original_week_type != "երկուսն էլ":
+        # Փորձում ենք հակառակ շաբաթում
+        opposite_week_type = get_opposite_week_type(original_week_type)
+        
+        # Թարմացնում ենք վիճակագրությունը
+        if conflict_stats is not None:
+            conflict_stats["week_switches"]["total_attempts"] += 1
+        
+        # Ստուգում ենք, թե արդյոք փոփոխությունը կպահպանի հավասարակշռությունը
+        if will_balance_be_maintained(course, course_loads, original_week_type, opposite_week_type):
+            logger.info(f"Trying to switch week type from {original_week_type} to {opposite_week_type} for {class_data['subject']} ({class_data['type']})")
+            
+            # Ժամանակավորապես փոխում ենք week_type-ը
+            temp_class_data = class_data.copy()
+            temp_class_data["week_type"] = opposite_week_type
+            
+            # Փորձել սկզբնական try_find_slot ֆունկցիան հակառակ շաբաթով
+            switched_slot_found, switched_day, switched_hour, _ = try_find_slot(
+                temp_class_data, 
+                schedule, 
+                teacher_availability,
+                occupied_slots_by_teacher,
+                conflict_stats
+            )
+            
+            # Եթե հաջողվեց հակառակ շաբաթում
+            if switched_slot_found:
+                if conflict_stats is not None:
+                    if original_week_type == "համարիչ":
+                        conflict_stats["week_switches"]["համարիչ_to_հայտարար"] += 1
+                    else:
+                        conflict_stats["week_switches"]["հայտարար_to_համարիչ"] += 1
+                    conflict_stats["week_switches"]["successful_switches"] += 1
+                
+                logger.info(f"Successfully switched week type to {opposite_week_type} for {class_data['subject']} ({class_data['type']})")
+                return True, switched_day, switched_hour, opposite_week_type
+        else:
+            logger.info(f"Week type switch would cause imbalance for course {course}, not switching")
+    
+    # Եթե չի հաջողվել նոր մեթոդով, վերադարձնել սկզբնական արդյունքը
+    return slot_found, day, hour, assigned_week_type
+
+def try_backtracking_enhanced(class_data, schedule, result, result_by_slot, teacher_availability, occupied_slots_by_teacher, course_loads, conflict_stats):
+    """
+    Փորձում է վերադասավորել դասերը և/կամ տեղափոխել մեկ շաբաթից մյուսը,
+    հաշվի առնելով նաև կուրսի ծանրաբեռնվածությունը
+    """
+    # Ստուգում ենք, թե որքան հաճախ է դասը
+    weekly_frequency = class_data.get("weekly_frequency", 2)
+    course = class_data["course"]
+    original_week_type = class_data.get("week_type", "համարիչ")
+    
+    # Օգտագործել սկզբնական try_backtracking ֆունկցիան
+    slot_found, day, hour, assigned_week_type = try_backtracking(
+        class_data,
+        schedule,
+        result,
+        result_by_slot,
+        teacher_availability,
+        occupied_slots_by_teacher,
+        conflict_stats
+    )
+    
+    # Եթե հաջողվեց, վերադարձնել արդյունքը
+    if slot_found:
+        return slot_found, day, hour, assigned_week_type
+    
+    # Եթե չի հաջողվել և դասը երկու շաբաթը մեկ է
+    if weekly_frequency == 2 and original_week_type != "երկուսն էլ":
+        # Փորձում ենք հակառակ շաբաթում
+        opposite_week_type = get_opposite_week_type(original_week_type)
+        
+        # Թարմացնում ենք վիճակագրությունը
+        if conflict_stats is not None:
+            conflict_stats["week_switches"]["total_attempts"] += 1
+        
+        # Ստուգում ենք, թե արդյոք փոփոխությունը կպահպանի հավասարակշռությունը
+        if will_balance_be_maintained(course, course_loads, original_week_type, opposite_week_type):
+            logger.info(f"Backtracking: Trying to switch week type from {original_week_type} to {opposite_week_type} for {class_data['subject']} ({class_data['type']})")
+            
+            # Ժամանակավորապես փոխում ենք week_type-ը
+            temp_class_data = class_data.copy()
+            temp_class_data["week_type"] = opposite_week_type
+            
+            # Օգտագործել սկզբնական try_backtracking ֆունկցիան հակառակ շաբաթով
+            switched_slot_found, switched_day, switched_hour, _ = try_backtracking(
+                temp_class_data,
+                schedule,
+                result,
+                result_by_slot,
+                teacher_availability,
+                occupied_slots_by_teacher,
+                conflict_stats
+            )
+            
+            # Եթե հաջողվեց հակառակ շաբաթում
+            if switched_slot_found:
+                if conflict_stats is not None:
+                    if original_week_type == "համարիչ":
+                        conflict_stats["week_switches"]["համարիչ_to_հայտարար"] += 1
+                    else:
+                        conflict_stats["week_switches"]["հայտարար_to_համարիչ"] += 1
+                    conflict_stats["week_switches"]["successful_switches"] += 1
+                
+                logger.info(f"Backtracking: Successfully switched week type to {opposite_week_type} for {class_data['subject']} ({class_data['type']})")
+                return True, switched_day, switched_hour, opposite_week_type
+        else:
+            logger.info(f"Backtracking: Week type switch would cause imbalance for course {course}, not switching")
+    
+    # Եթե չի հաջողվել նոր մեթոդով, վերադարձնել սկզբնական արդյունքը
+    return slot_found, day, hour, assigned_week_type
 
 def try_find_slot(class_data, schedule, teacher_availability, occupied_slots_by_teacher, conflict_stats=None):
     """
@@ -1869,6 +2135,7 @@ def find_conflicts(schedule):
                     })
     
     return conflicts
+
 def main():
     """
     Main function that sequentially performs schedule creation
@@ -1903,10 +2170,27 @@ def main():
         
         logger.info(f"Class types distribution: {types_count}")
         
+        # Ինիցիալիզացնել conflict_stats օբյեկտը հիմնական վիճակագրության համար
+        conflict_stats = {
+            "teacher_conflict": 0,
+            "availability_conflict": 0,
+            "same_course_type_conflict": 0,
+            "lecture_conflict": 0,
+            "subject_teacher_conflict": 0,
+            "all_slots_failed": 0,
+            "most_conflicted_slots": [],
+            "backtracking_attempts": 0,
+            "successful_backtracking": 0,
+            "week_switches": initialize_week_switch_stats()  # Ավելացնել շաբաթի փոփոխման վիճակագրությունը
+        }
+        
         # 3. Create schedule for all courses (new approach)
         logger.info("Creating schedule...")
-        final_schedule = schedule_all_courses(raw_data, teacher_avail)
+        final_schedule, course_loads = improved_schedule_algorithm(raw_data, teacher_avail)
         logger.info(f"Created overall schedule with {len(final_schedule)} classes")
+        
+        # Արտահանում ենք կուրսերի ծանրաբեռնվածության տվյալները
+        export_course_load_balance(course_loads)
         
         # 4. Ստուգել և լուծել լսարանների կոնֆլիկտները
         logger.info("Checking for room conflicts...")
@@ -1929,6 +2213,14 @@ def main():
         
         for day in range(1, 6):
             logger.info(f"Day {day}: {classes_by_day.get(day, 0)} classes")
+            
+        # Count classes by week type
+        classes_by_week = {"համարիչ": 0, "հայտարար": 0, "երկուսն էլ": 0}
+        for cls in final_schedule:
+            week_type = cls.get("week_type", "համարիչ")
+            classes_by_week[week_type] = classes_by_week.get(week_type, 0) + 1
+            
+        logger.info(f"Classes by week: համարիչ={classes_by_week['համարիչ']}, հայտարար={classes_by_week['հայտարար']}, երկուսն էլ={classes_by_week['երկուսն էլ']}")
         
         # 6. Prepare and save results
         logger.info("Preparing data for database...")
@@ -1940,6 +2232,27 @@ def main():
             encoding='utf-8'
         )
         logger.info("Raw schedule saved to schedule_output.json")
+        
+        # Արտահանել հավելյալ վիճակագրություն
+        stats = {
+            "total_classes": len(final_schedule),
+            "filled_slots": len(slots_used),
+            "classes_by_day": classes_by_day,
+            "classes_by_week": classes_by_week,
+            "week_switches": conflict_stats.get("week_switches", {}),
+            "course_loads_summary": {
+                "balanced_courses": sum(1 for course, loads in course_loads.items() 
+                                     if abs(loads["համարիչ"] - loads["հայտարար"]) <= 3),
+                "imbalanced_courses": sum(1 for course, loads in course_loads.items() 
+                                      if abs(loads["համարիչ"] - loads["հայտարար"]) > 3)
+            }
+        }
+        
+        Path("schedule_stats.json").write_text(
+            json.dumps(stats, ensure_ascii=False, indent=2),
+            encoding='utf-8'
+        )
+        logger.info("Schedule statistics saved to schedule_stats.json")
         
         logger.info("Saving data to database...")
         save_schedule_to_db(db_schedule)
