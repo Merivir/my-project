@@ -36,7 +36,7 @@ const { exec } = require("child_process");
 app.post("/api/generate-schedule", (req, res) => {
     console.log("📌 Կանչվեց դասացուցակի ալգորիթմը...");
 
-    const scriptPath = path.join(__dirname, "algorithm.py");
+    const scriptPath = path.join(__dirname, "algorithm_backup.py");
     console.log(`📌 Պատրաստվում ենք գործարկել՝ ${scriptPath}`);
 
     exec(`python3 "${scriptPath}"`, { maxBuffer: 1024 * 1024 * 10 }, (error, stdout, stderr) => {

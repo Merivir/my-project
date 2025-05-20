@@ -1,0 +1,26 @@
+{
+  "total_classes": 1149,
+  "filled_slots": 20,
+  "classes_by_day": {
+    "2": 234,
+    "3": 231,
+    "1": 227,
+    "5": 231,
+    "4": 226
+  },
+  "classes_by_week": {
+    "համարիչ": 561,
+    "հայտարար": 572,
+    "երկուսն էլ": 16
+  },
+  "week_switches": {
+    "համարիչ_to_հայտարար": 0,
+    "հայտարար_to_համարիչ": 0,
+    "total_attempts": 0,
+    "successful_switches": 0
+  },
+  "course_loads_summary": {
+    "balanced_courses": 41,
+    "imbalanced_courses": 9
+  }
+}
