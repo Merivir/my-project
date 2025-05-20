@@ -2365,6 +2365,7 @@ def add_class_to_schedule(class_data, day, hour, week_type, schedule, result, oc
     
     # If no suitable slot found
     return None, None, False
+
 def resolve_type_conflicts(class_data, schedule, week_type, result, teacher_availability, occupied_slots_by_teacher):
     """
     Try to resolve conflicts by moving existing classes to make room for the new one

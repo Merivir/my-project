@@ -9,6 +9,30 @@ import time
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
+# Մուտքագրեք ֆայլի անունը, որտեղ ուզում եք հավաքել լոգերը
+LOG_FILENAME = "algorithm.log"
+
+# Կարգավորում ենք միաժամանակ կոնսոլ ու ֆայլ
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+# 1) Root logger–ի կոնսոլ-հենդլեր
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(formatter)
+
+# 2) Ֆայլի հենդլեր
+file_handler = logging.FileHandler(LOG_FILENAME, encoding='utf-8', mode='w')
+file_handler.setLevel(logging.DEBUG)  # կամ INFO, եթե չեք ուզում չափազանց մանր
+file_handler.setFormatter(formatter)
+
+# 3) Logger–ի կոնֆիգուրացիա
+logger = logging.getLogger()  # root logger
+logger.setLevel(logging.DEBUG)
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
+
+# Հետո հանում ենք basicConfig–ը, որպեսզի չաշխատի միայն այն
+
 logger = logging.getLogger(__name__)
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -385,6 +409,158 @@ def group_by_course(classes):
 # ─────────────────────────────────────────────────────────────────────────
 # 4) Improved Scheduling Algorithm
 # ─────────────────────────────────────────────────────────────────────────
+def find_teacher_conflicts(schedule_result):
+    """
+    Գտնում է այն իրավիճակները, երբ նույն դասախոսը նշանակված է մի քանի դասերի
+    նույն ժամանակում
+    
+    Args:
+        schedule_result: Նշանակված սլոթներով դասերի ցուցակ
+        
+    Returns:
+        Կոնֆլիկտների ցուցակ մանրամասներով
+    """
+    conflicts = []
+    
+    # Խմբավորում է դասերը ըստ ժամանակի սլոթի և դասախոսի
+    classes_by_slot_teacher = defaultdict(list)
+    
+    for idx, entry in enumerate(schedule_result):
+        day = entry.get("assigned_day")
+        hour = entry.get("assigned_hour")
+        teacher = entry.get("teacher", "")
+        week_type = entry.get("week_type", "համարիչ")
+        
+        if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+            slot_key = (day, hour, teacher)
+            classes_by_slot_teacher[slot_key].append((idx, entry, week_type))
+    
+    # Ստուգում է կոնֆլիկտները
+    for slot_key, entries in classes_by_slot_teacher.items():
+        day, hour, teacher = slot_key
+        
+        # Եթե նույն սլոթում նույն դասախոսը ունի մեկից ավել դաս
+        if len(entries) > 1:
+            # Ստուգում է յուրաքանչյուր դասերի զույգը
+            for i in range(len(entries)):
+                for j in range(i+1, len(entries)):
+                    idx1, entry1, week1 = entries[i]
+                    idx2, entry2, week2 = entries[j]
+                    
+                    # Ստուգում է, արդյոք շաբաթները համընկնում են
+                    weeks_overlap = (
+                        week1 == week2 or 
+                        week1 == "երկուսն էլ" or 
+                        week2 == "երկուսն էլ"
+                    )
+                    
+                    if weeks_overlap:
+                        conflicts.append({
+                            "slot": (day, hour),
+                            "teacher": teacher,
+                            "entries": [(idx1, entry1), (idx2, entry2)],
+                            "week_types": [week1, week2]
+                        })
+    
+    logger.info(f"Գտնվել է {len(conflicts)} դասախոսների կոնֆլիկտներ")
+    return conflicts
+
+def resolve_teacher_conflicts(conflicts, result, schedule, teacher_availability, occupied_slots_by_teacher):
+    """
+    Լուծում է դասախոսների կոնֆլիկտները բակտրեքինգի միջոցով՝ տեղափոխելով մեկ դասը
+    
+    Args:
+        conflicts: Լուծելու ենթակա կոնֆլիկտների ցուցակ
+        result: Թարմացվելիք նշանակված դասերի ցուցակ
+        schedule: Ընթացիկ ժամանակացույցի վիճակը
+        teacher_availability: Դասախոսների հասանելիության տվյալները
+        occupied_slots_by_teacher: Զբաղված սլոթները ըստ դասախոսների
+    """
+    resolved_count = 0
+    
+    for conflict in conflicts:
+        day, hour = conflict["slot"]
+        teacher = conflict["teacher"]
+        entries = conflict["entries"]
+        week_types = conflict["week_types"]
+        
+        logger.info(f"Լուծում է {teacher} դասախոսի կոնֆլիկտը օր {day}, ժամ {hour}")
+        
+        # Գտնում ենք ցածր առաջնահերթություն ունեցող դասը տեղափոխելու համար
+        class_priorities = []
+        for idx, entry in entries:
+            priority = calculate_class_priority(entry)
+            class_priorities.append((idx, entry, priority))
+        
+        # Դասավորում ենք ըստ առաջնահերթության, ցածրից բարձր
+        class_priorities.sort(key=lambda x: x[2])
+        
+        # Փորձում ենք տեղափոխել ցածր առաջնահերթություն ունեցող դասը
+        for i, (idx, entry, priority) in enumerate(class_priorities):
+            # Բաց ենք թողնում վերջին (ամենաբարձր առաջնահերթություն ունեցող) դասը
+            if i == len(class_priorities) - 1:
+                continue
+                
+            week_type = entry.get("week_type", "համարիչ")
+            
+            # Ստեղծում ենք կրկնօրինակ աշխատելու համար
+            temp_entry = entry.copy()
+            
+            # Գտնում ենք նույն դասը ժամանակացույցում և հեռացնում այն
+            # Ուշադիր լինել այս մասին - մենք փնտրում ենք ժամանակացույցում գտնվող օբյեկտը
+            class_to_remove = None
+            for schedule_entry in schedule[(day, hour)]:
+                # Համեմատում ենք հիմնական հատկություններով, ոչ թե օբյեկտի հասցեով
+                if (schedule_entry.get("subject") == entry.get("subject") and
+                    schedule_entry.get("teacher") == entry.get("teacher") and
+                    schedule_entry.get("type") == entry.get("type")):
+                    class_to_remove = schedule_entry
+                    break
+                    
+            if class_to_remove:
+                schedule[(day, hour)].remove(class_to_remove)
+            else:
+                logger.warning(f"Չի հաջողվել գտնել դասը ժամանակացույցում: {entry['subject']} ({entry['type']})")
+                continue
+            
+            # Ազատում ենք դասախոսի սլոթը
+            if (day, hour) in occupied_slots_by_teacher.get(teacher, set()):
+                occupied_slots_by_teacher[teacher].remove((day, hour))
+            
+            # Փորձում ենք գտնել նոր սլոթ այս դասի համար
+            alt_day, alt_hour, alt_success = find_alternative_slot(
+                temp_entry,
+                day, 
+                hour, 
+                schedule, 
+                week_type, 
+                teacher_availability, 
+                occupied_slots_by_teacher
+            )
+            
+            if alt_success:
+                logger.info(f"Գտնվել է այլընտրանքային սլոթ ({alt_day},{alt_hour}) {entry['subject']} ({entry['type']})-ի համար")
+                
+                # Թարմացնում ենք ժամանակացույցը
+                schedule[(alt_day, alt_hour)].append(temp_entry)
+                
+                # Նշանակում ենք դասախոսի նոր սլոթը
+                occupied_slots_by_teacher.setdefault(teacher, set()).add((alt_day, alt_hour))
+                
+                # Թարմացնում ենք արդյունքը
+                result[idx]["assigned_day"] = alt_day
+                result[idx]["assigned_hour"] = alt_hour
+                
+                resolved_count += 1
+                break
+            else:
+                # Վերադարձնում ենք ժամանակացույցին եթե չենք կարող տեղափոխել
+                schedule[(day, hour)].append(temp_entry)
+                occupied_slots_by_teacher.setdefault(teacher, set()).add((day, hour))
+                logger.warning(f"Չհաջողվեց գտնել այլընտրանքային սլոթ {entry['subject']} ({entry['type']})-ի համար")
+    
+    logger.info(f"Լուծվեց {resolved_count}/{len(conflicts)} դասախոսների կոնֆլիկտներ")
+    return resolved_count
 
 def create_empty_schedule():
     """
@@ -1057,7 +1233,7 @@ def try_backtracking(class_data, schedule, result, result_by_slot, teacher_avail
     potential_slots.sort(key=lambda x: (len(x[1]), x[2]))
     
     # Առաջնահերթության ցածր արժեք ունեցող դասերը, որոնք կարող են տեղափոխվել
-    MAX_CLASSES_TO_MOVE = 2  # Առավելագույնը քանի դաս կփորձենք տեղափոխել
+    MAX_CLASSES_TO_MOVE = 4  # Առավելագույնը քանի դաս կփորձենք տեղափոխել
     MAX_BACKTRACKING_DEPTH = 3  # Առավելագույնը որքան խորությամբ կփորձենք վերադասավորել
     
     # Փորձել յուրաքանչյուր պոտենցիալ սլոթ
@@ -1800,6 +1976,7 @@ def save_schedule_to_db(schedule: list[dict]) -> None:
     finally:
         conn.close()
 
+
 def find_conflicts(schedule):
     """
     Finds conflicts in the final schedule
@@ -1869,6 +2046,7 @@ def find_conflicts(schedule):
                     })
     
     return conflicts
+
 def main():
     """
     Main function that sequentially performs schedule creation
@@ -1945,6 +2123,33 @@ def main():
         save_schedule_to_db(db_schedule)
         logger.info(f"Saved {len(db_schedule)} classes to database")
         
+        teacher_conflicts = find_teacher_conflicts(final_schedule)
+
+        if teacher_conflicts:
+            logger.info(f"Found {len(teacher_conflicts)} teacher conflicts, attempting to resolve...")
+            # Ստեղծել ժամանակացույցի տեսք կոնֆլիկտների լուծման համար
+            schedule_state = create_empty_schedule()
+            for entry in final_schedule:
+                day = entry.get("assigned_day")
+                hour = entry.get("assigned_hour")
+                schedule_state[(day, hour)].append(entry)
+                
+            # Հետևել զբաղված սլոթներին
+            occupied_slots = {}
+            for entry in final_schedule:
+                teacher = entry.get("teacher")
+                if teacher not in ["Անորոշ", "Հայտնի չէ"]:
+                    day = entry.get("assigned_day")
+                    hour = entry.get("assigned_hour")
+                    occupied_slots.setdefault(teacher, set()).add((day, hour))
+                    
+            # Բեռնել դասախոսների հասանելիությունը
+            teacher_avail = load_teacher_availability()
+            
+            # Լուծել կոնֆլիկտները
+            resolve_teacher_conflicts(teacher_conflicts, final_schedule, schedule_state, teacher_avail, occupied_slots)
+            logger.info("Teacher conflicts resolution completed")
+    
         # 7. Check for other conflicts
         logger.info("Checking for timing conflicts...")
         clashes = find_conflicts(final_schedule)
