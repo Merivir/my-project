@@ -6,34 +6,52 @@ from pathlib import Path
 import pyodbc
 import time
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, 
-                    format='%(asctime)s - %(levelname)s - %(message)s')
-# Մուտքագրեք ֆայլի անունը, որտեղ ուզում եք հավաքել լոգերը
-LOG_FILENAME = "algorithm.log"
+import os
+import datetime
+import glob
+import logging
 
-# Կարգավորում ենք միաժամանակ կոնսոլ ու ֆայլ
+# 📁 Log պահելու պանակ
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)
+
+# 🔢 Մաքսիմում լոգ ֆայլերի քանակը
+MAX_LOG_FILES = 10
+
+# 📆 Ստանում ենք նոր լոգի ֆայլի անունը՝ ըստ օրվա ու ժամի
+now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+log_filename = f"log_{now}.txt"
+log_path = os.path.join(log_dir, log_filename)
+
+# 🧹 Մաքրում ենք հին ֆայլերը՝ եթե ավելի քան 10 հատ կան
+log_files = sorted(glob.glob(os.path.join(log_dir, "log_*.txt")), key=os.path.getmtime)
+
+if len(log_files) >= MAX_LOG_FILES:
+    to_delete = log_files[0]  # ամենահինը
+    print(f"🧹 Ջնջում ենք հին ֆայլը: {to_delete}")
+    os.remove(to_delete)
+
+# 🛠️ Կարգավորում ենք logging-ը, որ գրի այս ֆայլում
+logger = logging.getLogger("algo_logger")
+logger.setLevel(logging.DEBUG)  # Գրանցիր ամեն ինչ
+
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
-# 1) Root logger–ի կոնսոլ-հենդլեր
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
-console_handler.setFormatter(formatter)
-
-# 2) Ֆայլի հենդլեր
-file_handler = logging.FileHandler(LOG_FILENAME, encoding='utf-8', mode='w')
-file_handler.setLevel(logging.DEBUG)  # կամ INFO, եթե չեք ուզում չափազանց մանր
+# 📤 File handler — գրում է նոր log ֆայլում
+file_handler = logging.FileHandler(log_path, encoding='utf-8')
 file_handler.setFormatter(formatter)
-
-# 3) Logger–ի կոնֆիգուրացիա
-logger = logging.getLogger()  # root logger
-logger.setLevel(logging.DEBUG)
-logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-# Հետո հանում ենք basicConfig–ը, որպեսզի չաշխատի միայն այն
+# 📺 Console handler (optional)
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
 
-logger = logging.getLogger(__name__)
+# 📝 Օրինակ log
+logger.info("Սկսում ենք դասերի տեղադրումը...")
+logger.warning("Պահանջվեց բեքթրեքինգ՝ բախման պատճառով")
+logger.error("Լսարանը զբաղված է")
+
 
 # ─────────────────────────────────────────────────────────────────────────
 # 1) Global parameters and types
